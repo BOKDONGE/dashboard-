@@ -193,52 +193,61 @@ function goToday() {
   loadDate(0);
 }
 
+function esc(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function mdLine(s) {
+  const e = esc(s);
+  if (/^---+$/.test(e)) return '<hr>';
+  if (/^### (.+)$/.test(e)) return e.replace(/^### (.+)$/,'<h3>$1</h3>');
+  if (/^## (.+)$/.test(e)) return e.replace(/^## (.+)$/,'<h2>$1</h2>');
+  if (/^# (.+)$/.test(e)) return e.replace(/^# (.+)$/,'<h1>$1</h1>');
+  if (/^> (.+)$/.test(e)) return e.replace(/^> (.+)$/,'<blockquote>$1</blockquote>');
+  return e
+    .replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>')
+    .replace(/\*(.+?)\*/g,'<em>$1</em>')
+    .replace(/`(.+?)`/g,'<code>$1</code>');
+}
+
+function renderTable(rows) {
+  const cells = rows.map(r => r.split('|').slice(1,-1).map(c => c.trim()));
+  if (cells.length < 2) return rows.map(r => esc(r)).join('<br>');
+  let html = '<table><tr>';
+  cells[0].forEach(h => { html += '<th>' + esc(h) + '</th>'; });
+  html += '</tr>';
+  for (let i = 2; i < cells.length; i++) {
+    html += '<tr>';
+    cells[i].forEach(c => {
+      const ec = esc(c);
+      let style = '';
+      if (ec.includes('▲')) style = 'color:#d0021b;font-weight:600';
+      else if (ec.includes('▼')) style = 'color:#0050b3;font-weight:600';
+      html += '<td' + (style ? ' style="'+style+'"':'') + '>' + ec + '</td>';
+    });
+    html += '</tr>';
+  }
+  html += '</table>';
+  return html;
+}
+
 function mdToHtml(text) {
   if (!text) return '';
-  // tables
   const lines = text.split('\n');
   let out = [], inTable = false, tableRows = [];
 
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i];
-    if (line.match(/^\|.+\|/)) {
+    if (/^\|.+\|/.test(line)) {
       if (!inTable) { inTable = true; tableRows = []; }
       tableRows.push(line);
     } else {
-      if (inTable) {
-        out.push(renderTable(tableRows));
-        tableRows = []; inTable = false;
-      }
-      out.push(line);
+      if (inTable) { out.push(renderTable(tableRows)); tableRows = []; inTable = false; }
+      out.push(mdLine(line));
     }
   }
   if (inTable) out.push(renderTable(tableRows));
-
-  return out.join('\n')
-    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
-    .replace(/^---+$/gm,'<hr>')
-    .replace(/^### (.+)$/gm,'<h3>$1</h3>')
-    .replace(/^## (.+)$/gm,'<h2>$1</h2>')
-    .replace(/^# (.+)$/gm,'<h1>$1</h1>')
-    .replace(/^> (.+)$/gm,'<blockquote>$1</blockquote>')
-    .replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>')
-    .replace(/\*(.+?)\*/g,'<em>$1</em>')
-    .replace(/`(.+?)`/g,'<code>$1</code>')
-    .replace(/\n/g,'<br>');
-}
-
-function renderTable(rows) {
-  const cells = rows.map(r => r.split('|').slice(1,-1).map(c => c.trim()));
-  if (cells.length < 2) return rows.join('\n');
-  let html = '<table>';
-  cells[0].forEach(h => { html += '<th>' + h + '</th>'; });
-  for (let i = 2; i < cells.length; i++) {
-    html += '<tr>';
-    cells[i].forEach(c => { html += '<td>' + c + '</td>'; });
-    html += '</tr>';
-  }
-  html += '</table>';
-  return html;
+  return out.join('<br>');
 }
 
 function render(dayData) {
@@ -261,20 +270,4 @@ function render(dayData) {
         + '<div class="card-time">업데이트: ' + d.updated_at + '</div></div></div>'
         + '<div class="card-body">' + mdToHtml(d.content) + '</div></div>'
       : '<div class="empty"><div class="ico">⏳</div><p>해당 날짜에 데이터가 없어요</p></div>';
-    return '<div class="panel ' + (t.key===activeTab?'active':'') + '" id="panel-' + t.key + '">' + inner + '</div>';
-  }).join('');
-
-  document.getElementById('status').textContent = '총 ' + dates.length + '일치 데이터 보관 중';
-}
-
-function switchTab(key) {
-  activeTab = key;
-  document.querySelectorAll('.tab').forEach(el => el.classList.toggle('active', el.dataset.key===key));
-  document.querySelectorAll('.panel').forEach(el => el.classList.toggle('active', el.id==='panel-'+key));
-}
-
-init();
-</script>
-</body>
-</html>
-                   
+    return '<div class="panel ' + (t.key===activeTab?'active':'') + '" id="panel-' + t.key + '">' + inn
