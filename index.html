@@ -86,7 +86,6 @@ async function init() {
     const r = await fetch(url);
     if (!r.ok) throw new Error('HTTP ' + r.status);
     dates = await r.json();
-    log('dates: ' + JSON.stringify(dates));
     currentIdx = 0;
     await loadDate(currentIdx);
   } catch(e) {
@@ -106,7 +105,6 @@ async function loadDate(idx) {
     const r = await fetch(url2);
     if (!r.ok) throw new Error('HTTP ' + r.status + ' for ' + dateStr);
     cache[dateStr] = await r.json();
-    log('data loaded: ' + Object.keys(cache[dateStr].tasks || {}).length + '개');
   }
   render(cache[dateStr]);
 }
