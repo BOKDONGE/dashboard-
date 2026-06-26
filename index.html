@@ -21,23 +21,22 @@
   .header-top { display: flex; align-items: center; justify-content: space-between; }
   .header-top h1 { font-size: 17px; font-weight: 700; }
   .date-nav {
-    display: flex; align-items: center; gap: 4px; margin-top: 8px;
-    justify-content: center;
+    display: flex; align-items: center; gap: 6px; margin-top: 8px;
+  }
+  #date-label {
+    font-size: 13px; font-weight: 600; white-space: nowrap; flex: 1;
   }
   .date-nav button {
     background: rgba(255,255,255,0.2); border: none; color: white;
-    border-radius: 8px; padding: 4px 10px; font-size: 20px; cursor: pointer;
+    border-radius: 8px; padding: 4px 12px; font-size: 18px; cursor: pointer;
     line-height: 1; flex-shrink: 0;
   }
   .date-nav button:disabled { opacity: 0.3; cursor: default; }
   .date-nav button:active { background: rgba(255,255,255,0.35); }
-  #date-label {
-    font-size: 13px; font-weight: 600; text-align: center; white-space: nowrap;
-  }
   #today-btn {
     font-size: 11px; padding: 3px 8px; background: rgba(255,255,255,0.15);
     border: 1px solid rgba(255,255,255,0.4); border-radius: 6px;
-    color: white; cursor: pointer;
+    color: white; cursor: pointer; flex-shrink: 0;
   }
   .tabs-wrap {
     background: white; border-bottom: 1px solid #e0e0e0;
@@ -115,8 +114,8 @@
     <button id="today-btn" onclick="goToday()">오늘</button>
   </div>
   <div class="date-nav">
-    <button id="btn-prev" onclick="movDate(-1)">‹</button>
     <div id="date-label">로딩 중...</div>
+    <button id="btn-prev" onclick="movDate(-1)">‹</button>
     <button id="btn-next" onclick="movDate(1)">›</button>
   </div>
 </div>
@@ -153,7 +152,7 @@ function fmtDate(str) {
 
 async function init() {
   try {
-    const r = await fetch(BASE + '/data/index.json?v=' + Date.now());
+    const r = await fetch('data/index.json?v=' + Date.now());
     dates = await r.json();
     currentIdx = 0;
     await loadDate(currentIdx);
@@ -172,7 +171,7 @@ async function loadDate(idx) {
   if (!cache[dateStr]) {
     document.getElementById('panels').innerHTML = '<div class="loading">⏳ 불러오는 중...</div>';
     try {
-      const r = await fetch(BASE + '/data/' + dateStr + '.json?v=' + Date.now());
+      const r = await fetch('data/' + dateStr + '.json?v=' + Date.now());
       cache[dateStr] = await r.json();
     } catch(e) {
       document.getElementById('panels').innerHTML = '<div class="loading">데이터 없음 😢</div>';
@@ -275,4 +274,7 @@ function switchTab(key) {
 }
 
 init();
-</scr
+</script>
+</body>
+</html>
+                   
