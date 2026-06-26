@@ -10,24 +10,40 @@
   body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans KR', sans-serif;
     background: #f0f2f5; color: #1a1a1a; min-height: 100vh;
+    font-size: 18px; line-height: 1.95;
   }
   .header {
     background: linear-gradient(135deg, #1a2f4e 0%, #2a5298 100%);
-    color: white; padding: 16px 16px 12px;
+    color: white; padding: 14px 16px 10px;
     position: sticky; top: 0; z-index: 100;
     box-shadow: 0 2px 8px rgba(0,0,0,0.25);
-    display: flex; align-items: center; justify-content: space-between;
   }
-  .header-left h1 { font-size: 17px; font-weight: 700; }
-  .header-left .date { font-size: 12px; opacity: 0.75; margin-top: 2px; }
+  .header-top { display: flex; align-items: center; justify-content: space-between; }
+  .header-top h1 { font-size: 17px; font-weight: 700; }
+  .date-nav {
+    display: flex; align-items: center; gap: 8px; margin-top: 8px;
+  }
+  .date-nav button {
+    background: rgba(255,255,255,0.2); border: none; color: white;
+    border-radius: 8px; padding: 4px 10px; font-size: 18px; cursor: pointer;
+    line-height: 1;
+  }
+  .date-nav button:disabled { opacity: 0.3; cursor: default; }
+  .date-nav button:active { background: rgba(255,255,255,0.35); }
+  #date-label {
+    font-size: 13px; font-weight: 600; flex: 1; text-align: center;
+  }
+  #today-btn {
+    font-size: 11px; padding: 3px 8px; background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.4); border-radius: 6px;
+    color: white; cursor: pointer;
+  }
   .tabs-wrap {
     background: white; border-bottom: 1px solid #e0e0e0;
     overflow-x: auto; scrollbar-width: none;
   }
   .tabs-wrap::-webkit-scrollbar { display: none; }
-  .tabs {
-    display: flex; padding: 10px 12px 0; gap: 4px; min-width: max-content;
-  }
+  .tabs { display: flex; padding: 10px 12px 0; gap: 4px; min-width: max-content; }
   .tab {
     padding: 7px 13px 9px; border-radius: 10px 10px 0 0;
     font-size: 13px; font-weight: 500; cursor: pointer;
@@ -39,9 +55,7 @@
     background: white; color: #1a2f4e; border-color: #ddd;
     font-weight: 700; border-bottom: 2px solid white; margin-bottom: -1px;
   }
-  .tab .badge {
-    width: 7px; height: 7px; border-radius: 50%; background: #ccc; flex-shrink: 0;
-  }
+  .tab .badge { width: 7px; height: 7px; border-radius: 50%; background: #ccc; flex-shrink: 0; }
   .tab .badge.ok { background: #34c759; }
   .panels { padding: 12px 14px 30px; }
   .panel { display: none; }
@@ -58,13 +72,13 @@
   .card-title { font-size: 15px; font-weight: 700; color: #1a2f4e; }
   .card-time { font-size: 11px; color: #aaa; margin-top: 2px; }
   .card-body {
-    padding: 14px 16px; font-size: 14px; line-height: 1.75; color: #2c2c2c;
-    max-height: calc(100vh - 200px); overflow-y: auto;
-    -webkit-overflow-scrolling: touch; white-space: pre-wrap; word-break: break-word;
+    padding: 14px 16px; font-size: 17px; line-height: 1.95; color: #2c2c2c;
+    max-height: calc(100vh - 220px); overflow-y: auto;
+    -webkit-overflow-scrolling: touch; word-break: break-word;
   }
-  .card-body h1 { font-size: 16px; font-weight: 800; color: #1a2f4e; margin: 16px 0 6px; }
-  .card-body h2 { font-size: 15px; font-weight: 700; color: #1a2f4e; margin: 14px 0 5px; }
-  .card-body h3 { font-size: 14px; font-weight: 700; color: #2a5298; margin: 12px 0 4px; }
+  .card-body h1 { font-size: 17px; font-weight: 800; color: #1a2f4e; margin: 16px 0 6px; }
+  .card-body h2 { font-size: 16px; font-weight: 700; color: #1a2f4e; margin: 14px 0 5px; }
+  .card-body h3 { font-size: 15px; font-weight: 700; color: #2a5298; margin: 12px 0 4px; }
   .card-body strong { font-weight: 700; }
   .card-body em { font-style: italic; color: #555; }
   .card-body hr { border: none; border-top: 1px solid #eee; margin: 12px 0; }
@@ -75,22 +89,34 @@
   }
   .card-body code {
     background: #f0f0f0; padding: 1px 5px; border-radius: 4px;
-    font-family: monospace; font-size: 12px;
+    font-family: monospace; font-size: 13px;
   }
-  .empty {
-    text-align: center; padding: 40px 20px; color: #bbb;
+  .card-body table {
+    border-collapse: collapse; width: 100%; margin: 8px 0; font-size: 13px;
   }
+  .card-body th {
+    background: #1a2f4e; color: white; padding: 6px 8px; text-align: left;
+  }
+  .card-body td { padding: 5px 8px; border-bottom: 1px solid #eee; }
+  .card-body tr:nth-child(even) td { background: #f9f9f9; }
+  .empty { text-align: center; padding: 40px 20px; color: #bbb; }
   .empty .ico { font-size: 40px; margin-bottom: 10px; }
-  .empty p { font-size: 13px; }
+  .empty p { font-size: 14px; }
+  .loading { text-align: center; padding: 40px; color: #888; font-size: 14px; }
   .status { font-size: 11px; color: #bbb; text-align: center; padding: 10px; }
 </style>
 </head>
 <body>
 
 <div class="header">
-  <div class="header-left">
+  <div class="header-top">
     <h1>🗓️ Daily Dashboard</h1>
-    <div class="date" id="hdate"></div>
+    <button id="today-btn" onclick="goToday()">오늘</button>
+  </div>
+  <div class="date-nav">
+    <button id="btn-prev" onclick="movDate(-1)">‹</button>
+    <div id="date-label">로딩 중...</div>
+    <button id="btn-next" onclick="movDate(1)">›</button>
   </div>
 </div>
 
@@ -101,61 +127,153 @@
 <div class="status" id="status"></div>
 
 <script>
-const TASKS = [{"key": "portfolio", "emoji": "📈", "label": "포트폴리오"}, {"key": "stock", "emoji": "📰", "label": "주식뉴스"}, {"key": "fortune", "emoji": "🔮", "label": "운세"}, {"key": "history", "emoji": "📜", "label": "역사"}, {"key": "goodtext", "emoji": "✨", "label": "글귀"}, {"key": "thai", "emoji": "🇹🇭", "label": "태국어"}, {"key": "story", "emoji": "📚", "label": "단편소설"}];
-const DATA = {"portfolio": {"updated_at": "06/26 06:23", "content": "# 📊 포트폴리오 일일 브리핑\n**2026년 6월 26일 (금)** | 기준: 직전 거래일(6/25) 종가 — WebSearch 폴백 수집\n\n> ⚠️ **데이터 신뢰도 안내:** Chrome/Google Finance 연결 불가로 WebSearch 폴백 수집. 직전 거래일(6/25) 종가로 통일, 출처 불명확 값은 `미확인` 표기. 매매 판단 전 증권사 앱 재확인 권장.\n\n## 🔑 오늘의 핵심 한 줄\n> **마이크론 '역대 최대' 실적(매출 +346% YoY)이 메모리 슈퍼사이클을 재점화하며 6/25 코스피가 +5.42% 급등, SK하이닉스(+13.06%)·삼성전자(+5.29%)가 포트폴리오를 견인했습니다.**\n\n## 💹 국내 주식\n| 종목 | 현재가 | 전일 대비 |\n|---|---:|---:|\n| SK하이닉스 (000660) | 미확인 | ▲ 13.06% |\n| 삼성전자 (005930) | 358,500원 | ▲ 5.29% |\n| KODEX 200 (069500) | 미확인 | ▲ 약 5%대 |\n| 현대차 (005380) | 503,000원 | ▼ 1.18% |\n| 레인보우로보틱스 (277810) | 미확인 | — |\n| 한미반도체 (042700) | 미확인 | — |\n| 한화오션 (042660) | 111,200원 | 미확인 |\n| 현대로템 (064350) | 미확인 | — |\n| GST (083450) | 미확인 | — |\n| 리노공업 (058470) | 85,200원 | 미확인 |\n| 한화에어로스페이스 (012450) | 1,110,000원 | ▼ 1.33% |\n| 한화시스템 (272210) | 미확인 | — |\n\n## 🌏 해외 주식 / ETF\n| 종목 | 현재가 | 전일 대비 |\n|---|---:|---:|\n| 플래닛 랩스 (PL) | $26.09 | ▼ 0.80% |\n| 반에크 반도체 ETF (SMH) | $647.00 | 미확인 |\n| 레드와이어 (RDW) | $10.95 | ▼ 5.76% |\n| 엔비디아 (NVDA) | 약 $202 | ▲ 약 1% |\n| 인베스코 나스닥100 ETF (QQQM) | $298.38 | ▲ 1.97% |\n| 알트리아 (MO) | $72.87 | 미확인 |\n| ARK 게노믹 ETF (ARKG) | $38.59 | 미확인 |\n| 코카콜라 (KO) | $80.29 | 미확인 |\n| SPDR S&P500 ETF (SPYM) | $86.12 | 미확인 |\n| 글로벌X 우라늄 ETF (URA) | $44.13 | ▼ 1.32% |\n| 앰플리파이 CWP ETF (QDVO) | 약 $30.70 | 미확인 |\n| JP모건 나스닥 프리미엄인컴 ETF (JEPQ) | 약 $60.15 | ▲ 약 0.5% |\n| 리얼티인컴 (O) | $61.53 | 미확인 |\n| 슈왑 미국배당 ETF (SCHD) | $32.01 | ▲ 0.91% |\n| 나이키 (NKE) | $41.82 | 미확인 |\n| 메인스트리트 캐피탈 (MAIN) | 약 $51.29 | 미확인 |\n| 뉴스케일파워 (SMR) | $10.39 | ▼ 4.37% |\n| BTQ테크놀로지스 (BTQ) | 약 $5.87 | 미확인 |\n| 얼라이트 (ALIT) | 약 $0.55 | 미확인 |\n\n## 🎯 오늘의 액션\n| 우선순위 | 종목 | 액션 | 근거 |\n|:---:|---|---|---|\n| 🔴 | SK하이닉스·삼성전자 | 비중·평단 점검 | 단기 급등, 추격매수보다 리밸런싱 |\n| 🔴 | 한미반도체 | 종가 재확인 | HBM4 전환기 변동성 큼 |\n| 🟡 | 레드와이어 (RDW) | 모니터링 | 제프리스 하향 + 차익실현 압력 |\n| 🟡 | 반에크 반도체 ETF (SMH) | 흐름 확인 | 메모리 훈풍 동반 강세 |\n| 🟢 | 얼라이트 (ALIT) | 정보 확인 | 6/30 액면병합 보도 사실 여부 확인 |"}, "stock": {"updated_at": "06/26 06:23", "content": "## 📈 주식 참고 뉴스 — 2026-06-26 (금요일)\n\n### 1. 마이크론(MU) Q3 FY2026 역대 최대 실적 — 매출 $41.46B, 주가 +15%\n마이크론이 사상 최대 실적을 발표했다. 매출 $41.46B(전년 동기 $9.30B 대비 +346%)·GAAP 순이익 $28.24B·매출 총이익률 84.9%를 기록했다. AI 추론·학습용 HBM4 수요 폭발이 주요 동인으로, 장 마감 후 주가가 15% 급등했다. 메모리 업황 슈퍼사이클의 실체적 증거로 SK하이닉스·삼성전자 투자 심리에도 긍정적 영향이 예상된다.\n\n### 2. OpenAI·Broadcom, AI 추론 전용 칩 '할라페뇨(Jalapeño)' 공개\nOpenAI와 Broadcom이 LLM 추론 특화 ASIC '할라페뇨'를 공개했다. 9개월 만에 설계부터 테이프아웃까지 완료했으며 삼성·SK하이닉스 메모리를 탑재한다. 올해 말 데이터센터 배치 시작 예정. 엔비디아 의존도를 낮추려는 빅테크의 인하우스 칩 전략이 본격화됐다.\n\n### 3. SpaceX(SPCX) 나스닥 상장 첫날 +19% — 사상 최대 IPO $75B\n6월 12일 SpaceX가 주당 $135(공모가)에 $75B를 조달, 역대 최대 IPO를 기록했다. 상장 첫날 $160까지 올라 +19%로 마감했으며, 기업가치는 약 $1.77T로 평가됐다.\n\n### 4. 연준(Fed), 금리 동결·연내 인상 시사 — 9월 인상 확률 49%\n6월 17일 FOMC에서 기준금리를 3.5~3.75%로 동결했지만, 점도표에서 올해 최소 1회 인상 가능성이 반영됐다. BofA는 연내 복수 인상을 전망하며 채권 금리 상승 압력 경고.\n\n### 5. SK하이닉스, 나스닥 ADR 7월 상장 추진 — 최대 약 46조원 규모\nSK하이닉스가 나스닥에 최대 1,779만 신주(발행 주식의 2.5%)를 ADR로 발행하고 7월 중 상장을 목표로 한다. 삼성증권은 글로벌 리레이팅 효과로 목표주가를 350만 원으로 상향했다.\n\n### 6. 애플(AAPL) 주가 -6.1% — 맥북·아이패드 최대 $200 가격 인상\n6월 25일 애플이 메모리 공급 부족을 이유로 MacBook·iMac·iPad 가격을 최대 $200 인상 발표. 주가는 당일 6.1% 급락했다.\n\n### 7. 나스닥 4거래일 연속 하락 — 코스피 8,470선 반등\n6월 25일 미국 증시는 나스닥 -0.46%, S&P 500 -0.01%로 마감. 애플 약세가 마이크론 호실적을 상쇄. 국내 코스피는 8,470선에서 반등, 달러/원 1,542원대.\n\n### 8. 중국, 미국 기업 56곳 제재 — 락히드마틴 등 방산·희토류 타격\n6월 22일 중국이 미 국방부의 블랙리스트 확대에 대응해 미국 기업 56곳을 제재. 락히드마틴 등 46곳은 중국 정부 조달 시장에서 퇴출됐다.\n\n### 9. HBM4 공급 부족 2027년까지 지속 — SK하이닉스 점유율 50~55%\n골드만삭스는 2026년 DRAM 공급 부족률을 4.9%로 추정, 15년래 최대라고 평가. HBM4 단가는 $500/스택 수준이며 SK하이닉스가 선두를 유지한다.\n\n### 10. 미·이란 MOU — 호르무즈 해협 재개방, 유가 $70~73 안정\n미국과 이란이 분쟁 종식 MOU를 체결하고 6월 18일 미 해군이 해상 봉쇄를 해제. 원유 선물(WTI)은 $70~73 범위에서 거래 중이다.\n\n### 11. 반도체 장비 투자 2026년 50% 이상 급증 — AI 수요 주도\nAI 수요 폭발로 글로벌 반도체 제조 장비 투자가 2026년 50% 이상 증가. TSMC·인텔 등의 파운드리 투자 확대도 맞물려 장비 업체들에게 우호적 환경.\n\n### 12. OpenAI·Stargate — 삼성·SK하이닉스와 월 90만 장 웨이퍼 공급 계약\nOpenAI Stargate 프로젝트를 위해 삼성전자와 SK하이닉스가 월 최대 90만 장의 DRAM 웨이퍼 공급 LOI를 체결. 글로벌 DRAM 생산의 최대 40%에 해당하는 규모다.\n\n### 13. 미·중 관세 협상 교착 — 트럼프 \"완료\" vs. 중국 \"첫 회담\"\n5월 미·중이 90일간 관세를 미국 30%, 중국 10%로 잠정 인하했지만 불협화음이 계속되고 있다. 반도체·AI 기술 수출통제와 희토류 보복이 이어지는 중.\n\n### 14. 한화에어로·한화오션, 사우디 WDS 2026 방산 전시회 참가\n한화에어로스페이스·한화오션·한화시스템이 사우디아라비아 방산 전시회에 참가해 중동 방산 시장 공략에 나섰다.\n\n### 15. SK하이닉스, 삼성전자 추월 26년 만에 시가총액 1위 — DDR5 수익성 집중 전략\nSK하이닉스가 26년 만에 삼성전자를 제치고 국내 반도체 시총 1위에 올랐다. HBM4 공격적 증산보다 DDR5 수익성 확보 전략을 택하면서 마진이 높아진 결과다."}, "fortune": {"updated_at": "06/26 06:23", "content": "## 🔮 오늘의 일진\n\n> # **병오년(丙午) 갑오월(甲午) 신미일(辛未)일** — 2026-06-26 (금)\n\n오늘은 천간에 **신금(辛金)**, 지지에 **미토(未土)**가 들어오는 신미일입니다. 을목(乙木) 일간에게 신금은 **편관(偏官·칠살)** — 나를 단단히 누르는 규율과 책임의 기운입니다. 지지의 미토는 **편재(偏財)** — 활동을 통해 들어오는 재물·실리의 기운입니다. 오늘은 *책임을 다하는 만큼 실속이 따라오는* 구조이니, 압박을 적으로 보지 말고 나를 다잡는 장치로 쓰면 좋은 날입니다.\n\n## 🌟 총운 ★★★☆☆\n\n오늘 미토는 내 사주의 **일지 축(丑)과 충(丑未沖)**을 일으킵니다. 충은 흔들림·정리·변동의 신호라, 익숙하던 자리에서 작은 마찰이나 마음의 동요가 생길 수 있어요. 다만 같은 미토가 **시지 오(午)와는 오미합(午未合)**으로 부드럽게 묶이니, 충의 날카로움을 합이 어느 정도 눅여 줍니다. 충돌의 날이라기보다 \"정리하고 다시 매무새를 다듬는\" 날로 보세요.\n\n## 💰 재물운\n미토 편재가 들어와 활동·관계 속에서 실리가 보이는 흐름입니다. 다만 편관과 함께 와서 \"쓸 일·나갈 일\"도 같이 늘어나기 쉬우니, 큰 지출이나 즉흥적 결정은 하루 미뤄 두는 편이 안전합니다.\n\n## 💼 일·직장운\n편관이 강한 날은 책임·평가·마감이 또렷하게 다가옵니다. 정면으로 맞붙기보다 우선순위를 정해 하나씩 매듭짓는 방식이 잘 맞아요. 진행하던 일의 방향이 한 번 흔들리거나 재조정될 수 있는데, 이를 \"점검 기회\"로 받아들이면 오히려 완성도가 올라갑니다.\n\n## ❤️ 관계운\n오미합 덕분에 따뜻하게 다가가면 관계가 부드럽게 풀립니다. 다만 충의 기운이 있어 사소한 말 한마디가 평소보다 크게 들릴 수 있으니, 단정적인 어조보다 한 박자 쉬고 말하는 여유를 두세요.\n\n## 🏃 건강운\n을목은 본디 간·신경·근육 계통이 예민한 체질입니다. 편관이 누르는 날은 긴장과 스트레스가 어깨·목·소화기로 몰리기 쉬우니, 의식적으로 호흡을 고르고 가벼운 스트레칭으로 긴장을 풀어 주세요.\n\n## 🍀 오늘의 한 마디\n\n> **\"누르는 힘에 맞서지 말고, 그 힘으로 나를 정돈하세요.\"**\n> 행운 시간대: 오시(11~13시) | 행운 색: 초록·청색 | 방향: 동쪽"}, "history": {"updated_at": "06/26 06:23", "content": "## 📜 오늘의 역사 한 조각 — 2026-06-26 (금)\n\n> # **아르키타스의 증기 비둘기 — 인류 최초의 자율 비행 기계** (기원전 약 350년)\n\n## 무슨 일이 있었나\n기원전 400~350년경, 고대 그리스 철학자이자 수학자인 아르키타스(Archytas of Tarentum)는 나무로 만든 비둘기 모형을 공기 압력(蒸氣)으로 날리는 데 성공했습니다. 밀폐된 보일러에서 생성된 증기가 충분히 쌓이면 기계적 저항을 극복하고 비둘기를 앞으로 추진시켰고, 회전축에 매달린 상태로 약 200m를 비행했다고 전해집니다. 오늘날 이 장치는 인류 역사상 최초로 기록된 자력 추진 비행체이자 '로봇의 원형'으로 불립니다.\n\n## 배경과 맥락\n아르키타스는 단순한 발명가가 아니라 수학, 음악 이론, 역학을 통합한 당대 최고의 지성이었습니다. 그의 비둘기는 오락용 장치를 넘어서 새의 비행 원리를 최초로 과학적으로 탐구한 시도였습니다. 당시 그리스 세계는 기계 장치에 대한 철학적 관심이 높았고, 아르키타스는 이를 실제 공학으로 구현한 선구자였습니다.\n\n## 오늘의 우리에게\n인공지능과 드론이 일상이 된 지금, 그 출발점은 2,400년 전 나무와 증기로 만든 작은 비둘기였습니다. 새로운 기술이 낯설게 느껴질 때, 그 호기심의 뿌리가 얼마나 깊은지 떠올려 볼 만합니다.\n\n---\n\n## 💡 나를 발전시키는 지식 한 조각 — 2026-06-26 (금)\n\n> # **튤립 파동(Tulip Mania) — 인류 최초의 투기 버블**\n\n**카테고리:** 경제 · 경제사/사건\n\n## 핵심 개념\n1636~1637년 네덜란드에서 튤립 구근 가격이 폭등하다 하루아침에 폭락한 사건입니다. 희귀 품종 튤립 구근 하나가 숙련 장인의 연봉 10배에 달하는 가격에 거래되었고, 선물 계약까지 등장했습니다. 1637년 2월 3일 경매에서 갑자기 구매자가 사라지자 시장은 순식간에 붕괴했습니다. 역사상 최초로 기록된 자산 버블입니다.\n\n## 조금 더 깊이\n흥미롭게도 후대에 과장된 면이 있습니다. 역사학자들의 재연구에 따르면 튤립 파동이 네덜란드 경제 전체를 붕괴시켰다는 것은 과장이며, 실제로는 소수의 투기꾼 집단에 국한된 사건이었습니다. 그럼에도 인간의 투기 심리, 군중 심리, 그리고 '희소성'이 만들어내는 가치 거품의 메커니즘을 처음으로 뚜렷하게 보여주었다는 점에서 경제사의 교과서적 사례로 남아 있습니다.\n\n## 이렇게 써먹자\n어떤 자산의 가격이 \"다들 오른다고 하니까\" 오르는 상황이라면 튤립 파동을 떠올리세요. 내재 가치(intrinsic value)가 아니라 '다음 사람에게 더 비싸게 팔 수 있다'는 기대만으로 움직이는 시장은 언제나 어느 순간 구매자가 사라집니다."}, "goodtext": {"updated_at": "06/26 06:23", "content": "## 🌅 오늘의 글귀 — 용기\n\n> # **\"제가 죽임을 당한다면, 저는 엘살바도르 민중 안에서 다시 살아날 것입니다.\"**\n\n## ✍️ 누가 한 말?\n\n**오스카 로메로** (Óscar Arnulfo Romero, 1917–1980)\n\n엘살바도르의 가톨릭 대주교로, 군사정권의 폭력과 가난한 이들의 고통 앞에서 침묵하지 않고 매주 강론을 통해 인권 탄압을 고발한 인물입니다. 거듭된 살해 위협 속에서도 약자의 편에 서기를 멈추지 않았고, 1980년 3월 미사를 집전하던 중 제단 앞에서 암살당했습니다.\n\n## 🌐 원문\n\n> *\"Si me matan, resucitaré en el pueblo salvadoreño.\"*\n> \"If they kill me, I shall rise again in the Salvadoran people.\"\n\n## 💭 오늘에 적용하면\n\n로메로의 용기는 두려움이 없어서가 아니라, 두려움보다 더 소중한 무언가를 위해 자리를 지킨 데서 나왔습니다. 오늘 당신에게도 외면하고 싶은 불편한 진실이나, 말하기 두려운 옳은 한마디가 있을지 모릅니다. 거창한 희생이 아니어도 좋습니다. 작은 자리에서 정직하게 한 걸음 내딛는 것, 약한 편에 조용히 서 주는 것—그 작은 용기들이 모여 세상을 바꿉니다. 오늘 하루, 두려움이 아니라 당신이 지키고 싶은 가치를 기준으로 한 가지를 선택해 보세요."}, "thai": {"updated_at": "06/26 06:23", "content": "# 🗣️ 태국어 한 문장 — 2026-06-26\n\n## 🟢 초급\n\n> # **ขอน้ำหน่อยครับ**\n\n**🔊 발음:** 커 남 너이 크랍 (khǒo náam nòi khráp)\n**🇰🇷 해석:** 물 좀 주세요.\n**📝 설명:** `ขอ...หน่อย`는 무언가를 정중하게 요청할 때 쓰는 가장 기본 패턴입니다. 식당·카페에서 매일 쓰는 표현입니다.\n\n| 태국어 | 발음 | 뜻 |\n|---|---|---|\n| ขอ | 커 (khǒo) | ~을 주세요/요청하다 |\n| น้ำ | 남 (náam) | 물 |\n| หน่อย | 너이 (nòi) | 조금, 좀 |\n| ครับ | 크랍 (khráp) | (남성) 정중 종결어미 |\n\n---\n\n## 🟡 중급\n\n> # **พรุ่งนี้ผมไปทำงานสายเพราะรถติด**\n\n**🔊 발음:** 프룽니 폼 빠이 탐응안 사이 프러 롯띳\n**🇰🇷 해석:** 내일 저는 차가 막혀서 회사에 늦게 가요.\n**📝 설명:** `เพราะ`(왜냐하면)로 이유를 연결하는 복문입니다. `รถติด`은 \"차가 막히다\"로 태국 일상에서 매우 자주 쓰입니다.\n\n| 태국어 | 발음 | 뜻 |\n|---|---|---|\n| พรุ่งนี้ | 프룽니 | 내일 |\n| ทำงาน | 탐응안 | 일하다, 출근하다 |\n| สาย | 사이 | (시간) 늦은 |\n| เพราะ | 프러 | 왜냐하면 |\n| รถติด | 롯띳 | 차가 막히다 |\n\n---\n\n## 🔴 고급\n\n> # **ถ้าไม่เป็นการรบกวนเกินไป ช่วยส่งเอกสารให้ผมภายในวันนี้ได้ไหมครับ**\n\n**🔊 발음:** 타 마이 뺀 깐 롭꾸언 끄언 빠이, 추어이 송 엑까산 하이 폼 파이나이 완니 다이 마이 크랍\n**🇰🇷 해석:** 너무 폐가 되지 않는다면, 오늘 안으로 서류를 보내 주실 수 있을까요?\n**📝 설명:** `ถ้าไม่เป็นการรบกวนเกินไป`(폐가 되지 않는다면)는 부탁 전에 붙이는 정중한 완곡 표현으로, 직장·격식 상황에서 매우 자연스럽습니다.\n\n| 태국어 | 발음 | 뜻 |\n|---|---|---|\n| รบกวน | 롭꾸언 | 폐를 끼치다 |\n| เกินไป | 끄언 빠이 | 너무, 지나치게 |\n| ส่ง | 송 | 보내다 |\n| เอกสาร | 엑까산 | 서류, 문서 |\n| ภายใน | 파이나이 | ~이내에 |\n\n💡 **오늘의 팁:** 부탁의 강도를 단계별로 익혀 보세요. 초급 `ขอ...หน่อย`(가벼운 요청) → 중급 `เพราะ`로 이유 덧붙이기 → 고급 완곡 부탁 패턴."}, "story": {"updated_at": "06/26 06:23", "content": "## 📖 오늘의 단편소설 — 2026-06-26 (금요일)\n\n> # **「무진기행(霧津紀行)」** — 김승옥 (1964)\n\n**권역/분류:** 한국 · 현대(1950~2000) · 환상/기괴(몽환적)\n\n> ※ 아래 줄거리에는 **결말(스포일러)**이 포함되어 있습니다.\n\n---\n\n## ✍️ 작가와 작품\n\n김승옥(金承鈺, 1941~ )은 일본 오사카에서 태어나 광복 후 귀국하여 전라남도 순천에서 성장했다. 서울대학교 불문학과 재학 중이던 1962년 단편 「생명연습」으로 한국일보 신춘문예에 당선되며 등단했다. 흔히 '60년대의 작가'로 불리며, 한글 세대 최초의 감각적 문체 혁명가로 평가받는다. 「무진기행」은 1964년 그의 나이 스물셋에 발표된 작품으로, 안개로 뒤덮인 가상의 항구도시 '무진'을 배경으로 지식인의 자아 분열과 허무를 몽환적으로 그려낸다.\n\n---\n\n## 📜 줄거리 (결말 포함)\n\n윤희중(尹希中)은 서울의 제약회사 간부다. 서른세 살인 그는 장인이 경영하는 제약회사의 전무 자리에 오르기로 예정되어 있었고, 그 승진 발표를 앞두고 아내의 권유로 고향인 무진으로 짧은 여행을 떠난다. 무진은 조그마한 항구 도시다. 그곳이 유명한 까닭은 단 하나, 안개다. 아침마다 바다에서 피어오른 안개가 도시 전체를 낮게 덮어 모든 경계를 지운다. 윤희중은 버스 창밖으로 서서히 가까워지는 무진의 안개를 바라보며, 서울에서는 잊고 살았던 묘한 감정이 내장 깊은 곳에서 올라오는 것을 느낀다.\n\n무진에 도착한 윤희중은 이모 집에 짐을 풀고, 오래된 골목들을 걸으며 청년 시절을 떠올린다. 그러던 어느 날 저녁, 그는 동창인 세무서장 조, 후배 박 선생, 그리고 음악을 가르치는 교사 하인숙을 만나 술자리를 갖는다. 세무서장 조는 하인숙에게 유행가 「목포의 눈물」을 청한다. 하인숙은 음악대학을 졸업했음에도 격식 없는 유행가를 청중 앞에서 불러야 하는 처지였다. 윤희중은 그 모습에서 이유를 알 수 없는 연민을 느낀다. 유행가를 부르는 하인숙의 목소리는 서럽고 이상하게 아름다웠다.\n\n술자리가 끝나고 밤길을 걷게 된 윤희중은 하인숙으로부터 서울을 그리워한다는 사실을 알게 된다. 음악대학까지 졸업하고 꿈을 품었던 그녀가 왜 이 안개 낀 항구도시에서 중학교 음악 선생으로 생의 시간을 보내고 있는지, 그것은 그녀 자신도 명확히 설명할 수 없는 무기력의 결과였다. 하인숙은 윤희중에게 간청했다. \"서울로 데려가 주실 수 있어요?\" 윤희중은 다음날 바닷가 방죽에서 다시 만나기로 약속했다.\n\n이튿날 이른 아침, 윤희중은 어머니의 묘를 찾아 성묘를 마쳤다. 이모집으로 돌아오는 길에 그는 바닷가 모래 위에 누운 여자의 시체를 발견했다. 술집 여자였다고 했다. 술과 수면제를 먹고 스스로 목숨을 끊은 것이었다. 시체 곁에는 아무도 없었다. 안개가 여전히 낮게 깔려 있었다. 무진이라는 공간에서는 이런 죽음도 자연스럽게 일어나는 것처럼 느껴졌다.\n\n오후에 그는 세무서로 조를 찾아갔다. 조는 하인숙과의 결혼 의사가 없다고 했고, 하인숙이 박 선생에게 받은 연애편지를 자신에게 보여준다고도 했다. 윤희중은 그 말에 가슴이 서늘해졌다. 자신이 무진에서 만난 가장 순수한 인물인 박 선생이, 자신의 연심이 하인숙에 의해 조에게 넘어가고 있다는 사실을 까맣게 모르고 있었기 때문이다.\n\n그날 저녁, 윤희중은 약속대로 바닷가 방죽으로 나갔다. 하인숙이 기다리고 있었다. 두 사람은 함께 방죽을 걸었고, 윤희중이 어릴 적 살았던 낡은 집을 찾아가 그 안에서 함께 머물렀다. 하인숙은 다시 애원했다. 서울로 데려가 달라고, 이 안개 속에서 이대로 묻혀버리고 싶지 않다고 했다. 윤희중은 반드시 서울로 데려가겠다고 약속했다.\n\n그러나 이튿날 아침, 아내가 보낸 전보가 도착했다. 빨리 서울로 올라오라는 내용이었다. 승진 발표가 임박했고, 현실은 그를 기다리고 있었다. 윤희중은 하인숙에게 전하려던 편지를 썼다. 그러나 그는 그 편지를 봉투에 넣지 않았다. 잠시 들여다보다가, 천천히 찢어버렸다. 무진을 빠져나가는 버스 안에서 그는 창밖을 바라보았다. 안개는 여전히 낮게 깔려 있었다. 하인숙에 대한 약속도, 박 선생의 순수함도, 무진에서 잠시 다시 만났던 자신의 젊은 날도, 그는 그것들 모두를 찢어버린 편지와 함께 남겨두고 서울로 돌아갔다.\n\n---\n\n## 💡 감상 포인트\n\n「무진기행」에서 안개는 단순한 배경이 아니라 작품 전체를 지배하는 환상적 장치다. 현실과 꿈, 진실과 거짓, 이상과 타락의 경계를 안개가 지워버림으로써, 무진이라는 공간 자체가 하나의 거대한 몽환(夢幻)으로 기능한다. 하인숙은 윤희중 자신의 분신이자, 그가 서울에서 잃어버린 순수의 화신이다. 결말에서 편지를 찢는 행위는 단순한 변심이 아니라, 현대인이 자신의 이상을 스스로 폐기하는 순간을 의례적으로 보여주는 장면으로 읽힌다."}};
+const TASKS = [
+  {key:"portfolio", emoji:"📈", label:"포트폴리오"},
+  {key:"stock",     emoji:"📰", label:"주식뉴스"},
+  {key:"fortune",   emoji:"🔮", label:"운세"},
+  {key:"history",   emoji:"📜", label:"역사"},
+  {key:"goodtext",  emoji:"✨", label:"글귀"},
+  {key:"thai",      emoji:"🇹🇭", label:"태국어"},
+  {key:"story",     emoji:"📚", label:"단편소설"},
+];
 
-let active = TASKS[0].key;
+let dates = [];
+let currentIdx = 0;
+let activeTab = TASKS[0].key;
+let cache = {};
 
-function today() {
-  const d = new Date();
+const BASE = location.href.replace(/\/[^\/]*$/, '');
+
+function fmtDate(str) {
+  const d = new Date(str + 'T00:00:00');
   const days = ['일','월','화','수','목','금','토'];
-  return d.getFullYear()+'년 '+(d.getMonth()+1)+'월 '+d.getDate()+'일 ('+days[d.getDay()]+')';
+  return d.getFullYear() + '년 ' + (d.getMonth()+1) + '월 ' + d.getDate() + '일 (' + days[d.getDay()] + ')';
+}
+
+async function init() {
+  try {
+    const r = await fetch(BASE + '/data/index.json?v=' + Date.now());
+    dates = await r.json();
+    currentIdx = 0;
+    await loadDate(currentIdx);
+  } catch(e) {
+    document.getElementById('panels').innerHTML = '<div class="loading">데이터를 불러오지 못했어요 😢<br><small>'+e.message+'</small></div>';
+  }
+}
+
+async function loadDate(idx) {
+  const dateStr = dates[idx];
+  document.getElementById('date-label').textContent = fmtDate(dateStr);
+  document.getElementById('btn-prev').disabled = (idx >= dates.length - 1);
+  document.getElementById('btn-next').disabled = (idx <= 0);
+  document.getElementById('today-btn').style.display = idx === 0 ? 'none' : '';
+
+  if (!cache[dateStr]) {
+    document.getElementById('panels').innerHTML = '<div class="loading">⏳ 불러오는 중...</div>';
+    try {
+      const r = await fetch(BASE + '/data/' + dateStr + '.json?v=' + Date.now());
+      cache[dateStr] = await r.json();
+    } catch(e) {
+      document.getElementById('panels').innerHTML = '<div class="loading">데이터 없음 😢</div>';
+      return;
+    }
+  }
+  render(cache[dateStr]);
+}
+
+function movDate(dir) {
+  const next = currentIdx + dir;
+  if (next < 0 || next >= dates.length) return;
+  currentIdx = next;
+  loadDate(currentIdx);
+}
+
+function goToday() {
+  currentIdx = 0;
+  loadDate(0);
 }
 
 function mdToHtml(text) {
-  return text
+  if (!text) return '';
+  // tables
+  const lines = text.split('\n');
+  let out = [], inTable = false, tableRows = [];
+
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i];
+    if (line.match(/^\|.+\|/)) {
+      if (!inTable) { inTable = true; tableRows = []; }
+      tableRows.push(line);
+    } else {
+      if (inTable) {
+        out.push(renderTable(tableRows));
+        tableRows = []; inTable = false;
+      }
+      out.push(line);
+    }
+  }
+  if (inTable) out.push(renderTable(tableRows));
+
+  return out.join('\n')
     .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
     .replace(/^---+$/gm,'<hr>')
-    .replace(/^###\s+(.+)$/gm,'<h3>$1</h3>')
-    .replace(/^##\s+(.+)$/gm,'<h2>$1</h2>')
-    .replace(/^#\s+(.+)$/gm,'<h1>$1</h1>')
-    .replace(/^>\s+(.+)$/gm,'<blockquote>$1</blockquote>')
+    .replace(/^### (.+)$/gm,'<h3>$1</h3>')
+    .replace(/^## (.+)$/gm,'<h2>$1</h2>')
+    .replace(/^# (.+)$/gm,'<h1>$1</h1>')
+    .replace(/^> (.+)$/gm,'<blockquote>$1</blockquote>')
     .replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>')
     .replace(/\*(.+?)\*/g,'<em>$1</em>')
-    .replace(/`(.+?)`/g,'<code>$1</code>');
+    .replace(/`(.+?)`/g,'<code>$1</code>')
+    .replace(/\n/g,'<br>');
 }
 
-function render() {
+function renderTable(rows) {
+  const cells = rows.map(r => r.split('|').slice(1,-1).map(c => c.trim()));
+  if (cells.length < 2) return rows.join('\n');
+  let html = '<table>';
+  cells[0].forEach(h => { html += '<th>' + h + '</th>'; });
+  for (let i = 2; i < cells.length; i++) {
+    html += '<tr>';
+    cells[i].forEach(c => { html += '<td>' + c + '</td>'; });
+    html += '</tr>';
+  }
+  html += '</table>';
+  return html;
+}
+
+function render(dayData) {
+  const data = dayData.tasks || {};
+
   document.getElementById('tabs').innerHTML = TASKS.map(t => {
-    const d = DATA[t.key];
-    return '<div class="tab '+(t.key===active?'active':'')+'" data-key="'+t.key+'">'
-      +'<span class="badge '+(d?'ok':'')+'" ></span>'+t.emoji+' '+t.label+'</div>';
+    const d = data[t.key];
+    return '<div class="tab ' + (t.key===activeTab?'active':'') + '" data-key="' + t.key + '">'
+      + '<span class="badge ' + (d?'ok':'') + '"></span>' + t.emoji + ' ' + t.label + '</div>';
   }).join('');
   document.querySelectorAll('.tab').forEach(el => {
     el.addEventListener('click', () => switchTab(el.dataset.key));
   });
 
   document.getElementById('panels').innerHTML = TASKS.map(t => {
-    const d = DATA[t.key];
+    const d = data[t.key];
     const inner = d
-      ? '<div class="card"><div class="card-head"><div class="card-emoji">'+t.emoji+'</div>'
-        +'<div><div class="card-title">'+t.label+'</div>'
-        +'<div class="card-time">업데이트: '+d.updated_at+'</div></div></div>'
-        +'<div class="card-body">'+mdToHtml(d.content)+'</div></div>'
-      : '<div class="empty"><div class="ico">⏳</div><p>오늘 아직 생성되지 않았어요</p></div>';
-    return '<div class="panel '+(t.key===active?'active':'')+'" id="panel-'+t.key+'">'+inner+'</div>';
+      ? '<div class="card"><div class="card-head"><div class="card-emoji">' + t.emoji + '</div>'
+        + '<div><div class="card-title">' + t.label + '</div>'
+        + '<div class="card-time">업데이트: ' + d.updated_at + '</div></div></div>'
+        + '<div class="card-body">' + mdToHtml(d.content) + '</div></div>'
+      : '<div class="empty"><div class="ico">⏳</div><p>해당 날짜에 데이터가 없어요</p></div>';
+    return '<div class="panel ' + (t.key===activeTab?'active':'') + '" id="panel-' + t.key + '">' + inner + '</div>';
   }).join('');
+
+  document.getElementById('status').textContent = '총 ' + dates.length + '일치 데이터 보관 중';
 }
 
 function switchTab(key) {
-  active = key;
+  activeTab = key;
   document.querySelectorAll('.tab').forEach(el => el.classList.toggle('active', el.dataset.key===key));
   document.querySelectorAll('.panel').forEach(el => el.classList.toggle('active', el.id==='panel-'+key));
 }
 
-document.getElementById('hdate').textContent = today();
-document.getElementById('status').textContent = '데이터 기준: 06/26 06:23 업데이트';
-render();
+init();
 </script>
 </body>
 </html>
