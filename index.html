@@ -46,6 +46,7 @@
   .card-body tr:nth-child(even) td { background: #f9f9f9; }
   .empty { text-align: center; padding: 40px 20px; color: #bbb; }
   .loading { text-align: center; padding: 40px; color: #888; font-size: 14px; }
+  .status { font-size: 11px; color: #bbb; text-align: center; padding: 10px; }
 </style>
 </head>
 <body>
@@ -62,6 +63,7 @@
 </div>
 <div class="tabs-wrap"><div class="tabs" id="tabs"></div></div>
 <div class="panels" id="panels"></div>
+<div class="status" id="status"></div>
 
 <script>
 const TASKS = [
@@ -76,78 +78,81 @@ const TASKS = [
 
 let dates = [], currentIdx = 0, activeTab = TASKS[0].key, cache = {};
 
-  const days = ['일','월','화','수','목','금','토'];
+const BASE = (function() {
+  var p = location.pathname;
+  return p.endsWith('/') ? p : p + '/';
+})();
+
+function fmtDate(str) {
+  var d = new Date(str + 'T00:00:00');
+  var days = ['일','월','화','수','목','금','토'];
   return d.getFullYear() + '년 ' + (d.getMonth()+1) + '월 ' + d.getDate() + '일 (' + days[d.getDay()] + ')';
 }
 
 async function init() {
   try {
-    const url = BASE + 'data/index.json?v=' + Date.now();
-    const r = await fetch(url);
+    var r = await fetch(BASE + 'data/index.json?v=' + Date.now());
     if (!r.ok) throw new Error('HTTP ' + r.status);
     dates = await r.json();
     currentIdx = 0;
-    await loadDate(currentIdx);
+    await loadDate(0);
   } catch(e) {
     document.getElementById('panels').innerHTML = '<div class="loading">❌ ' + e.message + '</div>';
   }
 }
 
 async function loadDate(idx) {
-  const dateStr = dates[idx];
+  var dateStr = dates[idx];
   document.getElementById('date-label').textContent = fmtDate(dateStr);
   document.getElementById('btn-prev').disabled = (idx >= dates.length - 1);
   document.getElementById('btn-next').disabled = (idx <= 0);
   document.getElementById('today-btn').style.display = idx === 0 ? 'none' : '';
   if (!cache[dateStr]) {
     document.getElementById('panels').innerHTML = '<div class="loading">⏳ 불러오는 중...</div>';
-    const url2 = BASE + 'data/' + dateStr + '.json?v=' + Date.now();
-    const r = await fetch(url2);
-    if (!r.ok) throw new Error('HTTP ' + r.status + ' for ' + dateStr);
-    cache[dateStr] = await r.json();
+    var r2 = await fetch(BASE + 'data/' + dateStr + '.json?v=' + Date.now());
+    if (!r2.ok) throw new Error('HTTP ' + r2.status);
+    cache[dateStr] = await r2.json();
   }
   render(cache[dateStr]);
+  document.getElementById('status').textContent = '총 ' + dates.length + '일치 데이터';
 }
 
 function movDate(dir) {
-  const next = currentIdx + dir;
+  var next = currentIdx + dir;
   if (next < 0 || next >= dates.length) return;
   currentIdx = next;
   loadDate(currentIdx);
 }
-
 function goToday() { currentIdx = 0; loadDate(0); }
 
 function esc(s) {
   return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 }
-
-function mdLine(s) {
-  if (/^> (.+)$/.test(s)) return '<blockquote>' + inlineHtml(esc(s.replace(/^> /, ''))) + '</blockquote>';
-  const e = esc(s);
-  if (/^---+$/.test(e)) return '<hr>';
-  if (/^### (.+)$/.test(e)) return '<h3>' + inlineHtml(e.slice(4)) + '</h3>';
-  if (/^## (.+)$/.test(e)) return '<h2>' + inlineHtml(e.slice(3)) + '</h2>';
-  if (/^# (.+)$/.test(e)) return '<h1>' + inlineHtml(e.slice(2)) + '</h1>';
-  return inlineHtml(e);
-}
 function inlineHtml(e) {
   return e.replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>').replace(/\*(.+?)\*/g,'<em>$1</em>').replace(/`(.+?)`/g,'<code>$1</code>');
 }
+function mdLine(s) {
+  if (/^> (.+)$/.test(s)) return '<blockquote>' + inlineHtml(esc(s.replace(/^> /,''))) + '</blockquote>';
+  var e = esc(s);
+  if (/^---+$/.test(e)) return '<hr>';
+  if (/^### (.+)$/.test(e)) return '<h3>' + inlineHtml(e.slice(4)) + '</h3>';
+  if (/^## (.+)$/.test(e))  return '<h2>' + inlineHtml(e.slice(3)) + '</h2>';
+  if (/^# (.+)$/.test(e))   return '<h1>' + inlineHtml(e.slice(2)) + '</h1>';
+  return inlineHtml(e);
+}
 function renderTable(rows) {
-  const cells = rows.map(r => r.split('|').slice(1,-1).map(c => c.trim()));
-  if (cells.length < 2) return rows.map(r => esc(r)).join('<br>');
-  let html = '<table><tr>';
-  cells[0].forEach(h => { html += '<th>' + esc(h) + '</th>'; });
+  var cells = rows.map(function(r){ return r.split('|').slice(1,-1).map(function(c){ return c.trim(); }); });
+  if (cells.length < 2) return rows.map(esc).join('<br>');
+  var html = '<table><tr>';
+  cells[0].forEach(function(h){ html += '<th>' + esc(h) + '</th>'; });
   html += '</tr>';
-  for (let i = 2; i < cells.length; i++) {
+  for (var i = 2; i < cells.length; i++) {
     html += '<tr>';
-    cells[i].forEach(c => {
-      const ec = esc(c);
-      let style = '';
-      if (ec.includes('▲')) style = 'color:#d0021b;font-weight:600';
-      else if (ec.includes('▼')) style = 'color:#0050b3;font-weight:600';
-      html += '<td' + (style?' style="'+style+'"':'') + '>' + ec + '</td>';
+    cells[i].forEach(function(c){
+      var ec = esc(c), style = '';
+      if (ec.indexOf('▲') >= 0) style = 'color:#d0021b;font-weight:600';
+      else if (ec.indexOf('▼') >= 0) style = 'color:#0050b3;font-weight:600';
+      html += '<td' + (style ? ' style="'+style+'"' : '') + '>' + ec + '</td>';
     });
     html += '</tr>';
   }
@@ -155,10 +160,9 @@ function renderTable(rows) {
 }
 function mdToHtml(text) {
   if (!text) return '';
-  const lines = text.split('\n');
-  let out = [], inTable = false, tableRows = [];
-  for (let i = 0; i < lines.length; i++) {
-    const line = lines[i];
+  var lines = text.split('\n'), out = [], inTable = false, tableRows = [];
+  for (var i = 0; i < lines.length; i++) {
+    var line = lines[i];
     if (/^\|.+\|/.test(line)) {
       if (!inTable) { inTable = true; tableRows = []; }
       tableRows.push(line);
@@ -171,24 +175,26 @@ function mdToHtml(text) {
   return out.join('<br>');
 }
 function render(dayData) {
-  const data = dayData.tasks || {};
-  document.getElementById('tabs').innerHTML = TASKS.map(t => {
-    const d = data[t.key];
+  var data = dayData.tasks || {};
+  document.getElementById('tabs').innerHTML = TASKS.map(function(t){
+    var d = data[t.key];
     return '<div class="tab ' + (t.key===activeTab?'active':'') + '" data-key="' + t.key + '"><span class="badge ' + (d?'ok':'') + '"></span>' + t.emoji + ' ' + t.label + '</div>';
   }).join('');
-  document.querySelectorAll('.tab').forEach(el => el.addEventListener('click', () => switchTab(el.dataset.key)));
-  document.getElementById('panels').innerHTML = TASKS.map(t => {
-    const d = data[t.key];
-    const inner = d
+  document.querySelectorAll('.tab').forEach(function(el){
+    el.addEventListener('click', function(){ switchTab(el.dataset.key); });
+  });
+  document.getElementById('panels').innerHTML = TASKS.map(function(t){
+    var d = data[t.key];
+    var inner = d
       ? '<div class="card"><div class="card-head"><div class="card-emoji">' + t.emoji + '</div><div><div class="card-title">' + t.label + '</div><div class="card-time">업데이트: ' + d.updated_at + '</div></div></div><div class="card-body">' + mdToHtml(d.content) + '</div></div>'
-      : '<div class="empty"><div style="font-size:40px">⏳</div><p>데이터 없음</p></div>';
+      : '<div class="empty"><div style="font-size:40px;margin-bottom:10px">⏳</div><p style="font-size:14px">데이터 없음</p></div>';
     return '<div class="panel ' + (t.key===activeTab?'active':'') + '" id="panel-' + t.key + '">' + inner + '</div>';
   }).join('');
 }
 function switchTab(key) {
   activeTab = key;
-  document.querySelectorAll('.tab').forEach(el => el.classList.toggle('active', el.dataset.key===key));
-  document.querySelectorAll('.panel').forEach(el => el.classList.toggle('active', el.id==='panel-'+key));
+  document.querySelectorAll('.tab').forEach(function(el){ el.classList.toggle('active', el.dataset.key===key); });
+  document.querySelectorAll('.panel').forEach(function(el){ el.classList.toggle('active', el.id==='panel-'+key); });
 }
 
 init();
