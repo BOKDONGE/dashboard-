@@ -142,7 +142,11 @@ let currentIdx = 0;
 let activeTab = TASKS[0].key;
 let cache = {};
 
-const BASE = '';
+// 항상 /dashboard-/ 로 끝나는 절대 경로 (trailing slash 유무 무관)
+const BASE = (function() {
+  const p = location.pathname;
+  return p.endsWith('/') ? p : p + '/';
+})();
 
 function fmtDate(str) {
   const d = new Date(str + 'T00:00:00');
@@ -152,12 +156,13 @@ function fmtDate(str) {
 
 async function init() {
   try {
-    const r = await fetch('data/index.json?v=' + Date.now());
+    const r = await fetch(BASE + 'data/index.json?v=' + Date.now());
+    if (!r.ok) throw new Error('HTTP ' + r.status + ' — ' + BASE + 'data/index.json');
     dates = await r.json();
     currentIdx = 0;
     await loadDate(currentIdx);
   } catch(e) {
-    document.getElementById('panels').innerHTML = '<div class="loading">데이터를 불러오지 못했어요 😢<br><small>'+e.message+'</small></div>';
+    document.getElementById('panels').innerHTML = '<div class="loading">데이터를 불러오지 못했어요 😢<br><small style="word-break:break-all">' + e.message + '</small></div>';
   }
 }
 
@@ -171,7 +176,8 @@ async function loadDate(idx) {
   if (!cache[dateStr]) {
     document.getElementById('panels').innerHTML = '<div class="loading">⏳ 불러오는 중...</div>';
     try {
-      const r = await fetch('data/' + dateStr + '.json?v=' + Date.now());
+      const r = await fetch(BASE + 'data/' + dateStr + '.json?v=' + Date.now());
+      if (!r.ok) throw new Error('HTTP ' + r.status);
       cache[dateStr] = await r.json();
     } catch(e) {
       document.getElementById('panels').innerHTML = '<div class="loading">데이터 없음 😢</div>';
@@ -198,12 +204,16 @@ function esc(s) {
 }
 
 function mdLine(s) {
+  // blockquote: > 이스케이프 전에 체크
+  if (/^> (.+)$/.test(s)) return '<blockquote>' + inlineHtml(esc(s.replace(/^> /, ''))) + '</blockquote>';
   const e = esc(s);
   if (/^---+$/.test(e)) return '<hr>';
-  if (/^### (.+)$/.test(e)) return e.replace(/^### (.+)$/,'<h3>$1</h3>');
-  if (/^## (.+)$/.test(e)) return e.replace(/^## (.+)$/,'<h2>$1</h2>');
-  if (/^# (.+)$/.test(e)) return e.replace(/^# (.+)$/,'<h1>$1</h1>');
-  if (/^> (.+)$/.test(e)) return e.replace(/^> (.+)$/,'<blockquote>$1</blockquote>');
+  if (/^### (.+)$/.test(e)) return '<h3>' + inlineHtml(e.slice(4)) + '</h3>';
+  if (/^## (.+)$/.test(e)) return '<h2>' + inlineHtml(e.slice(3)) + '</h2>';
+  if (/^# (.+)$/.test(e)) return '<h1>' + inlineHtml(e.slice(2)) + '</h1>';
+  return inlineHtml(e);
+}
+function inlineHtml(e) {
   return e
     .replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>')
     .replace(/\*(.+?)\*/g,'<em>$1</em>')
