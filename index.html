@@ -21,17 +21,18 @@
   .header-top { display: flex; align-items: center; justify-content: space-between; }
   .header-top h1 { font-size: 17px; font-weight: 700; }
   .date-nav {
-    display: flex; align-items: center; gap: 8px; margin-top: 8px;
+    display: flex; align-items: center; gap: 4px; margin-top: 8px;
+    justify-content: center;
   }
   .date-nav button {
     background: rgba(255,255,255,0.2); border: none; color: white;
-    border-radius: 8px; padding: 4px 10px; font-size: 18px; cursor: pointer;
-    line-height: 1;
+    border-radius: 8px; padding: 4px 10px; font-size: 20px; cursor: pointer;
+    line-height: 1; flex-shrink: 0;
   }
   .date-nav button:disabled { opacity: 0.3; cursor: default; }
   .date-nav button:active { background: rgba(255,255,255,0.35); }
   #date-label {
-    font-size: 13px; font-weight: 600; flex: 1; text-align: center;
+    font-size: 13px; font-weight: 600; text-align: center; white-space: nowrap;
   }
   #today-btn {
     font-size: 11px; padding: 3px 8px; background: rgba(255,255,255,0.15);
@@ -142,7 +143,7 @@ let currentIdx = 0;
 let activeTab = TASKS[0].key;
 let cache = {};
 
-const BASE = location.href.replace(/\/[^\/]*$/, '');
+const BASE = '';
 
 function fmtDate(str) {
   const d = new Date(str + 'T00:00:00');
@@ -274,6 +275,4 @@ function switchTab(key) {
 }
 
 init();
-</script>
-</body>
-</html>
+</scr
