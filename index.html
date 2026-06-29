@@ -1,203 +1,147 @@
-<!DOCTYPE html>
+<!DOCTYPE html><script type="application/json" id="cowork-artifact-meta">
+{
+  "name": "Daily Dashboard",
+  "schemaVersion": 1,
+  "description": "7개 스케줄 작업 결과를 모바일에서 볼 수 있는 데일리 대시보드. 포트폴리오, 뉴스, 운세, 역사, 글귀, 태국어, 단편소설.",
+  "mcpTools": [
+    "mcp__session_info__list_sessions",
+    "mcp__session_info__read_transcript"
+  ],
+  "mcpServerNames": [
+    "session_info",
+    "session_info"
+  ]
+}
+</script>
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>Daily Dashboard</title>
 <style>
-  :root { color-scheme: light; }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: -apple-system, BlinkMacSystemFont, 'Noto Sans KR', sans-serif; background: #f0f2f5; color: #1a1a1a; min-height: 100vh; font-size: 18px; line-height: 1.95; }
-  .header { background: linear-gradient(135deg, #1a2f4e 0%, #2a5298 100%); color: white; padding: 14px 16px 10px; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 8px rgba(0,0,0,0.25); }
-  .header-top { display: flex; align-items: center; justify-content: space-between; }
-  .header-top h1 { font-size: 17px; font-weight: 700; }
-  .date-nav { display: flex; align-items: center; gap: 6px; margin-top: 8px; }
-  #date-label { font-size: 13px; font-weight: 600; white-space: nowrap; flex: 1; }
-  .date-nav button { background: rgba(255,255,255,0.2); border: none; color: white; border-radius: 8px; padding: 4px 12px; font-size: 18px; cursor: pointer; line-height: 1; flex-shrink: 0; }
-  .date-nav button:disabled { opacity: 0.3; cursor: default; }
-  #today-btn { font-size: 11px; padding: 3px 8px; background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.4); border-radius: 6px; color: white; cursor: pointer; flex-shrink: 0; }
-  .tabs-wrap { background: white; border-bottom: 1px solid #e0e0e0; overflow-x: auto; scrollbar-width: none; }
-  .tabs-wrap::-webkit-scrollbar { display: none; }
-  .tabs { display: flex; padding: 10px 12px 0; gap: 4px; min-width: max-content; }
-  .tab { padding: 7px 13px 9px; border-radius: 10px 10px 0 0; font-size: 13px; font-weight: 500; cursor: pointer; border: 1px solid transparent; border-bottom: none; color: #777; background: #f5f5f5; transition: all 0.15s; white-space: nowrap; display: flex; align-items: center; gap: 4px; }
-  .tab.active { background: white; color: #1a2f4e; border-color: #ddd; font-weight: 700; border-bottom: 2px solid white; margin-bottom: -1px; }
-  .tab .badge { width: 7px; height: 7px; border-radius: 50%; background: #ccc; flex-shrink: 0; }
-  .tab .badge.ok { background: #34c759; }
-  .panels { padding: 12px 14px 30px; }
-  .panel { display: none; }
-  .panel.active { display: block; }
-  .card { background: white; border-radius: 14px; box-shadow: 0 1px 6px rgba(0,0,0,0.08); overflow: hidden; }
-  .card-head { padding: 14px 16px 10px; border-bottom: 1px solid #f0f0f0; display: flex; align-items: center; gap: 10px; }
-  .card-emoji { font-size: 26px; }
-  .card-title { font-size: 15px; font-weight: 700; color: #1a2f4e; }
-  .card-time { font-size: 11px; color: #aaa; margin-top: 2px; }
-  .card-body { padding: 14px 16px; font-size: 17px; line-height: 1.95; color: #2c2c2c; max-height: calc(100vh - 220px); overflow-y: auto; -webkit-overflow-scrolling: touch; word-break: break-word; }
-  .card-body h1 { font-size: 17px; font-weight: 800; color: #1a2f4e; margin: 16px 0 6px; }
-  .card-body h2 { font-size: 16px; font-weight: 700; color: #1a2f4e; margin: 14px 0 5px; }
-  .card-body h3 { font-size: 15px; font-weight: 700; color: #2a5298; margin: 12px 0 4px; }
-  .card-body strong { font-weight: 700; }
-  .card-body em { font-style: italic; color: #555; }
-  .card-body hr { border: none; border-top: 1px solid #eee; margin: 12px 0; }
-  .card-body blockquote { border-left: 3px solid #2a5298; margin: 8px 0; padding: 4px 12px; color: #555; font-style: italic; background: #f8f9ff; border-radius: 0 6px 6px 0; }
-  .card-body code { background: #f0f0f0; padding: 1px 5px; border-radius: 4px; font-family: monospace; font-size: 13px; }
-  .card-body table { border-collapse: collapse; width: 100%; margin: 8px 0; font-size: 13px; }
-  .card-body th { background: #1a2f4e; color: white; padding: 6px 8px; text-align: left; }
-  .card-body td { padding: 5px 8px; border-bottom: 1px solid #eee; }
-  .card-body tr:nth-child(even) td { background: #f9f9f9; }
-  .empty { text-align: center; padding: 40px 20px; color: #bbb; }
-  .loading { text-align: center; padding: 40px; color: #888; font-size: 14px; }
-  .status { font-size: 11px; color: #bbb; text-align: center; padding: 10px; }
+:root{color-scheme:light}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Noto Sans KR',sans-serif;background:#f0f2f5;color:#1a1a1a;min-height:100vh}
+.header{background:linear-gradient(135deg,#1a2f4e,#2a5298);color:white;padding:18px 16px 14px;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.25)}
+.header h1{font-size:20px;font-weight:700}
+.header .date{font-size:14px;opacity:.75;margin-top:3px}
+.tabs-wrap{background:white;border-bottom:1px solid #e0e0e0;overflow-x:auto;scrollbar-width:none}
+.tabs-wrap::-webkit-scrollbar{display:none}
+.tabs{display:flex;padding:10px 12px 0;gap:4px;min-width:max-content}
+.tab{padding:9px 14px 11px;border-radius:10px 10px 0 0;font-size:15px;font-weight:500;cursor:pointer;border:1px solid transparent;border-bottom:none;color:#777;background:#f5f5f5;white-space:nowrap;display:flex;align-items:center;gap:5px}
+.tab.active{background:white;color:#1a2f4e;border-color:#ddd;font-weight:700;border-bottom:2px solid white;margin-bottom:-1px}
+.badge{width:8px;height:8px;border-radius:50%;background:#ccc;flex-shrink:0}
+.badge.ok{background:#34c759}
+.panels{padding:14px 14px 40px}
+.panel{display:none}
+.panel.active{display:block}
+.card{background:white;border-radius:16px;box-shadow:0 1px 6px rgba(0,0,0,.08);overflow:hidden}
+.card-head{padding:16px 18px 12px;border-bottom:1px solid #f0f0f0;display:flex;align-items:center;gap:12px}
+.card-emoji{font-size:30px}
+.card-title{font-size:18px;font-weight:700;color:#1a2f4e}
+.card-time{font-size:13px;color:#aaa;margin-top:3px}
+.card-body{padding:16px 18px;font-size:16px;line-height:1.85;color:#222;overflow-y:auto;-webkit-overflow-scrolling:touch;white-space:pre-wrap;word-break:break-word}
+.card-body h1{font-size:19px;font-weight:800;color:#1a2f4e;margin:18px 0 8px;white-space:normal}
+.card-body h2{font-size:17px;font-weight:700;color:#1a2f4e;margin:16px 0 6px;white-space:normal}
+.card-body h3{font-size:16px;font-weight:700;color:#2a5298;margin:14px 0 5px;white-space:normal}
+.card-body strong{font-weight:700}
+.card-body em{font-style:italic;color:#444}
+.card-body hr{border:none;border-top:1px solid #eee;margin:14px 0}
+.card-body blockquote{border-left:4px solid #2a5298;margin:10px 0;padding:6px 14px;color:#444;font-style:italic;background:#f8f9ff;border-radius:0 8px 8px 0;white-space:normal}
+.card-body code{background:#f0f0f0;padding:2px 6px;border-radius:4px;font-family:monospace;font-size:14px}
+.card-body table{width:100%;border-collapse:collapse;font-size:14px;margin:10px 0;white-space:normal}
+.card-body th{background:#f0f4ff;color:#1a2f4e;padding:8px 10px;text-align:left;font-weight:700;border-bottom:2px solid #dde3ff}
+.card-body td{padding:8px 10px;border-bottom:1px solid #f0f0f0;vertical-align:top}
+.card-body tr:last-child td{border-bottom:none}
+.empty{text-align:center;padding:50px 20px;color:#bbb;font-size:16px}
+.status{font-size:13px;color:#bbb;text-align:center;padding:12px}
 </style>
 </head>
 <body>
 <div class="header">
-  <div class="header-top">
-    <h1>🗓️ Daily Dashboard</h1>
-    <button id="today-btn" onclick="goToday()">오늘</button>
-  </div>
-  <div class="date-nav">
-    <div id="date-label">로딩 중...</div>
-    <button id="btn-prev" onclick="movDate(1)">‹</button>
-    <button id="btn-next" onclick="movDate(-1)">›</button>
-  </div>
+  <h1>🗓️ Daily Dashboard</h1>
+  <div class="date" id="hdate"></div>
 </div>
 <div class="tabs-wrap"><div class="tabs" id="tabs"></div></div>
 <div class="panels" id="panels"></div>
 <div class="status" id="status"></div>
-
 <script>
-const TASKS = [
-  {key:"portfolio", emoji:"📈", label:"포트폴리오"},
-  {key:"stock",     emoji:"📰", label:"주식뉴스"},
-  {key:"fortune",   emoji:"🔮", label:"운세"},
-  {key:"history",   emoji:"📜", label:"역사"},
-  {key:"goodtext",  emoji:"✨", label:"글귀"},
-  {key:"thai",      emoji:"🇹🇭", label:"태국어"},
-  {key:"story",     emoji:"📚", label:"단편소설"},
+const TASKS=[
+  {key:"portfolio",emoji:"📈",label:"포트폴리오"},
+  {key:"stock",emoji:"📰",label:"주식뉴스"},
+  {key:"fortune",emoji:"🔮",label:"운세"},
+  {key:"history",emoji:"📜",label:"역사"},
+  {key:"goodtext",emoji:"✨",label:"글귀"},
+  {key:"thai",emoji:"🇹🇭",label:"태국어"},
+  {key:"story",emoji:"📚",label:"단편소설"}
 ];
+const DATA={"portfolio": {"updated_at": "06/29 00:42", "content": "# 📊 포트폴리오 일일 브리핑\n**2026년 6월 29일 (월)** | 기준: 직전 거래일(6/26 금) 종가 중심 — ⚠️ 데이터 신선도 제한\n\n> ⚠️ **데이터 신선도 안내**: 오늘은 Chrome/Google Finance 실시간 연결이 불가하여(미연결) 웹 검색 폴백으로 수집했습니다. 검색 결과의 기준일이 종목마다 달라(6/5~6/28 혼재) 모든 값에 `(기준 MM/DD)`를 병기했습니다. 정확한 6/29 시세는 증권사 앱/Google Finance에서 재확인을 권장합니다.\n\n## 🔑 오늘의 핵심 한 줄\n> **글로벌 기술주 변동성 확대 속 반도체·방산주가 동반 약세 — 엔비디아·SK하이닉스 멀티이어 메모리 협력이 중기 모멘텀, 단기는 차익실현·금리/관세 부담이 우세.**\n\n## 💹 가격 요약\n\n### 🇰🇷 국내 주식\n| 종목 | 현재가 | 전일 대비 |\n|---|---:|---:|\n| SK하이닉스 (000660) | 2,009,000원 | ▼ 2.95% *(기준 6/8·확인필요)* |\n| 삼성전자 (005930) | 339,500원 | ▼ 5.30% *(기준 6/28)* |\n| KODEX 200 (069500) | 138,145원 | — *(기준 6/24)* |\n| 현대차 (005380) | 656,000원 | ▼ 6.29% *(기준 6/8·확인필요)* |\n| 레인보우로보틱스 (277810) | 615,000원 | ▼ 1.60% *(기준 6/18)* |\n| 한미반도체 (042700) | 미확인 | 미확인 *(기준일 확인불가)* |\n| 한화오션 (042660) | 약 102,000원 | ▼ 3.41% *(기준 6/26·장중)* |\n| 현대로템 (064350) | 169,800원 | ▼ 7.21% *(기준 6/26)* |\n| GST (083450) | 51,100원 | — *(기준 6/5)* |\n| 리노공업 (058470) | 88,700원 | — *(기준 6/25)* |\n| 한화에어로스페이스 (012450) | 1,122,000원 | ▼ 5.63% *(기준 6/19)* |\n| 한화시스템 (272210) | 73,600원 | — *(기준 6/26)* |\n\n### 🌏 해외 주식 / ETF\n*(미 증시 직전 종가 = 6/26 금 기준. 일부 값은 기준일 상이 — 병기 참조)*\n\n| 종목 | 현재가 | 전일 대비 |\n|---|---:|---:|\n| 엔비디아 (NVDA) | $192.53 | ▼ 1.64% *(기준 6/26)* |\n| 반에크 반도체 ETF (SMH) | $611.61 | ▼ 3.97% |\n| 플래닛 랩스 (PL) | $27.14 | — *(기준 6/27)* |\n| 레드와이어 (RDW) | $10.94 | — *(기준 6/27)* |\n| 인베스코 나스닥100 ETF (QQQM) | 약 $292.60 | — *(기준 6/24)* |\n| 알트리아 (MO) | $73.60 | — |\n| ARK 게노믹 ETF (ARKG) | $41.49 | — *(기준 6/27)* |\n| 코카콜라 (KO) | $82.63 | — |\n| SPDR S&P500 ETF (SPYM) | $88.93 | — *(기준 6/3·확인필요)* |\n| 글로벌X 우라늄 ETF (URA) | $43.52 | — |\n| 앰플리파이 CWP 성장·인컴 ETF (QDVO) | $29.93 | ▲ 1.01% |\n| JP모건 나스닥 프리미엄인컴 ETF (JEPQ) | $59.50 | — *(기준 6/28)* |\n| 리얼티인컴 (O) | 미확인 | 미확인 |\n| 슈왑 미국배당 ETF (SCHD) | $32.09 | — *(기준 6/28)* |\n| 나이키 (NKE) | $40.75 | ▼ 0.37% *(기준 6/28)* |\n| 메인스트리트 캐피털 (MAIN) | $51.10 | ▲ 0.18% *(기준 6/26)* |\n| 뉴스케일파워 (SMR) | $10.10 | ▲ 0.30% |\n| BTQ테크놀로지스 (BTQ) | $5.19 (C$8.35) | ▼ 16.22% |\n| 얼라이트 (ALIT) | $0.95 | ▲ 0.82% |\n\n## 📰 주요 뉴스 (상위 변동 종목)\n\n### 엔비디아 (NVDA) / SK하이닉스 (000660)\n1. NVIDIA·SK하이닉스, AI 팩토리용 메모리 멀티이어 기술 파트너십 발표 — 젠슨 황 \"메모리 공급 부족 수년 지속 가능\" (GlobeNewswire/Reuters)\n2. 엔비디아, 한국 AI 인프라 투자 패키지 공개 — SK그룹 등과 협력 (AFP/Reuters)\n\n### BTQ테크놀로지스 (BTQ)\n1. 하루 약 -16% 급락(캐나다 상장 기준) — 양자/보안 테마 변동성 확대 (StockAnalysis/Yahoo)\n\n### 현대로템 (064350) / 한화에어로스페이스 (012450)\n1. 현대로템 6/26 169,800원 -7.21% 마감, 방산주 차익실현 출회 (톱스타뉴스 등)\n2. 한화에어로 직전 거래일 1,122,000원 -5.63% — 방산 섹터 동반 조정\n\n### 나이키 (NKE)\n1. 연초 대비 약 -36%, 마진 압박·관세·경쟁 심화 — Q4 실적 6/30 발표 예정 (Yahoo Finance)\n\n### 시장 전반\n1. 6/26 미 증시, 기술주 매도세·OpenAI IPO 지연 보도 속 나스닥·S&P500 보합권 혼조 (TheStreet)\n2. 글로벌 증시, 기술주 변동성에 약세 (Bloomberg Brief 6/26)\n\n## 🎯 오늘의 액션\n| 우선순위 | 종목 | 액션 | 근거 |\n|:---:|---|---|---|\n| 🔴 | 한미반도체 (042700) / 리얼티인컴 (O) | 시세 직접 재확인 | 자동 수집서 미확인 — 보유 점검 필요 |\n| 🔴 | BTQ테크놀로지스 (BTQ) | 변동성 점검 | 하루 -16% 급락, 비중·손절선 재점검 |\n| 🟡 | SK하이닉스·삼성전자·SMH | 비중 모니터링 | NVDA 협력 모멘텀 vs 단기 반도체 차익실현 병존 |\n| 🟡 | 나이키 (NKE) | 실적 대비 | 6/30 Q4 발표 — 변동성 확대 가능 |\n| 🟢 | 얼라이트 (ALIT) | 액션 인지 | 7/1 1:20 주식병합 예정 — 호가/수량 변동 유의 |\n| 🟢 | 배당 ETF (SCHD·JEPQ·QDVO·MAIN) | 유지 | 방어적 인컴 포지션, 상대적 안정 |"}, "stock": {"updated_at": "06/29 00:42", "content": "## 📈 주식 참고 뉴스 — 2026-06-29 (월요일)\n\n### 1. 미국-이란 전쟁 후속 / 호르무즈 해협 위기 — 불안한 휴전 속 재공습\n**분야:** 국제정세 · **지역:** 해외 · **출처:** Britannica, RFERL, Wikipedia\n\n2026년 2월 28일 미국·이스라엘의 이란 군사시설 공습으로 시작된 전쟁은 6월 17일 트럼프-이란 대통령 간 MOU 서명으로 60일 내 공식 종전을 향해 가는 중이나, 이란의 상선 공격에 대한 보복으로 미군이 최근 이틀 연속 이란 목표물을 재타격했다. 호르무즈 해협이 개방되어 6월 21일 하루 1,600만 배럴이 통과(사상 최고)했지만, 휴전 이행이 불안정하여 에너지 시장의 변동성이 지속되고 있다. IEA는 이번 사태를 \"역사상 최대 에너지 공급 충격\"으로 규정했으며, 스태그플레이션·경기침체 우려를 높이고 있다.\n\n---\n\n### 2. 연준(Fed) 금리 동결 — 워시 신임 의장 체제 시작, 인상 편향으로 전환\n**분야:** 거시·정책 · **지역:** 해외 · **출처:** CNBC, Federal Reserve, Advisor Perspectives\n\n6월 17일 FOMC는 기준금리를 3.5~3.75%로 만장일치 동결했다. 케빈 워시 신임 의장의 첫 회의로, 위원 18명 중 9명이 2026년 내 추가 인상을 전망하고 있으며 6명은 25bp 2회 인상을 예상한다. 2026년 인플레이션 전망치가 헤드라인 3.6%, 코어 3.3%로 상향됐고, 기존 금리 인하 시사 문구가 삭제되어 사실상 긴축 편향으로 돌아섰다. 고금리 장기화 시나리오가 다시 부각되고 있다.\n\n---\n\n### 3. OpenAI·브로드컴 \"Jalapeño\" AI 추론 칩 공개 — 엔비디아 의존도 낮추기\n**분야:** IT·AI · **지역:** 해외 · **출처:** CNBC, VentureBeat, OpenAI 공식 블로그\n\n6월 24일 OpenAI와 브로드컴이 LLM 추론 특화 AI 반도체 \"Jalapeño\"(할라페뇨)를 공개했다. 테이프아웃까지 단 9개월 — 업계 역대 최단 ASIC 개발 사이클이다. ChatGPT 등 서비스 추론에 활용되며 삼성·SK하이닉스 메모리를 탑재, 2026년 말 초기 배포 후 2027~28년 본격 확대 예정이다. 빅테크의 자체 AI 칩 개발이 가속화되면서 엔비디아의 고객 이탈 우려가 제기되는 한편, 삼성·SK하이닉스 메모리 수요에는 긍정적 신호다.\n\n---\n\n### 4. 마이크론(Micron) FY2026 Q3 역대 최고 실적 — HBM 폭발적 수요\n**분야:** IT·반도체 · **지역:** 해외 · **출처:** GlobeNewswire, CNBC, Yahoo Finance\n\n6월 24일 마이크론이 FY2026 Q3 결과를 발표했다. 매출 $41.5B으로 전년 동기 대비 4배 이상, 예상 $35.1B을 대폭 상회했다. 총이익률 84.9%(전 분기 74.9%, 전년 39%)로 수직 상승, 주당순이익도 예상 $20.39 대비 $24.67로 초과 달성했다. Q4 가이던스는 $49~51B으로 시장 예상($43.2B)을 크게 뛰어넘으며 HBM 중심의 AI 메모리 수요가 현실로 확인됐다.\n\n---\n\n### 5. NVIDIA Vera Rubin 플랫폼 양산 — 차세대 에이전틱 AI 인프라 본격화\n**분야:** IT·AI · **지역:** 해외 · **출처:** NVIDIA Newsroom, CNBC\n\n엔비디아가 차세대 아키텍처 Vera Rubin 기반 AI 플랫폼을 공개하고 7개 신규 칩을 전량 양산에 들어갔다고 발표했다. AWS·구글 클라우드·마이크로소프트·OCI 등 주요 클라우드가 2026년 하반기 Vera Rubin 인스턴스를 순차 배포한다. 에이전틱 AI(자율적으로 작업을 수행하는 AI) 수요를 겨냥한 플랫폼으로, AI 데이터센터 인프라 경쟁이 한층 격화될 전망이다.\n\n---\n\n### 6. 나스닥 주간 4.6% 하락, S&P500 주간 2% 하락 — 기술주 조정\n**분야:** 거시·정책 · **지역:** 해외 · **출처:** TheStreet, CNBC\n\n나스닥은 지난주 5거래일 연속 하락하며 주간 4.6% 급락했고 S&P500도 주간 2% 하락했다. 칩주 매도세가 주도했으며 Caterpillar(-5.67%), Cisco(-4.56%), Goldman(-4.07%)이 하락 주도했다. 반면 Microsoft(+5.71%), Salesforce(+5.45%), IBM(+5.08%)은 상승했다. OpenAI IPO 연기 보도와 AI 인프라 지출 우려가 기술주 투자심리를 압박했다. 다우존스는 주간 +0.6% 선방했다.\n\n---\n\n### 7. MSCI 한국 신흥시장 지위 유지 — 선진지수 편입 재검토 또 불발\n**분야:** 거시·정책 · **지역:** 국내 · **출처:** CNBC, Bloomberg, Korea Times\n\n6월 23일 MSCI는 2026년 시장 분류 검토 결과 한국을 신흥시장으로 유지하기로 했다. 원화의 역외 환전 제한, 투자자 식별 시스템(KYC 요건), 인카인드 거래·장외 거래 제한 등이 핵심 장벽으로 지목됐다. 이번 결과로 한국의 MSCI 선진지수 편입 시점은 2029년 이후로 더 멀어졌다. 외국인 자금 유입 기대가 재차 후퇴하여 코스피 수급에 단기 부정적 영향이 우려된다.\n\n---\n\n### 8. 유가 배럴당 80달러대 — 호르무즈 재개 중이나 중동 불안 지속\n**분야:** 국제정세 · **지역:** 해외 · **출처:** Fortune, EIA, Goldman Sachs\n\n6월 17일 기준 Brent 원유 $80.78/배럴. 호르무즈 해협 물동량이 6월 들어 서서히 회복 중이나 미국의 이란 재공습으로 재차 긴장이 고조됐다. 5월 대비 중동 산유국 생산이 여전히 1,100만 배럴/일 감소 상태이며 3분기 내 정상화 기대가 있으나 불확실성이 크다. Goldman Sachs는 이란 갈등 지속 시나리오에서 유가가 추가 급등 가능성이 있다고 경고했다.\n\n---\n\n### 9. 미중 무역협의회 설립 추진 — 트럼프·시진핑 회담 후 관세 완화 협상 개시\n**분야:** 국제정세 · **지역:** 해외 · **출처:** KCIF 국제금융센터, 관련 뉴스\n\n트럼프·시진핑 정상회담 이후 미국 무역대표부(USTR)가 미중 무역협의회(Trade Council) 설립에 대한 공개 의견수렴을 시작했다. 비민감 품목 대상의 제한적 관세 인하 논의가 포함됐다. 다만 고율 관세 기조 자체는 유지되고 있어 완전한 해소보다는 \"관리된 긴장\" 국면으로 평가된다. 한국의 대미·대중 수출 의존 기업들의 업황이 협상 진전 속도에 달려 있다.\n\n---\n\n### 10. NVIDIA RTX Spark — AI PC 칩으로 소비자 시장 공략, 엣지 AI 시대 열어\n**분야:** IT·AI · **지역:** 해외 · **출처:** CNBC, Al Jazeera, TechXplore\n\n엔비디아가 6월 1일 CPU·GPU 통합형 소비자용 AI 칩 \"RTX Spark\"를 공개했다. MediaTek과 공동 개발하며 Dell·HP·레노보·ASUS·Microsoft Surface 등에 탑재, 2026년 하반기 출시 예정이다. 데이터센터에 집중된 엔비디아가 엣지(단말) AI로 영역을 확장하는 전략적 분기점이다. AI 처리를 클라우드 없이 디바이스에서 수행하는 온디바이스 AI 시장에 본격적으로 진입한다.\n\n---\n\n### 11. Meta·Microsoft, AI 데이터센터 전력 위해 원전 장기 계약 체결\n**분야:** 산업·기업 · **지역:** 해외 · **출처:** TradingEconomics, oilandgas.einnews\n\nAI 데이터센터의 급격한 전력 수요 증가에 대응하기 위해 Meta와 Microsoft가 원자력 발전 용량 확보를 위한 장기 계약에 서명했다. 이는 우라늄 수요의 구조적 증가를 지지하는 요인으로, 우라늄 현물가는 $85/파운드 수준을 유지 중이다. 각국 정부도 AI 데이터센터 전력 기반으로 원전·SMR 투자를 확대하는 흐름이 이어지고 있어 원전·에너지 관련 종목에 중장기 수혜가 예상된다.\n\n---\n\n### 12. 글로벌 반도체 2026년 매출 1조 달러 돌파 전망 — AI 중심 구조 재편\n**분야:** IT·반도체 · **지역:** 글로벌 · **출처:** ESG Korea News, 반도체 업계 분석\n\n2026년 글로벌 반도체 시장 매출이 사상 처음 1조 달러를 돌파할 것으로 전망된다. AI 학습·추론 수요 폭발이 HBM·LPDDR·CXL 등 메모리와 AI ASIC(맞춤형 반도체) 시장을 견인하고 있다. TSMC 주도의 첨단 파운드리와 함께 중국의 기술 자립 가속, AI 팩토리 확산이 동시에 진행 중이다. HBM 중심의 고부가 메모리 시장에서 SK하이닉스·삼성전자의 수혜가 지속될 전망이다.\n\n---\n\n### 13. SK하이닉스, 용인·청주 공장 증설 — HBM 생산 확대 속도\n**분야:** IT·반도체 · **지역:** 국내 · **출처:** Fortune, The Elec\n\nSK하이닉스가 경기도 용인 반도체 클러스터에 신규 팹을, 충북 청주에 첨단 패키징 팹을 건설 중이며 ASML의 EUV(극자외선) 노광 장비 추가 도입을 추진하고 있다. OpenAI Jalapeño 칩, Micron 증산 등 경쟁사 동향과 맞물려 HBM4 세대 기술 우위 확보가 관건이다. AI 메모리 수요의 구조적 성장 속에 투자 확대를 통한 시장 지배력 유지 전략이다.\n\n---\n\n### 14. 한국 방산, 유럽·중동 수출 확대 — \"테마\"에서 \"수출 산업\"으로 격상\n**분야:** 산업·기업 · **지역:** 국내 · **출처:** 증시 인사이트, 업계 분석\n\n국내 방위산업이 유럽 재무장(리아밍) 수요와 중동 안보 수요를 동시에 흡수하며 수주 잔고가 크게 확대됐다. 투자업계에서 방산을 단기 테마가 아닌 구조적 수출 산업으로 재분류하는 흐름이 나타나고 있다. 로봇 분야에서도 삼성·현대·LG 등 대기업이 피지컬 AI(물리적 세계와 상호작용하는 AI) 기반 산업 로봇을 전략사업으로 지정하며 장기 성장 모멘텀을 확보 중이다.\n\n---\n\n### 15. 6월 4주차 글로벌 반도체 트렌드 — 중국 기술 자립·AI 팩토리 동시 부상\n**분야:** IT·반도체 · **지역:** 글로벌 · **출처:** SPTAT Times Korea (2026년 6월 28일)\n\n2026년 6월 4주차 반도체 산업의 핵심 키워드는 △TSMC 중심 국가 단위 생태계 경쟁 △중국 반도체 기술 자립 가속(자국 EUV 개발·성숙 노드 공세) △AI 팩토리(거대 AI 연산 클러스터) 확산 △HBM/CXL 등 메모리의 AI 인프라 핵심 지위 강화다. 미중 기술 디커플링이 공급망 이중화와 비용 상승을 야기하고 있으며, 한국 반도체 업체는 기술 우위를 유지하면서 수출 다변화가 과제로 부각된다.\n\n---\n*이슈/파급력 순 참고용 정보. 특정 종목 매수·매도 권유 아님. 투자 판단·책임은 본인. 상세는 원문 확인.*"}, "fortune": {"updated_at": "06/29 00:42", "content": "## 🔮 오늘의 일진\n\n> # **병오(丙午) 갑오(甲午) 갑술(甲戌)일** — 2026-06-29 (월요일)\n\n을목(乙木) 일간에게 오늘 천간 갑목(甲木)은 **겁재(劫財)** — 나와 같은 나무, 곧 형제·동료·경쟁자의 기운입니다. 손을 보태주는 든든한 지원군이 되기도 하지만, 내 몫을 나눠 가져야 하는 자리이기도 합니다. 지지 술토(戌土)는 **정재(正財)** — 실속, 결과물, 손에 쥐는 재물을 뜻합니다. 위에서는 동료가 거들고 아래에는 재물이 깔린 모양새라, 일이 풀리되 '내 것을 지키는 균형감'이 오늘의 핵심 과제입니다.\n\n## 🌟 총운 ★★★☆☆\n\n오늘은 좋은 흐름과 조심할 흐름이 함께 옵니다. 시지 오화(午)와 술토가 만나 **오술 화 반합**을 이루고, 월지 인목까지 가세하면 인오술(寅午戌) 화 기운이 살아나 을목의 **표현력·활동력·재능 발산(식상)**이 활발해집니다. 다만 일지 축토와 오늘 술토가 **축술형(丑戌刑)**을 이루고 년지 미토까지 더해져 축술미 삼형 기운이 슬쩍 고개를 듭니다. 의욕은 넘치되 마찰·말다툼·서류상 시비는 조심하라는 신호예요.\n\n## 💰 재물운\n\n정재가 들어오는 날이라 노력에 대한 실속이 따르기 좋습니다. 다만 천간 겁재(동료·경쟁) 기운이 함께 있어 '내 몫이 흩어지는' 구조(군겁쟁재)가 잠재합니다. 큰돈을 빌려주거나, 모호한 분배·공동 지출을 즉흥적으로 결정하는 일은 오늘만큼은 미루세요. 들어온 것을 단단히 지키는 쪽이 이득입니다.\n\n## 💼 일·직장운\n\n식상이 살아나 아이디어와 표현이 빛나는 날입니다. 발표, 제안, 글쓰기, 기획에 좋아요. 단 축술형의 영향으로 계약서·결재·세부 문구에서 어긋남이 생기기 쉬우니, 보내기 전 한 번 더 검토하는 습관이 오늘의 실수를 막아줍니다.\n\n## ❤️ 관계운\n\n겁재의 영향으로 동료·친구와의 교류는 활발하지만, 사소한 경쟁심이나 말 한마디가 오해로 번질 수 있습니다. 형(刑)의 기운은 '날 선 말'로 드러나기 쉬우니, 농담도 한 박자 부드럽게. 들어주는 태도가 오늘의 관계를 지켜줍니다.\n\n## 🏃 건강운\n\n을목은 본디 간·담, 신경계, 근육·인대와 연결된 체질입니다. 오늘은 목 기운이 화로 강하게 빠져나가(설기) 에너지 소모가 큰 날이라 쉽게 지칠 수 있어요. 무리한 일정보다 중간중간 휴식을, 그리고 형(刑) 기운은 관절·소화기 긴장으로 나타나기 쉬우니 과식과 무리한 운동은 피하세요.\n\n## 🍀 오늘의 한 마디\n\n> **\"의욕은 펼치되, 내 것은 단단히. 보내기 전 한 번 더 확인하세요.\"**\n> 행운 시간대: 오시(11:30~13:30) | 행운 색: 청록·검정 | 방향: 북쪽\n\n---\n*명리학적 관점의 참고용 해석입니다. 중요한 결정은 언제나 당신의 판단이 우선입니다.*"}, "history": {"updated_at": "06/29 00:42", "content": "## 📜 오늘의 역사 한 조각 — 2026-06-28 (일)\n\n> # **왕안석(王安石)의 신법(新法) — 천 년 전 중국의 대개혁** (1069년)\n\n## 🕰️ 무슨 일이 있었나\n1069년, 송나라의 재상 왕안석(王安石, 1021~1086)은 신종 황제의 전폭적인 지지 아래 전례 없는 규모의 사회 개혁 '신법(新法)'을 단행했다. 농민에게 저금리 농업자금을 빌려주는 '청묘법(靑苗法)', 지방 물가를 안정시키는 '균수법(均輸法)', 민병 조직을 위한 '보갑법(保甲法)' 등 십여 가지 개혁안이 한꺼번에 시행되었다. 이는 당시 부패한 관료제와 대지주·대상인의 횡포를 억누르고 중소 농민·상인을 보호하려는 야심 찬 시도였다.\n\n## 🌍 배경과 맥락\n11세기 송나라는 북방의 요(遼)·서하(西夏)와의 방어전에 막대한 군사비를 쏟아부어 국가 재정이 극도로 악화된 상태였다. 동시에 대지주 계층의 토지 겸병이 심화되어 농민들은 고리대에 시달렸고, 대상인들은 물가를 좌지우지하며 폭리를 취했다. 왕안석은 \"천하의 재물을 잘 다스리면 세금을 늘리지 않고도 나라를 부강하게 할 수 있다\"는 철학으로 개혁에 임했다.\n\n## 💡 오늘의 우리에게\n신법은 결국 기득권 세력의 거센 반발과 시행 과정의 부작용으로 왕안석 사후 폐지되었지만, 국가가 시장에 적극 개입해 약자를 보호해야 한다는 그의 문제의식은 지금도 유효하다. '부국강병'과 '민생 보호'라는 두 목표를 동시에 추구하다 좌절한 왕안석의 실험은, 개혁의 이상과 현실 정치의 벽이 얼마나 두꺼운지를 천 년이 지난 오늘에도 생생하게 보여준다.\n\n---\n\n## 💡 나를 발전시키는 지식 한 조각\n\n> # **닉슨 쇼크 — 세계 경제의 판을 바꾼 15분짜리 연설**\n\n**카테고리:** 경제 · 경제사/사건\n\n## 📖 핵심 개념\n1971년 8월 15일, 리처드 닉슨 미국 대통령은 TV 특별 연설 15분 만에 세계 경제의 근간을 뒤흔들었다. \"지금부터 달러를 금으로 교환해주지 않겠다\"는 선언이었다. 2차 세계대전 이후 세계 기축통화 체제인 '브레튼우즈 체제'는 달러 35달러 = 금 1온스라는 고정환율을 핵심으로 삼았는데, 닉슨은 이 약속을 일방적으로 파기한 것이다.\n\n## 🔍 조금 더 깊이\n베트남 전쟁의 막대한 비용으로 미국의 금 보유량이 급감했고, 유럽 각국이 달러를 금으로 바꿔달라는 요구를 늘리자 미국의 금 창고는 바닥을 드러낼 위기에 처했다. 결국 닉슨은 고정환율 포기, 수입품 10% 관세 부과, 90일간 임금·물가 동결이라는 세 가지 카드를 한꺼번에 꺼내들었다. 이 조치는 일본·한국 등 대미 수출 의존국에 큰 충격을 주었고, 1973년 이후 세계는 지금의 변동환율제로 완전히 전환되었다.\n\n## 🧠 이렇게 써먹자\n닉슨 쇼크는 \"국제 약속도 자국 이익 앞에서는 깨질 수 있다\"는 교훈을 남겼다. 오늘날 달러가 금 뒷받침 없이도 세계 기축통화 지위를 유지하는 것은 미국의 '신용'에 기대고 있기 때문이다. 뉴스에서 달러 가치·환율·금 시세가 요동칠 때, 그 배경에 1971년의 이 결정이 깔려 있음을 알면 경제 흐름이 훨씬 입체적으로 보인다."}, "goodtext": {"updated_at": "06/29 00:42", "content": "## 🌅 오늘의 글귀 — 용기\n\n> # **\"진정한 용사는 참담한 인생을 똑바로 마주할 용기가 있고, 뚝뚝 떨어지는 선혈을 똑바로 바라볼 용기가 있다.\"**\n\n## ✍️ 누가 한 말?\n\n**루쉰(魯迅, Lu Xun, 1881–1936)**\n\n중국 근대문학의 아버지로 불리는 작가이자 사상가입니다. 봉건적 인습과 무기력한 현실을 날카롭게 고발한 「광인일기」, 「아Q정전」 등으로 한 시대의 정신을 깨웠습니다. 이 문장은 1926년 베이징에서 시위 도중 목숨을 잃은 제자 류허전을 추모하며 쓴 산문 「류허전 군을 기념하며(記念劉和珍君)」에 나옵니다. 슬픔 앞에서 눈을 돌리지 않는 것이야말로 진짜 용기라는 그의 신념이 담긴 글입니다.\n\n## 🌐 원문\n\n> 真的猛士，敢于直面惨淡的人生，敢于正视淋漓的鲜血。\n>\n> \"A true warrior dares to face squarely the bleakness of life, and dares to look directly at the dripping blood.\"\n\n## 💭 오늘에 적용하면\n\n용기는 두려움이 없는 상태가 아니라, 외면하고 싶은 것을 똑바로 바라보는 힘입니다. 오늘 자꾸 미뤄온 어려운 대화나 마주하기 버거운 문제가 있다면, 딱 한 걸음만 그쪽으로 다가가 보세요. 현실을 직시하는 그 순간부터 막연한 두려움은 구체적인 과제로 바뀝니다. 회피로 하루를 보내기보다, 작더라도 정면으로 마주한 일 하나를 오늘의 성취로 삼아보길 바랍니다."}, "thai": {"updated_at": "06/29 00:42", "content": "# 🇹🇭 오늘의 태국어 세 문장 (2026-06-29)\n\n## 🟢 초급\n\n> # **ขอบคุณมากครับ**\n\n**🔊 발음:** 컵쿤 마ー크 크랍 (khòp-khun mâak khráp)\n**🇰🇷 해석:** 정말 감사합니다.\n**🇺🇸 영어:** Thank you very much.\n**📝 문장 설명:** 가장 기본적인 감사 표현입니다. 끝의 ครับ은 남성 화자가 붙이는 정중 어미이고, 여성은 ค่ะ(카)를 씁니다. มาก을 빼고 ขอบคุณครับ만 써도 되지만, มาก을 넣으면 \"매우/정말\"의 강조가 됩니다.\n**📚 단어 풀이**\n\n| 태국어 | 발음 | 뜻 |\n|---|---|---|\n| ขอบคุณ | 컵쿤 (khòp-khun) | 감사하다 |\n| มาก | 마ー크 (mâak) | 많이, 매우 |\n| ครับ | 크랍 (khráp) | (남성) 정중 어미 |\n\n---\n\n## 🟡 중급\n\n> # **ขอกาแฟเย็นหนึ่งแก้วครับ**\n\n**🔊 발음:** 커ー 까ーfae 옌 능 깨우 크랍 (khǒr gaa-fae yen nèung gâew khráp)\n**🇰🇷 해석:** 아이스 커피 한 잔 주세요.\n**🇺🇸 영어:** One iced coffee, please.\n**📝 문장 설명:** 식당·카페에서 주문할 때 쓰는 핵심 패턴 \"ขอ + [물건] + [수량] + [단위]\"입니다. 태국어는 \"숫자 + 분류사(단위)\" 순서로 말해서 '한 잔'을 หนึ่งแก้ว(능 깨우)라고 합니다. เย็น은 \"차가운/시원한\"이라는 뜻으로 음료에 붙입니다.\n**📚 단어 풀이**\n\n| 태국어 | 발음 | 뜻 |\n|---|---|---|\n| ขอ | 커ー (khǒr) | ~을 주세요 (요청) |\n| กาแฟ | 까ーfae (gaa-fae) | 커피 |\n| เย็น | 옌 (yen) | 차가운, 시원한 |\n| หนึ่ง | 능 (nèung) | 하나, 1 |\n| แก้ว | 깨우 (gâew) | 잔, 컵 (분류사) |\n| ครับ | 크랍 (khráp) | (남성) 정중 어미 |\n\n---\n\n## 🔴 고급\n\n> # **ถ้าไม่เป็นการรบกวนเกินไป ช่วยถ่ายรูปให้หน่อยได้ไหมครับ**\n\n**🔊 발음:** 타ー 마이 뺀 깐 롭꾸언 끄ㅓㄴ빠이, 추어이 타ー이 루ー프 하이 너이 다이 마이 크랍\n**🇰🇷 해석:** 너무 폐가 되지 않는다면, 사진 좀 찍어 주실 수 있을까요?\n**🇺🇸 영어:** If it's not too much trouble, could you take a photo for me?\n**📝 문장 설명:** ถ้า(만약)로 시작하는 조건절에 정중한 완곡어법을 더한 복합문입니다. \"ไม่เป็นการรบกวนเกินไป(너무 폐가 되지 않는다면)\"는 부탁 전에 상대를 배려하는 관용 표현으로, 격식 있고 공손한 인상을 줍니다. ช่วย...ให้หน่อย는 \"~을 좀 해 주다\", ได้ไหม는 \"~할 수 있나요?\"로 요청을 부드럽게 만듭니다.\n**📚 단어 풀이**\n\n| 태국어 | 발음 | 뜻 |\n|---|---|---|\n| ถ้า | 타ー (tâa) | 만약 ~라면 |\n| ไม่เป็นการรบกวน | 마이 뺀 깐 롭꾸언 (mâi pen gaan róp-guan) | 폐(방해)가 되지 않다 |\n| เกินไป | 끄ㅓㄴ빠이 (gəən bpai) | 지나치게, 너무 |\n| ช่วย | 추어이 (chûay) | ~해 주다 (도움 요청) |\n| ถ่ายรูป | 타ー이 루ー프 (tàai rûup) | 사진을 찍다 |\n| ให้หน่อย | 하이 너이 (hâi nòi) | ~을 좀 해 주다 |\n| ได้ไหม | 다이 마이 (dâai măi) | ~할 수 있나요? |\n\n---\n\n💡 **오늘의 팁:** 세 문장 모두 끝에 ครับ(크랍, 남성)이 붙어 있습니다. 여성 화자라면 전부 ค่ะ(카)로 바꾸세요. 이 정중 어미 하나만 문장 끝에 붙여도 같은 말이 훨씬 공손하게 들리니, 태국에서는 거의 모든 문장에 습관처럼 붙이는 것이 좋습니다."}, "story": {"updated_at": "06/29 00:42", "content": "## 📖 오늘의 단편소설 — 2026-06-29 (월요일)\n\n> # **「표류(A la deriva)」** — 오라시오 키로가 (1912)\n\n**권역/분류:** 중남미(우루과이/아르헨티나) · 근대(1900~1950) · 아이러니/반전\n**원제/수록:** *A la deriva*, 잡지 『Fray Mocho』 1912년 6월 7일 발표 / 단편집 『Cuentos de amor, de locura y de muerte』(1917) 수록\n\n> ※ 아래 줄거리에는 **결말(스포일러)**이 포함되어 있습니다.\n\n---\n\n## ✍️ 작가와 작품\n\n오라시오 키로가(Horacio Quiroga, 1878~1937)는 우루과이 태생으로, 라틴아메리카 단편소설의 선구자로 꼽히는 작가다. 에드거 앨런 포와 루드야드 키플링의 영향을 깊이 받은 그는 아르헨티나 미시오네스 밀림 지대에 직접 정착해 살면서, 자연의 폭력성과 인간의 나약함을 정면으로 다루는 독특한 문학 세계를 구축했다. 「표류」는 그의 대표작이자 라틴아메리카 단편문학의 교과서적 작품으로, 단 몇 페이지 안에 삶과 죽음의 경계를 극도로 압축해 담아낸다.\n\n---\n\n## 📜 줄거리 (결말 포함)\n\n이야기는 설명도 예고도 없이 단칼에 시작된다. 파울리노(Paulino)라는 남자가 미시오네스 밀림 속에서 발을 헛디뎌 무언가 말랑하고 흰 것을 밟는 순간, 발에 날카로운 통증이 박힌다. 야라라쿠수(yararacusú)—남미 최대의 독사 중 하나—에게 물린 것이다. 독은 소리 없이 퍼져나간다.\n\n파울리노는 카누를 타고 파라나 강으로 나선다. 목적지는 타쿠루푸쿠(Tacurú-Pucú). 그러나 강 한가운데서 손이 마비되어 노를 놓쳐버리고, 구토는 피가 섞여 나온다. 강변의 오래된 친구 알베스(Alves)에게 도움을 청하지만 응답이 없다. 카누는 다시 거두어 하류로 그를 데려간다.\n\n해가 기울 무렵, 파울리노에게 이상한 변화가 찾아온다. 다리의 통증이 누그러지는 것 같고, 타오르던 갈증도 사그라든다. 그는 확신한다 — 독이 빠져나가고 있다, 살 것이다. 이것이 이야기 최대의 반전이자 가장 섬뜩한 아이러니다. 사실 이 '쾌감'은 죽음이 임박했을 때 신체가 보내는 마지막 거짓 신호다.\n\n강의 수면은 황금빛으로 물들고, 파라과이 강변에서 불어오는 바람에 오렌지꽃 향기가 실려온다. 파울리노는 점점 더 나아지는 것 같다—느낌만으로는. 그러나 갑자기 가슴까지 냉기가 차오른다.\n\n\"목요일이었지……\"\n\n그리고 숨이 멈춘다. 결말에는 절규도, 발버둥도, 극적인 독백도 없다. 죽음은 단지 와서, 그를 데려간다.\n\n---\n\n## 💡 감상 포인트\n\n이 작품의 핵심적 아이러니는 죽음 직전에 찾아오는 '거짓 회복감'이다 — 파울리노는 마침내 살겠다고 확신하는 바로 그 순간 숨을 거두며, 독자는 그가 모르는 진실을 알고 있는 채로 이 역설을 목격한다. 카누가 강물에 '표류(a la deriva)'하는 물리적 운동은 인간이 운명의 흐름 앞에서 얼마나 무력한지를 상징한다. 마지막 문장 \"목요일이었지……\"의 허탈하고 평범한 단어가 오래 남는다."}};
 
-let dates = [], currentIdx = 0, activeTab = TASKS[0].key, cache = {};
+let active=TASKS[0].key;
 
-const BASE = (function() {
-  var p = location.pathname;
-  return p.endsWith('/') ? p : p + '/';
-})();
-
-function fmtDate(str) {
-  var d = new Date(str + 'T00:00:00');
-  var days = ['일','월','화','수','목','금','토'];
-  return d.getFullYear() + '년 ' + (d.getMonth()+1) + '월 ' + d.getDate() + '일 (' + days[d.getDay()] + ')';
+function today(){
+  const d=new Date(),days=["일","월","화","수","목","금","토"];
+  return d.getFullYear()+"년 "+(d.getMonth()+1)+"월 "+d.getDate()+"일 ("+days[d.getDay()]+")";
 }
 
-async function init() {
-  try {
-    var r = await fetch(BASE + 'data/index.json?v=' + Date.now());
-    if (!r.ok) throw new Error('HTTP ' + r.status);
-    dates = await r.json();
-    currentIdx = 0;
-    await loadDate(0);
-  } catch(e) {
-    document.getElementById('panels').innerHTML = '<div class="loading">❌ ' + e.message + '</div>';
-  }
-}
-
-async function loadDate(idx) {
-  var dateStr = dates[idx];
-  document.getElementById('date-label').textContent = fmtDate(dateStr);
-  document.getElementById('btn-prev').disabled = (idx >= dates.length - 1);
-  document.getElementById('btn-next').disabled = (idx <= 0);
-  document.getElementById('today-btn').style.display = idx === 0 ? 'none' : '';
-  if (!cache[dateStr]) {
-    document.getElementById('panels').innerHTML = '<div class="loading">⏳ 불러오는 중...</div>';
-    var r2 = await fetch(BASE + 'data/' + dateStr + '.json?v=' + Date.now());
-    if (!r2.ok) throw new Error('HTTP ' + r2.status);
-    cache[dateStr] = await r2.json();
-  }
-  render(cache[dateStr]);
-  document.getElementById('status').textContent = '총 ' + dates.length + '일치 데이터';
-}
-
-function movDate(dir) {
-  var next = currentIdx + dir;
-  if (next < 0 || next >= dates.length) return;
-  currentIdx = next;
-  loadDate(currentIdx);
-}
-function goToday() { currentIdx = 0; loadDate(0); }
-
-function esc(s) {
-  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-}
-function inlineHtml(e) {
-  return e.replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>').replace(/\*(.+?)\*/g,'<em>$1</em>').replace(/`(.+?)`/g,'<code>$1</code>');
-}
-function mdLine(s) {
-  if (/^> (.+)$/.test(s)) return '<blockquote>' + inlineHtml(esc(s.replace(/^> /,''))) + '</blockquote>';
-  var e = esc(s);
-  if (/^---+$/.test(e)) return '<hr>';
-  if (/^### (.+)$/.test(e)) return '<h3>' + inlineHtml(e.slice(4)) + '</h3>';
-  if (/^## (.+)$/.test(e))  return '<h2>' + inlineHtml(e.slice(3)) + '</h2>';
-  if (/^# (.+)$/.test(e))   return '<h1>' + inlineHtml(e.slice(2)) + '</h1>';
-  return inlineHtml(e);
-}
-function renderTable(rows) {
-  var cells = rows.map(function(r){ return r.split('|').slice(1,-1).map(function(c){ return c.trim(); }); });
-  if (cells.length < 2) return rows.map(esc).join('<br>');
-  var html = '<table><tr>';
-  cells[0].forEach(function(h){ html += '<th>' + esc(h) + '</th>'; });
-  html += '</tr>';
-  for (var i = 2; i < cells.length; i++) {
-    html += '<tr>';
-    cells[i].forEach(function(c){
-      var ec = esc(c), style = '';
-      if (ec.indexOf('▲') >= 0) style = 'color:#d0021b;font-weight:600';
-      else if (ec.indexOf('▼') >= 0) style = 'color:#0050b3;font-weight:600';
-      html += '<td' + (style ? ' style="'+style+'"' : '') + '>' + ec + '</td>';
-    });
-    html += '</tr>';
-  }
-  return html + '</table>';
-}
-function mdToHtml(text) {
-  if (!text) return '';
-  var lines = text.split('\n'), out = [], inTable = false, tableRows = [];
-  for (var i = 0; i < lines.length; i++) {
-    var line = lines[i];
-    if (/^\|.+\|/.test(line)) {
-      if (!inTable) { inTable = true; tableRows = []; }
-      tableRows.push(line);
-    } else {
-      if (inTable) { out.push(renderTable(tableRows)); tableRows = []; inTable = false; }
-      out.push(mdLine(line));
-    }
-  }
-  if (inTable) out.push(renderTable(tableRows));
-  return out.join('<br>');
-}
-function render(dayData) {
-  var data = dayData.tasks || {};
-  document.getElementById('tabs').innerHTML = TASKS.map(function(t){
-    var d = data[t.key];
-    return '<div class="tab ' + (t.key===activeTab?'active':'') + '" data-key="' + t.key + '"><span class="badge ' + (d?'ok':'') + '"></span>' + t.emoji + ' ' + t.label + '</div>';
-  }).join('');
-  document.querySelectorAll('.tab').forEach(function(el){
-    el.addEventListener('click', function(){ switchTab(el.dataset.key); });
+function md(t){
+  // Table rendering
+  t = t.replace(/\|(.+)\|\n\|[-| :]+\|\n((?:\|.+\|\n?)*)/gm, function(match, header, rows){
+    const ths = header.split('|').filter(c=>c.trim()).map(c=>'<th>'+c.trim()+'</th>').join('');
+    const trs = rows.trim().split('\n').map(row=>{
+      const tds = row.split('|').filter(c=>c.trim()).map(c=>'<td>'+c.trim()+'</td>').join('');
+      return '<tr>'+tds+'</tr>';
+    }).join('');
+    return '<table><thead><tr>'+ths+'</tr></thead><tbody>'+trs+'</tbody></table>';
   });
-  document.getElementById('panels').innerHTML = TASKS.map(function(t){
-    var d = data[t.key];
-    var inner = d
-      ? '<div class="card"><div class="card-head"><div class="card-emoji">' + t.emoji + '</div><div><div class="card-title">' + t.label + '</div><div class="card-time">업데이트: ' + d.updated_at + '</div></div></div><div class="card-body">' + mdToHtml(d.content) + '</div></div>'
-      : '<div class="empty"><div style="font-size:40px;margin-bottom:10px">⏳</div><p style="font-size:14px">데이터 없음</p></div>';
-    return '<div class="panel ' + (t.key===activeTab?'active':'') + '" id="panel-' + t.key + '">' + inner + '</div>';
-  }).join('');
-}
-function switchTab(key) {
-  activeTab = key;
-  document.querySelectorAll('.tab').forEach(function(el){ el.classList.toggle('active', el.dataset.key===key); });
-  document.querySelectorAll('.panel').forEach(function(el){ el.classList.toggle('active', el.id==='panel-'+key); });
+  return t
+    .replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")
+    .replace(/&lt;table/g,"<table").replace(/&lt;\/table/g,"</table")
+    .replace(/&lt;thead/g,"<thead").replace(/&lt;\/thead/g,"</thead")
+    .replace(/&lt;tbody/g,"<tbody").replace(/&lt;\/tbody/g,"</tbody")
+    .replace(/&lt;tr/g,"<tr").replace(/&lt;\/tr/g,"</tr")
+    .replace(/&lt;th/g,"<th").replace(/&lt;\/th/g,"</th")
+    .replace(/&lt;td/g,"<td").replace(/&lt;\/td/g,"</td")
+    .replace(/^---+$/gm,"<hr>")
+    .replace(/^### (.+)$/gm,"<h3>$1</h3>")
+    .replace(/^## (.+)$/gm,"<h2>$1</h2>")
+    .replace(/^# (.+)$/gm,"<h1>$1</h1>")
+    .replace(/^> (.+)$/gm,"<blockquote>$1</blockquote>")
+    .replace(/\*\*(.+?)\*\*/g,"<strong>$1</strong>")
+    .replace(/\*(.+?)\*/g,"<em>$1</em>")
+    .replace(/`(.+?)`/g,"<code>$1</code>");
 }
 
-init();
+function render(){
+  document.getElementById("tabs").innerHTML=TASKS.map(t=>{
+    const d=DATA[t.key];
+    return "<div class=\"tab "+(t.key===active?"active":"")+" \" data-key=\""+t.key+"\">"+
+      "<span class=\"badge "+(d?"ok":"")+"\"></span>"+t.emoji+" "+t.label+"</div>";
+  }).join("");
+  document.querySelectorAll(".tab").forEach(el=>{
+    el.addEventListener("click",()=>switchTab(el.dataset.key));
+  });
+  document.getElementById("panels").innerHTML=TASKS.map(t=>{
+    const d=DATA[t.key];
+    const inner=d
+      ?"<div class=\"card\"><div class=\"card-head\"><div class=\"card-emoji\">"+t.emoji+"</div>"+
+        "<div><div class=\"card-title\">"+t.label+"</div>"+
+        "<div class=\"card-time\">업데이트: "+d.updated_at+"</div></div></div>"+
+        "<div class=\"card-body\">"+md(d.content)+"</div></div>"
+      :"<div class=\"empty\">⏳ 아직 생성되지 않았어요</div>";
+    return "<div class=\"panel "+(t.key===active?"active":"")+" \" id=\"panel-"+t.key+"\">"+inner+"</div>";
+  }).join("");
+}
+
+function switchTab(key){
+  active=key;
+  document.querySelectorAll(".tab").forEach(el=>el.classList.toggle("active",el.dataset.key===key));
+  document.querySelectorAll(".panel").forEach(el=>el.classList.toggle("active",el.id==="panel-"+key));
+}
+
+document.getElementById("hdate").textContent=today();
+document.getElementById("status").textContent="업데이트: 06/29 00:42";
+render();
 </script>
 </body>
 </html>
