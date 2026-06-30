@@ -40,11 +40,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Noto Sans KR",sans-serif;back
 .accordion-inner li{margin-bottom:5px;font-size:16px}
 .accordion-inner a{color:var(--accent)}
 .up{color:#ff4d4d;font-weight:600}.dn{color:#4d9eff;font-weight:600}
-[data-key="portfolio"] .accordion-inner table{display:table;overflow-x:visible;white-space:normal;font-size:12px;table-layout:fixed;width:100%}
-[data-key="portfolio"] .accordion-inner td,[data-key="portfolio"] .accordion-inner th{padding:5px 6px;word-break:break-word;vertical-align:middle}
-[data-key="portfolio"] .accordion-inner th:first-child,[data-key="portfolio"] .accordion-inner td:first-child{width:52%}
-[data-key="portfolio"] .accordion-inner th:nth-child(2),[data-key="portfolio"] .accordion-inner td:nth-child(2){width:28%;text-align:right}
-[data-key="portfolio"] .accordion-inner th:nth-child(3),[data-key="portfolio"] .accordion-inner td:nth-child(3){width:20%;text-align:right}
+[data-key="portfolio"] .accordion-inner table[data-cols="3"]{display:table;overflow-x:visible;white-space:normal;font-size:12px;table-layout:fixed;width:100%}
+[data-key="portfolio"] .accordion-inner table[data-cols="3"] th:first-child,[data-key="portfolio"] .accordion-inner table[data-cols="3"] td:first-child{width:52%}
+[data-key="portfolio"] .accordion-inner table[data-cols="3"] th:nth-child(2),[data-key="portfolio"] .accordion-inner table[data-cols="3"] td:nth-child(2){width:28%;text-align:right}
+[data-key="portfolio"] .accordion-inner table[data-cols="3"] th:nth-child(3),[data-key="portfolio"] .accordion-inner table[data-cols="3"] td:nth-child(3){width:20%;text-align:right}
+[data-key="portfolio"] .accordion-inner table:not([data-cols="3"]){font-size:11px}
 [data-key="stock"] .accordion-inner p{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;margin-bottom:4px}
 </style></head><body>
 <div class="header">
@@ -63,7 +63,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Noto Sans KR",sans-serif;back
 <blockquote><b>6/29 코스피가 하루 910포인트 급락하며 삼성전자(<span class="dn">-5.23%</span>)·SK하이닉스(<span class="dn">-1.35%</span>) 등 반도체 대형주가 동반 약세를 보인 반면, 방산(현대로템 <span class="up">+6.81%</span>)과 미국 배당·소비주(KO·O)는 견조했습니다.</b></blockquote>
 <h2>💹 가격 요약</h2>
 <h3>🇰🇷 국내 주식</h3>
-<table>
+<table data-cols="3">
 <tr><th>종목</th><th>현재가</th><th>전일 대비</th></tr>
 <tr><td>SK하이닉스 (000660)</td><td>2,637,000원</td><td><span class="dn">▼ 1.35%</span></td></tr>
 <tr><td>삼성전자 (005930)</td><td>321,750원</td><td><span class="dn">▼ 5.23%</span></td></tr>
@@ -79,7 +79,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Noto Sans KR",sans-serif;back
 <tr><td>한화시스템 (272210)</td><td>미확인</td><td>—</td></tr>
 </table>
 <h3>🌏 해외 주식 / ETF <i>(미국 6/29 종가 기준)</i></h3>
-<table>
+<table data-cols="3">
 <tr><th>종목</th><th>현재가</th><th>전일 대비</th></tr>
 <tr><td>플래닛 랩스 (PL)</td><td>$27.07</td><td><span class="up">▲ 2.11%</span></td></tr>
 <tr><td>반에크 반도체 ETF (SMH)</td><td>$626.42</td><td><span class="up">▲ 2.42%</span></td></tr>
@@ -117,7 +117,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Noto Sans KR",sans-serif;back
 <h3>BTQ테크놀로지스 (BTQ) <span class="dn">▼ 4.07%</span></h3>
 <p>1. 고변동성 양자/테크 소형주로 차익 실현 매물 출회 (Yahoo Finance, 6/29)</p>
 <h2>🎯 오늘의 액션</h2>
-<table>
+<table data-cols="4">
 <tr><th>우선순위</th><th>종목</th><th>액션</th><th>근거</th></tr>
 <tr><td>🔴</td><td>삼성전자 / SK하이닉스</td><td>추격 매도 자제, 분할 대응 점검</td><td>코스피 급락·반도체 동반 약세, AI 과잉투자 우려</td></tr>
 <tr><td>🔴</td><td>나이키 (NKE)</td><td>실적 발표(6/30) 전 포지션 점검</td><td>중국 <span class="dn">-20%</span> 우려 vs 관세 환급 일회성 이익</td></tr>
@@ -241,7 +241,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Noto Sans KR",sans-serif;back
 <p><b>🇺🇸 영어:</b> Can you lower the price?</p>
 <p><b>📝 문장 설명:</b> 시장이나 노점에서 흥정할 때 가장 기본적으로 쓰는 표현입니다. 「동사 + ได้ไหม(다이 마이)」는 "~할 수 있나요?"라는 가능·요청을 묻는 정중한 구조입니다. 끝에 여성 화자는 คะ(카), 남성 화자는 ครับ(크랍)을 붙입니다.</p>
 <p><b>📚 단어 풀이</b></p>
-<table>
+<table data-cols="3">
 <tr><th>태국어</th><th>발음</th><th>뜻</th></tr>
 <tr><td>ลด</td><td>롯 (lót)</td><td>줄이다, 깎다</td></tr>
 <tr><td>ราคา</td><td>라카 (raakhaa)</td><td>가격</td></tr>
@@ -257,7 +257,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Noto Sans KR",sans-serif;back
 <p><b>🇺🇸 영어:</b> I want to go to the market because I want to buy fruit.</p>
 <p><b>📝 문장 설명:</b> 「เพราะ(프로)」는 "~때문에, ~해서"라는 이유를 나타내는 접속사입니다. 「อยาก(약) + 동사」는 "~하고 싶다"라는 바람을 표현합니다. ผม(폼)은 남성 1인칭이며 여성은 ฉัน(찬)으로 바꿔 쓰면 됩니다.</p>
 <p><b>📚 단어 풀이</b></p>
-<table>
+<table data-cols="3">
 <tr><th>태국어</th><th>발음</th><th>뜻</th></tr>
 <tr><td>ผม</td><td>폼 (phǒm)</td><td>저 (남성 1인칭)</td></tr>
 <tr><td>อยาก</td><td>약 (yàak)</td><td>~하고 싶다</td></tr>
@@ -275,7 +275,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Noto Sans KR",sans-serif;back
 <p><b>🇺🇸 영어:</b> Sorry to bother you, but I wonder if you could recommend a good restaurant around here?</p>
 <p><b>📝 문장 설명:</b> 「ขอโทษที่รบกวน(커톳 티 롭꾸안)」은 "방해해서 죄송합니다"라는 정중한 도입부입니다. 「ไม่ทราบว่า...ได้ไหม(마이 쌉 와...다이 마이)」는 직역하면 "~할 수 있을지 모르겠습니다만"으로, 부탁을 부드럽게 돌려 말하는 정중한 완곡어법입니다. อร่อยๆ처럼 형용사를 반복하면 "꽤 맛있는" 같은 강조의 뉘앙스가 됩니다.</p>
 <p><b>📚 단어 풀이</b></p>
-<table>
+<table data-cols="3">
 <tr><th>태국어</th><th>발음</th><th>뜻</th></tr>
 <tr><td>ขอโทษ</td><td>커톳 (khǎaw-thôot)</td><td>죄송합니다</td></tr>
 <tr><td>รบกวน</td><td>롭꾸안 (róp-kuan)</td><td>방해하다, 폐를 끼치다</td></tr>
