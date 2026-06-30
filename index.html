@@ -1,100 +1,547 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>Daily Dashboard</title>
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:-apple-system,BlinkMacSystemFont,'Noto Sans KR','Segoe UI',sans-serif;background:#0f172a;color:#e2e8f0;min-height:100vh;font-size:18px}
-.header{background:linear-gradient(135deg,#4c1d95,#5b21b6,#7c3aed,#8b5cf6);padding:16px;text-align:center;position:sticky;top:0;z-index:100;box-shadow:0 2px 20px rgba(0,0,0,.4)}
-.header h1{font-size:17px;font-weight:700;color:#fff;margin-bottom:8px}
-.nav{display:flex;align-items:center;justify-content:center;gap:14px;margin-bottom:4px}
-.nav-btn{background:rgba(255,255,255,.2);border:none;color:#fff;font-size:15px;width:32px;height:32px;border-radius:50%;cursor:pointer;transition:background .2s;display:flex;align-items:center;justify-content:center}
-.nav-btn:hover:not(:disabled){background:rgba(255,255,255,.35)}
-.nav-btn:disabled{opacity:.25;cursor:default}
-.nav-date{font-size:16px;font-weight:600;color:#fff;min-width:60px;text-align:center}
-.uptime{font-size:11px;color:rgba(255,255,255,.65)}
-.cards{padding:10px 12px;display:flex;flex-direction:column;gap:8px}
-.card{background:#1e293b;border-radius:12px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.3)}
-.card-header{padding:16px 16px 14px;display:flex;align-items:center;gap:10px;cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent}
-.card-icon{font-size:22px;flex:0 0 auto}
-.card-title{font-size:18px;font-weight:600;color:#f1f5f9;flex:1}
-.toggle{font-size:13px;color:#94a3b8;transition:transform .25s;flex:0 0 auto}
-.card-body{max-height:0;overflow:hidden;transition:max-height .4s ease}
-.card-body.open{max-height:6000px}
-.card-inner{padding:0 16px 16px;border-top:1px solid rgba(255,255,255,.07)}
-.card-inner p{font-size:17px;line-height:1.8;color:#cbd5e1;white-space:pre-wrap;word-break:break-word}
-.up{color:#ff4d4d;font-weight:700}
-.dn{color:#4d9eff;font-weight:700}
-.msg{text-align:center;padding:40px;color:#64748b;font-size:16px}
-.footer{text-align:center;padding:16px;color:#475569;font-size:13px}
+:root {
+  --bg: #1a1a2e;
+  --item-bg: #16213e;
+  --item-bg2: #1a1a2e;
+  --border: rgba(255,255,255,0.08);
+  --text: #e0e0e0;
+  --muted: #888;
+  --accent: #a78bfa;
+  --accent2: #f87171;
+  --safe-t: env(safe-area-inset-top, 0px);
+  --safe-b: env(safe-area-inset-bottom, 0px);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Noto Sans KR', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 18px;
+  line-height: 1.75;
+  padding-top: var(--safe-t);
+  padding-bottom: var(--safe-b);
+}
+
+/* ── Gradient header ── */
+.header {
+  background: linear-gradient(135deg, #4c1d95 0%, #5b21b6 30%, #7c3aed 60%, #8b5cf6 80%, #a78bfa 100%);
+  padding: 18px 16px 16px;
+  text-align: center;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 2px 20px rgba(0,0,0,0.4);
+}
+.header-title {
+  font-size: 17px;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: 0.3px;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+}
+.header-nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin-bottom: 4px;
+}
+.nav-arrow {
+  background: rgba(255,255,255,0.2);
+  border: none;
+  color: #fff;
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  font-size: 14px;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: background 0.15s;
+}
+.nav-arrow:active { background: rgba(255,255,255,0.35); }
+.header-date {
+  font-size: 16px;
+  font-weight: 600;
+  color: #fff;
+  min-width: 60px;
+  text-align: center;
+}
+.header-updated {
+  font-size: 11px;
+  color: rgba(255,255,255,0.65);
+  margin-top: 2px;
+}
+
+/* ── Accordion list ── */
+.list {
+  padding: 0;
+}
+.accordion-item {
+  border-bottom: 1px solid var(--border);
+}
+.accordion-btn {
+  width: 100%;
+  background: var(--item-bg);
+  border: none;
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 18px 16px;
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.15s;
+  -webkit-tap-highlight-color: transparent;
+}
+.accordion-btn:active { background: #1f2a4a; }
+.acc-icon { font-size: 22px; flex: 0 0 auto; }
+.acc-label { flex: 1; font-size: 18px; font-weight: 500; }
+.acc-arrow {
+  font-size: 14px;
+  color: var(--muted);
+  transition: transform 0.25s;
+  flex: 0 0 auto;
+}
+.accordion-btn.open .acc-arrow { transform: rotate(180deg); }
+
+/* ── Accordion body ── */
+.accordion-body {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.35s ease;
+}
+.accordion-body.open { max-height: 4000px; }
+.accordion-inner {
+  padding: 16px 16px 20px;
+  background: var(--item-bg2);
+  border-top: 1px solid var(--border);
+}
+
+/* ── Content styles ── */
+.accordion-inner h1 { font-size: 20px; color: #fff; margin: 12px 0 8px; }
+.accordion-inner h2 {
+  font-size: 17px; color: var(--accent);
+  margin: 18px 0 7px;
+  padding-left: 10px;
+  border-left: 3px solid var(--accent);
+}
+.accordion-inner h3 { font-size: 16px; color: #ccc; margin: 14px 0 5px; }
+.accordion-inner h4 { font-size: 15px; color: var(--muted); margin: 10px 0 4px; }
+.accordion-inner p { margin-bottom: 7px; font-size: 17px; }
+.accordion-inner blockquote {
+  border-left: 3px solid var(--accent2);
+  padding: 10px 14px;
+  margin: 12px 0;
+  background: rgba(248,113,113,0.07);
+  border-radius: 0 8px 8px 0;
+  font-style: italic;
+  font-size: 17px;
+}
+.accordion-inner table {
+  width: 100%; border-collapse: collapse;
+  font-size: 15px; margin: 12px 0;
+  display: block; overflow-x: auto;
+  white-space: nowrap;
+}
+.accordion-inner th, .accordion-inner td {
+  border: 1px solid var(--border);
+  padding: 8px 10px;
+}
+.accordion-inner th { background: #1e2a50; color: var(--accent); }
+.accordion-inner tr:nth-child(even) td { background: rgba(255,255,255,0.03); }
+.accordion-inner code {
+  background: rgba(255,255,255,0.08);
+  padding: 2px 6px; border-radius: 4px;
+  font-size: 15px; font-family: monospace;
+}
+.accordion-inner hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
+.accordion-inner ul { padding-left: 20px; margin-bottom: 8px; }
+.accordion-inner li { margin-bottom: 5px; font-size: 17px; }
+.accordion-inner a { color: var(--accent); }
+.up { color: #ff4d4d; font-weight: 600; }
+.dn { color: #4d9eff; font-weight: 600; }
 </style>
 </head>
 <body>
+
 <div class="header">
-  <h1>🗓️ Daily Dashboard</h1>
-  <div class="nav">
-    <button class="nav-btn" id="prevBtn" onclick="changeDate(-1)">◀</button>
-    <span class="nav-date" id="dateLabel"></span>
-    <button class="nav-btn" id="nextBtn" onclick="changeDate(1)" disabled>▶</button>
+  <div class="header-title">🗓️ Daily Dashboard</div>
+  <div class="header-nav">
+    <button class="nav-arrow" id="btn-prev">◀</button>
+    <div class="header-date" id="hdr-date"></div>
+    <button class="nav-arrow" id="btn-next">▶</button>
   </div>
-  <div class="uptime" id="uptime"></div>
+  <div class="header-updated">업데이트: 06/30 08:00</div>
 </div>
-<div class="cards" id="cards"></div>
-<div class="footer">카드를 탭하면 펼쳐집니다</div>
+
+<div class="list">
+
+<div class="accordion-item">
+  <button class="accordion-btn" onclick="toggle(this)">
+    <span class="acc-icon">📋</span>
+    <span class="acc-label">포트폴리오 브리핑</span>
+    <span class="acc-arrow">▽</span>
+  </button>
+  <div class="accordion-body">
+    <div class="accordion-inner">
+<h1>📊 포트폴리오 일일 브리핑</h1>
+<p><b>2026년 6월 30일 (화)</b> | 기준: 최근 거래일(6/29) 종가 — Chrome 미연결로 WebSearch 수집</p>
+<h2>🔑 오늘의 핵심 한 줄</h2>
+<blockquote><b>6/29 코스피가 하루 910포인트 급락하며 삼성전자(<span class="dn">-5.23%</span>)·SK하이닉스(<span class="dn">-1.35%</span>) 등 반도체 대형주가 동반 약세를 보인 반면, 방산(현대로템 <span class="up">+6.81%</span>)과 미국 배당·소비주(KO·O)는 견조했습니다.</b></blockquote>
+<h2>💹 가격 요약</h2>
+<h3>🇰🇷 국내 주식</h3>
+<table>
+<tr><th>종목</th><th>현재가</th><th>전일 대비</th></tr>
+<tr><td>SK하이닉스 (000660)</td><td>2,637,000원</td><td><span class="dn">▼ 1.35%</span></td></tr>
+<tr><td>삼성전자 (005930)</td><td>321,750원</td><td><span class="dn">▼ 5.23%</span></td></tr>
+<tr><td>KODEX 200 (069500)</td><td>146,945원 <i>(기준일 06/18)</i></td><td>—</td></tr>
+<tr><td>현대차 (005380)</td><td>500,000원</td><td><span class="up">▲ 4.06%</span></td></tr>
+<tr><td>레인보우로보틱스 (277810)</td><td>480,000원 <i>(기준일 06/26)</i></td><td>—</td></tr>
+<tr><td>한미반도체 (042700)</td><td>261,000원 <i>(장전)</i></td><td><span class="up">▲ 1.36%</span></td></tr>
+<tr><td>한화오션 (042660)</td><td>111,200원 <i>(기준일 06/23)</i></td><td><span class="dn">▼ 4.55%</span></td></tr>
+<tr><td>현대로템 (064350)</td><td>227,500원</td><td><span class="up">▲ 6.81%</span></td></tr>
+<tr><td>GST (083450)</td><td>51,700원 <i>(기준일 06/05)</i></td><td><span class="dn">▼ 6.00%</span></td></tr>
+<tr><td>리노공업 (058470)</td><td>88,700원 <i>(기준일 06/25)</i></td><td><span class="up">▲ 4.11%</span></td></tr>
+<tr><td>한화에어로스페이스 (012450)</td><td>1,122,000원 <i>(기준일 06/19)</i></td><td><span class="dn">▼ 5.63%</span></td></tr>
+<tr><td>한화시스템 (272210)</td><td>미확인</td><td>—</td></tr>
+</table>
+<h3>🌏 해외 주식 / ETF <i>(미국 6/29 종가 기준)</i></h3>
+<table>
+<tr><th>종목</th><th>현재가</th><th>전일 대비</th></tr>
+<tr><td>플래닛 랩스 (PL)</td><td>$27.07</td><td><span class="up">▲ 2.11%</span></td></tr>
+<tr><td>반에크 반도체 ETF (SMH)</td><td>$626.42</td><td><span class="up">▲ 2.42%</span></td></tr>
+<tr><td>레드와이어 (RDW)</td><td>$10.93</td><td>▬ 0.00%</td></tr>
+<tr><td>엔비디아 (NVDA)</td><td>$192.71</td><td><span class="up">▲ 0.09%</span></td></tr>
+<tr><td>인베스코 나스닥100 ETF (QQQM)</td><td>$293.55</td><td><span class="up">▲ 0.50%</span></td></tr>
+<tr><td>알트리아 (MO)</td><td>$73.79</td><td>▬ 0.00%</td></tr>
+<tr><td>ARK 게노믹 ETF (ARKG)</td><td>$42.29</td><td><span class="up">▲ 2.09%</span></td></tr>
+<tr><td>코카콜라 (KO)</td><td>$82.63</td><td><span class="up">▲ 2.75%</span></td></tr>
+<tr><td>SPDR S&P500 ETF (SPYM)</td><td>$86.69</td><td><span class="up">▲ 0.30%</span></td></tr>
+<tr><td>글로벌X 우라늄 ETF (URA)</td><td>$43.61</td><td><span class="dn">▼ 6.77%</span> (주간)</td></tr>
+<tr><td>앰플리파이 CWP ETF (QDVO)</td><td>$30.71</td><td><span class="dn">▼ 0.71%</span></td></tr>
+<tr><td>JP모건 나스닥 프리미엄인컴 ETF (JEPQ)</td><td>$60.15</td><td><span class="up">▲ 0.03%</span></td></tr>
+<tr><td>리얼티인컴 (O)</td><td>$63.04</td><td><span class="up">▲ 1.61%</span></td></tr>
+<tr><td>슈왑 미국배당 ETF (SCHD)</td><td>$31.94</td><td><span class="dn">▼ 0.60%</span></td></tr>
+<tr><td>나이키 (NKE)</td><td>$41.15</td><td><span class="up">▲ 1.00%</span></td></tr>
+<tr><td>메인스트리트 캐피털 (MAIN)</td><td>$51.01</td><td><span class="up">▲ 1.00%</span></td></tr>
+<tr><td>뉴스케일파워 (SMR)</td><td>$10.22</td><td><span class="up">▲ 1.19%</span></td></tr>
+<tr><td>BTQ테크놀로지스 (BTQ)</td><td>$5.19</td><td><span class="dn">▼ 4.07%</span></td></tr>
+<tr><td>얼라이트 (ALIT)</td><td>$0.55</td><td><span class="dn">▼ 1.00%</span></td></tr>
+</table>
+<h2>📰 주요 뉴스 (상위 변동 종목)</h2>
+<h3>삼성전자 (005930) <span class="dn">▼ 5.23%</span></h3>
+<p>1. 코스피, 하루 새 910포인트 폭락…반도체 대형주 동반 약세 (MBC뉴스, 6/29)</p>
+<p>2. 삼성전자, 시총 1위 내주고 하락 전환…코스피 고점 신호 우려 (MBC뉴스, 6/29)</p>
+<p>3. 향후 10년 1,000조원 반도체 인프라 투자 계획 보도에 AI 과잉투자 우려 부각 (Investing.com, 6월 말)</p>
+<h3>현대로템 (064350) <span class="up">▲ 6.81%</span></h3>
+<p>1. 방산 수주잔고 약 10.8조원(3.3년치)·폴란드 2차 계약 양산 순항에 강세 (유진투자증권)</p>
+<p>2. 증권사 6개월 평균 목표주가 298,500원으로 직전 대비 <span class="up">+17.7%</span> 상향 (Investing.com 컨센서스)</p>
+<h3>나이키 (NKE) — 6/30 FY26 4분기 실적 발표 예정</h3>
+<p>1. 컨센서스 매출 $108.5억(YoY <span class="dn">-2%</span>), EPS $0.13 전망. CEO 엘리엇 힐의 'Win Now' 턴어라운드 진행</p>
+<p>2. 중국 매출 약 <span class="dn">-20%</span> 예상되나 관세 환급 일회성 이익 가능성 (Seeking Alpha)</p>
+<h3>코카콜라 (KO) <span class="up">▲ 2.75%</span></h3>
+<p>1. 방어주 성격·브랜드 경쟁력에 시장 변동성 속 견조한 흐름</p>
+<h3>BTQ테크놀로지스 (BTQ) <span class="dn">▼ 4.07%</span></h3>
+<p>1. 고변동성 양자/테크 소형주로 차익 실현 매물 출회 (Yahoo Finance, 6/29)</p>
+<h2>🎯 오늘의 액션</h2>
+<table>
+<tr><th>우선순위</th><th>종목</th><th>액션</th><th>근거</th></tr>
+<tr><td>🔴</td><td>삼성전자 / SK하이닉스</td><td>추격 매도 자제, 분할 대응 점검</td><td>코스피 급락·반도체 동반 약세, AI 과잉투자 우려</td></tr>
+<tr><td>🔴</td><td>나이키 (NKE)</td><td>실적 발표(6/30) 전 포지션 점검</td><td>중국 <span class="dn">-20%</span> 우려 vs 관세 환급 일회성 이익</td></tr>
+<tr><td>🟡</td><td>현대로템 (064350)</td><td>강세 시 일부 차익 실현 검토</td><td><span class="up">+6.81%</span> 급등, 목표가 상향됐으나 단기 과열 점검</td></tr>
+<tr><td>🟡</td><td>KODEX 200·한화시스템</td><td>정확 시세 재확인</td><td>수집 시세 신선도 미흡 — HTS/MTS에서 확인 필요</td></tr>
+<tr><td>🟢</td><td>코카콜라·리얼티인컴 (KO·O)</td><td>배당·방어 비중 유지</td><td>시장 변동성 속 상대적 견조, 인컴 안정판</td></tr>
+</table>
+<hr>
+<blockquote>⚠️ Chrome+Google Finance 미연결로 WebSearch 수집. 일부 종목 기준일이 당일이 아닐 수 있으므로 정확도 확인이 필요합니다.</blockquote>
+    </div>
+  </div>
+</div>
+<div class="accordion-item">
+  <button class="accordion-btn" onclick="toggle(this)">
+    <span class="acc-icon">📊</span>
+    <span class="acc-label">주식 뉴스 브리핑</span>
+    <span class="acc-arrow">▽</span>
+  </button>
+  <div class="accordion-body">
+    <div class="accordion-inner">
+<h2>📈 주식 참고 뉴스 — 2026-06-30 (화요일)</h2>
+<hr>
+<h3>1. SpaceX, 역사적 IPO 성공 — 나스닥 상장 후 주가 <span class="up">+50%</span>, 시총 $2.8조</h3>
+<p><b>분야:</b> 산업·기업 · <b>지역:</b> 해외 · <b>출처:</b> CNBC, Bloomberg</p>
+<p>스페이스X가 $135/주로 나스닥(SPCX)에 상장해 $75B 이상을 조달하며 IPO 역사상 최대 규모를 기록했다. 첫 정규 거래일 주가는 <span class="up">+20%</span>, 현재 $202 수준으로 IPO 대비 약 50% 상승하며 시총 약 $2.8조를 달성, 아마존·메타를 제치고 세계 5위 기업에 올랐다. 우주·방산 관련주 및 SPCX 연동 ETF 전반에 대규모 수급 이동이 예상된다.</p>
+<hr>
+<h3>2. 연준(Fed) 6월 금리 동결, 점도표 '추가 인상' 가능성 시사</h3>
+<p><b>분야:</b> 거시·정책 · <b>지역:</b> 해외 · <b>출처:</b> CNBC, Federal Reserve</p>
+<p>6월 17일 FOMC는 기준금리를 3.5~3.75%로 동결했다. 워시 신임 의장 체제 첫 회의에서 인플레이션 둔화 지연을 이유로 연내 추가 인상 가능성을 점도표에 반영했다. 2026년 말 중간값 금리 전망이 3.4%→3.8%로 상향됐으며, 시장은 10월 추가 25bp 인상을 가격에 반영 중이다.</p>
+<hr>
+<h3>3. Micron Q3 FY2026 사상 최대 실적 — 매출 $41.5B, HBM4 완판</h3>
+<p><b>분야:</b> IT·반도체·AI · <b>지역:</b> 해외 · <b>출처:</b> CNBC, Futurum Group</p>
+<p>마이크론이 Q3(6월 24일 발표)에서 매출 $41.5B(YoY <span class="up">+346%</span>)을 기록하며 월가 전망치($35.7B)를 대폭 상회했다. HBM4는 엔비디아 베라 루빈 플랫폼용으로 완판 상태이며, 수급 부족은 2027년 이후까지 지속 전망. 삼성·SK하이닉스 동반 수혜 기대.</p>
+<hr>
+<h3>4. OpenAI·Anthropic, IPO 기밀 신청 — AI 최대 기업들 상장 임박</h3>
+<p><b>분야:</b> IT·반도체·AI · <b>지역:</b> 해외 · <b>출처:</b> CNBC</p>
+<p>OpenAI와 Anthropic이 6월 초 각각 S-1 기밀 신청을 제출한 것으로 확인됐다. AI 기업 역사상 최대 규모 IPO가 될 가능성이 높으며, Microsoft($13B 투자), Google 등 전략적 투자자들의 지분 가치 실현 여부도 변수다.</p>
+<hr>
+<h3>5. 이재명 정부 "1000조 첨단산업 투자 프로젝트" 발표</h3>
+<p><b>분야:</b> IT·반도체·AI · <b>지역:</b> 국내 · <b>출처:</b> 아시아경제, 글로벌이코노믹</p>
+<p>정부가 6월 30일 반도체·AI·로봇을 아우르는 '1000조 프로젝트'를 발표했다. 삼성전자·SK그룹의 10년간 2000조원 투자계획(호남·충청·영남 반도체 클러스터 포함)이 공개되며, 삼성전기의 AI 서버용 MLCC 약 5000억원 공급 계약 조율 소식도 주목받고 있다.</p>
+<hr>
+<h3>6. OpenAI, 자체 AI 칩 '할라페뇨' 공개 — 삼성·SK하이닉스 메모리 탑재</h3>
+<p><b>분야:</b> IT·반도체·AI · <b>지역:</b> 해외 · <b>출처:</b> YTN, CNBC</p>
+<p>오픈AI가 브로드컴과 공동개발한 AI 추론 특화 칩 '할라페뇨'를 공개하고 연말 데이터센터 배치를 예고했다. 삼성전자·SK하이닉스 메모리를 탑재해 엔비디아 의존도 축소를 공식화했다. 단기적으로 엔비디아에 경쟁 압력이 되지만, 국내 메모리 기업에는 새로운 수요처 확보라는 긍정적 신호다.</p>
+<hr>
+<h3>7. 미중 관세 협상 6월 30일 기한 도달 — 포괄적 합의 미도달</h3>
+<p><b>분야:</b> 국제정세·지정학 · <b>지역:</b> 해외 · <b>출처:</b> SCMP, Supply Chain Dive</p>
+<p>6월 30일 미중 협상 시한이 도래했으나 포괄적 관세 합의는 이뤄지지 않았다. USTR은 강제노동 관련 301조 조사 결과로 중국·인도 등에 12.5% 추가 관세를 별도 제안했다. 핵심 관세 구조는 그대로이며 반도체 수출규제 향방이 관건이다.</p>
+<hr>
+<h3>8. 반도체 섹터 반등 — 6월 초 $1.3조 급락 후 AI 칩주 회복</h3>
+<p><b>분야:</b> IT·반도체·AI · <b>지역:</b> 해외 · <b>출처:</b> Intellectia AI, 247 Wall St.</p>
+<p>6월 5일 브로드컴의 AI 매출 가이던스 실망으로 PHLX 반도체지수가 10% 급락(-$1.3조)했으나, 마이크론 호실적 이후 빠르게 반등 중이다. 엔비디아 $200 선, AMD $452(YTD <span class="up">+111%</span>). AI 인프라 수요는 확인됐으나 기대치 대비 미스 시 변동성이 크다는 점을 재차 확인했다.</p>
+<hr>
+<h3>9. 엔비디아 Q1 FY27 매출 $81.6B (<span class="up">+85%</span> YoY) — 2027년 AI 인프라 $1조 전망</h3>
+<p><b>분야:</b> IT·반도체·AI · <b>지역:</b> 해외 · <b>출처:</b> Bloomberg, 엔비디아 공시</p>
+<p>엔비디아의 Q1 FY27 데이터센터 매출이 $75.2B(<span class="up">+92%</span> YoY)을 기록했다. 유럽에 35개 슈퍼컴퓨팅 시스템 확장 및 Vera CPU 발표. 2027년까지 글로벌 AI 인프라 수요가 $1조에 달할 것으로 전망, HBM4 공급망(SK하이닉스·마이크론)의 중요성이 부각됐다.</p>
+<hr>
+<h3>10. ECB 신트라 포럼 개막 (6/29~7/1) — 글로벌 통화정책 방향 주목</h3>
+<p><b>분야:</b> 거시·정책 · <b>지역:</b> 해외 · <b>출처:</b> 인베스팅닷컴</p>
+<p>포르투갈 신트라에서 ECB 연례 심포지엄이 개막됐다. 유럽 금리 경로에 대한 발언이 나올 경우 유로/달러 환율과 글로벌 채권시장에 파급효과가 예상된다. 한국 원화 환율과 외국인 수급에도 간접 영향.</p>
+<hr>
+<h3>11. 삼성전자 HBM4 양산 개시·AMD 주공급사 지정 — SK하이닉스 독주 균열</h3>
+<p><b>분야:</b> IT·반도체·AI · <b>지역:</b> 국내·해외 · <b>출처:</b> 글로벌이코노믹, Investing.com</p>
+<p>삼성전자가 2026년 2분기부터 HBM4 양산을 시작하며 AMD 차세대 AI 가속기의 주공급사로 지정됐다. UBS는 삼성이 2027년까지 SK하이닉스와 HBM 시장점유율을 동등하게 따라잡을 것으로 전망했다. SK하이닉스 62%, 마이크론 21%, 삼성 17%이던 구도가 재편 중이다.</p>
+<hr>
+<h3>12. Microsoft, 독자 AI 모델 공개 — OpenAI 의존도 축소 선언</h3>
+<p><b>분야:</b> IT·반도체·AI · <b>지역:</b> 해외 · <b>출처:</b> CNBC, Euronews</p>
+<p>마이크로소프트(OpenAI에 $13B 투자)가 6월 자사 개발 저비용 AI 모델군을 공개했다. 사티아 나델라 CEO는 "소수 모델에 가치를 내주지 않겠다"고 밝혀 AI 모델 경쟁 심화 및 토큰 단가 하락 압력이 가속될 수 있다.</p>
+<hr>
+<h3>13. TSMC 첨단공정(7나노 이하) 가격 5~10% 인상 통보</h3>
+<p><b>분야:</b> IT·반도체·AI · <b>지역:</b> 해외 · <b>출처:</b> 검색 종합</p>
+<p>TSMC가 주요 고객사에 7나노 이하 첨단공정 파운드리 가격을 5~10% 인상하는 방안을 통보했다. AI 수요 급증에 따른 선단 공정 수급 타이트화가 배경이다. 파운드리 고객사 원가 부담 증가 → 최종 제품 가격 압력 및 마진 변화로 연결될 수 있다.</p>
+<hr>
+<h3>14. SpaceX 상장 후 우주 관련주 변동성 확대 — 한국 우주 펀드 2000억 확대</h3>
+<p><b>분야:</b> 산업·기업 · <b>지역:</b> 국내·해외 · <b>출처:</b> CBC뉴스, 다음 뉴스</p>
+<p>SpaceX IPO 이후 켄코아에어로스페이스 등 국내 우주 관련주가 9% 급락하는 등 변동성이 커졌다. 한국 우주항공청은 뉴스페이스 투자펀드를 2025년 81억원에서 2026년 2000억원 규모로 대폭 확대할 계획이다.</p>
+<hr>
+<h3>15. WTI 유가 $69대 하락·코스피 8,800선 전망·한국 기준금리 2.5% 동결</h3>
+<p><b>분야:</b> 거시·정책 · <b>지역:</b> 국내·해외 · <b>출처:</b> Investing.com, 한국은행</p>
+<p>WTI 원유는 6월 26일 $69.23(<span class="dn">-3.74%</span>)로 하락세를 이어가고 있다. 코스피는 반도체 슈퍼사이클 랠리에 힘입어 6월 말 약 8,800선이 전망되며, 한국은행 기준금리는 2.5% 동결 유지. 차기 통화정책 결정회의는 7월 16일 예정.</p>
+<hr>
+<p><i>이슈/파급력 순 참고용 정보. 특정 종목 매수·매도 권유 아님. 투자 판단·책임은 본인.</i></p>
+    </div>
+  </div>
+</div>
+<div class="accordion-item">
+  <button class="accordion-btn" onclick="toggle(this)">
+    <span class="acc-icon">🔮</span>
+    <span class="acc-label">오늘의 운세</span>
+    <span class="acc-arrow">▽</span>
+  </button>
+  <div class="accordion-body">
+    <div class="accordion-inner">
+<h2>🔮 오늘의 일진</h2>
+<blockquote># <b>병오(丙午)년 갑오(甲午)월 을해(乙亥)일</b> — 2026-06-30 (화)</blockquote>
+<p>오늘은 <b>을해(乙亥)일</b>입니다. 일진의 천간 을목(乙木)은 일간과 같은 <b>비견(比肩)</b> — 나와 어깨를 나란히 하는 동료·자립의 기운이고, 지지 해수(亥水) 속 임수는 <b>정인(正印)</b> — 배움과 후원, 누군가의 보살핌을 상징합니다. 게다가 해수는 당신 원국의 월지 인목(寅)과 <b>인해합목(寅亥合木)</b>을 이루어, 흩어졌던 힘이 한 방향으로 모이는 날입니다. 한마디로 "내 편이 늘고, 뒤를 받쳐주는 기운이 들어오는" 든든한 하루입니다.</p>
+<h2>🌟 총운 ★★★★</h2>
+<p>정인이 일간을 생(生)하고 비견이 힘을 보태니, 을목이 뿌리내리기 좋은 신강(身强)한 흐름입니다. 자기 주관을 세우고 추진하기에 유리하고, 도움을 청하면 의외로 손이 잘 닿습니다. 다만 연월에 오화(午)가 강해 기운이 새어나갈(설기) 여지도 있으니, 욕심내어 일을 벌이기보다 <b>한 가지에 집중</b>할 때 결실이 큽니다.</p>
+<h2>💰 재물운</h2>
+<p>정인의 날은 직접적인 '돈'보다 <b>정보·신뢰·관계</b>가 재물의 씨앗이 되는 흐름입니다. 새 계약이나 큰 지출을 서두르기보다, 자료를 꼼꼼히 살피고 배움에 투자하면 길게 이득이 됩니다. 충동적 결정만 피하면 무난한 하루입니다.</p>
+<h2>💼 일·직장운</h2>
+<p>비견+정인 조합은 <b>협업과 멘토링</b>에 강합니다. 혼자 끌어안던 일을 동료와 나누거나, 경험 많은 이에게 조언을 구하면 막힌 곳이 풀립니다. 문서·기획·공부처럼 '쌓아두는 일'이 특히 잘 됩니다.</p>
+<h2>❤️ 관계운</h2>
+<p>해수의 정인 기운은 따뜻하고 포용적입니다. 먼저 들어주고 보살피는 태도가 신뢰를 키웁니다. 비견의 영향으로 또래·동료와의 인연이 좋으니, 오래 연락 못 한 사람에게 안부를 전해보세요.</p>
+<h2>🏃 건강운</h2>
+<p>을목 체질은 간·신경계와 유연성이 관건입니다. 수(水) 기운이 강한 날이라 몸이 차가워지기 쉬우니 <b>하체와 발을 따뜻하게</b> 하고, 수분은 적당히 조절하세요. 가벼운 스트레칭으로 굳은 몸을 풀면 좋습니다.</p>
+<h2>🍀 오늘의 한 마디</h2>
+<blockquote><b>"혼자 다 짊어지지 마세요 — 손 내밀면 받쳐줄 사람이 옵니다."</b></blockquote>
+<blockquote>행운 시간대: 오전 9~11시(사시) | 행운 색: 청록·검정 | 방향: 동쪽·북쪽</blockquote>
+<hr>
+<p><i>명리학적 관점의 참고용 해석입니다. 중요한 결정은 언제나 당신의 판단이 우선입니다.</i></p>
+    </div>
+  </div>
+</div>
+<div class="accordion-item">
+  <button class="accordion-btn" onclick="toggle(this)">
+    <span class="acc-icon">📅</span>
+    <span class="acc-label">오늘의 역사</span>
+    <span class="acc-arrow">▽</span>
+  </button>
+  <div class="accordion-body">
+    <div class="accordion-inner">
+<h2>📜 오늘의 역사 한 조각 — 2026-06-30 (화)</h2>
+<blockquote># <b>유로코뮤니즘의 균열 — 동베를린 유럽 공산당 대회</b> (1976)</blockquote>
+<h2>🕰️ 무슨 일이 있었나</h2>
+<p>1976년 6월 29~30일, 동베를린에서 유럽 29개 공산·노동자당 대표들이 모인 역사적 회의가 열렸다. 소련 공산당(CPSU)은 이 회의를 통해 '프롤레타리아 국제주의' 원칙 아래 서유럽 공산당들을 다시 결집시키려 했다. 그러나 이탈리아·프랑스·스페인 공산당은 모스크바의 노선을 공개적으로 거부하고, 각 당이 민족적 조건에 따라 자율적으로 사회주의 노선을 결정할 권리를 선언했다. 소련이 원하던 결속 문서는 끝내 채택되지 않았다.</p>
+<h2>🌍 배경과 맥락</h2>
+<p>1968년 프라하의 봄을 소련군이 무력으로 진압한 사건은 서유럽 좌파에게 깊은 환멸을 남겼다. 이후 이탈리아 공산당 서기장 엔리코 베를링구에르 등은 '유로코뮤니즘(Eurocommunism)'이라는 새로운 흐름을 주도했는데, 이는 의회민주주의와 시민적 자유를 수용하고 소련 모델과 결별하는 것을 핵심으로 했다. 동베를린 회의는 이 균열이 공개적·공식적으로 드러난 첫 번째 국제 무대였다.</p>
+<h2>💡 오늘의 우리에게</h2>
+<p>이 사건은 거대한 이념 블록도 내부에서부터 균열하며 변화한다는 사실을 보여준다. '국제 연대'를 내세우는 조직이라도 구성원들의 자율성을 억누를 경우 분열이 불가피하다. 획일적 지시보다 다양성을 수용하는 구조가 오래 살아남는다는 교훈은 오늘날 기업·국가·국제기구 어디에나 적용된다.</p>
+<hr>
+<h2>💡 나를 발전시키는 지식 한 조각 — 2026-06-30 (화)</h2>
+<blockquote># <b>사법심사(Judicial Review) — 법원이 입법부를 견제하는 힘</b></blockquote>
+<p><b>카테고리:</b> 정치 · 헌법/법치</p>
+<h2>📖 핵심 개념</h2>
+<p>사법심사(judicial review)란 법원이 의회가 만든 법률이 헌법에 위배되는지 심사하고, 위헌으로 판단되면 그 법률의 효력을 무효화할 수 있는 제도다. 오늘날 대부분의 민주주의 국가에서 당연하게 여겨지지만, 이 권한은 헌법에 명문으로 규정된 것이 아니었다. 1803년 미국 연방대법원이 <i>Marbury v. Madison</i> 판결에서 스스로 이 권한을 선언함으로써 처음 확립됐다.</p>
+<h2>🔍 조금 더 깊이</h2>
+<p>당시 대법원장 존 마셜은 "헌법에 반하는 법률은 법률이 아니다"라는 논리로 사법부의 위헌심사권을 정당화했다. 흥미롭게도 이 판결의 결론 자체는 행정부에 불리한 내용이 아니었기 때문에 제퍼슨 행정부도 거부하기 어려웠고, 판례로 굳어졌다. 한국의 헌법재판소는 1988년 설립되었으며, 독립된 헌법재판기관으로 위헌법률심판·헌법소원 등을 담당하는 독일 모델을 따랐다.</p>
+<h2>🧠 이렇게 써먹자</h2>
+<p>뉴스에서 "헌법재판소가 위헌 결정을 내렸다"는 보도를 볼 때, 이 제도가 단순한 법적 절차가 아니라 '다수결 민주주의가 소수의 권리를 침해하지 못하도록 하는 마지막 안전장치'임을 기억하면 좋다. 선거로 뽑힌 의회도 헌법이라는 상위 규범 앞에서는 패소할 수 있다는 사실이 법치주의의 핵심이다.</p>
+    </div>
+  </div>
+</div>
+<div class="accordion-item">
+  <button class="accordion-btn" onclick="toggle(this)">
+    <span class="acc-icon">✨</span>
+    <span class="acc-label">오늘의 글귀</span>
+    <span class="acc-arrow">▽</span>
+  </button>
+  <div class="accordion-body">
+    <div class="accordion-inner">
+<h2>🌅 오늘의 글귀 — 명언</h2>
+<blockquote># <b>"산은 정복하는 것이 아니다. 산이 잠시 그 정상을 빌려주는 것일 뿐이다. 그래서 정상에 오르는 것보다, 무사히 잘 내려오는 것이 더 중요하다."</b></blockquote>
+<h2>✍️ 누가 한 말?</h2>
+<p><b>엄홍길</b> (嚴弘吉, 1960~ )</p>
+<p>대한민국의 산악인으로, 세계 최초로 히말라야 8,000m급 16좌(14좌 + 위성봉 2좌)를 완등한 인물입니다. 수많은 동료를 산에서 잃으며 죽음의 경계를 넘나든 그는, 산을 '정복의 대상'으로 보는 시선을 평생 거부했습니다. 이 말은 그가 여러 인터뷰와 강연에서 일관되게 전해 온 산악 철학으로, "잘 내려와야 진정한 성공"이라는 그의 통찰을 압축한 것입니다.</p>
+<h2>💭 오늘에 적용하면</h2>
+<p>우리는 흔히 '정상'에 닿는 순간만을 성공이라 부르지만, 엄홍길의 말은 그 반대를 일깨웁니다. 오늘 어떤 목표를 향해 오르고 있다면, 정점에 도달하는 것만큼이나 그 이후를 잘 마무리하는 것을 챙겨 보세요. 큰 프로젝트를 끝낸 뒤의 정리, 격한 감정이 지나간 뒤의 회복, 성취 뒤의 겸손 — 이 '내려오는 길'이 사실 더 어렵고 더 중요합니다. 또한 무엇이든 '정복'하려 애쓰기보다, 잠시 빌려 쓰는 마음으로 대하면 오늘 하루가 한결 가벼워질 것입니다.</p>
+    </div>
+  </div>
+</div>
+<div class="accordion-item">
+  <button class="accordion-btn" onclick="toggle(this)">
+    <span class="acc-icon">🇹🇭</span>
+    <span class="acc-label">오늘의 태국어</span>
+    <span class="acc-arrow">▽</span>
+  </button>
+  <div class="accordion-body">
+    <div class="accordion-inner">
+<h1>🇹🇭 태국어 한 문장 2026-06-30</h1>
+<h2>🟢 초급</h2>
+<blockquote># <b>ลดราคาได้ไหมคะ</b></blockquote>
+<p><b>🔊 발음:</b> 롯 라카 다이 마이 카 (lót raakhaa dâi mǎi khá)</p>
+<p><b>🇰🇷 해석:</b> 가격 좀 깎아 주실 수 있나요?</p>
+<p><b>🇺🇸 영어:</b> Can you lower the price?</p>
+<p><b>📝 문장 설명:</b> 시장이나 노점에서 흥정할 때 가장 기본적으로 쓰는 표현입니다. 「동사 + ได้ไหม(다이 마이)」는 "~할 수 있나요?"라는 가능·요청을 묻는 정중한 구조입니다. 끝에 여성 화자는 คะ(카), 남성 화자는 ครับ(크랍)을 붙입니다.</p>
+<p><b>📚 단어 풀이</b></p>
+<table>
+<tr><th>태국어</th><th>발음</th><th>뜻</th></tr>
+<tr><td>ลด</td><td>롯 (lót)</td><td>줄이다, 깎다</td></tr>
+<tr><td>ราคา</td><td>라카 (raakhaa)</td><td>가격</td></tr>
+<tr><td>ได้</td><td>다이 (dâi)</td><td>~할 수 있다</td></tr>
+<tr><td>ไหม</td><td>마이 (mǎi)</td><td>~입니까? (의문 조사)</td></tr>
+<tr><td>คะ</td><td>카 (khá)</td><td>(여성) 정중 의문 조사</td></tr>
+</table>
+<hr>
+<h2>🟡 중급</h2>
+<blockquote># <b>ผมอยากไปตลาดเพราะอยากซื้อผลไม้</b></blockquote>
+<p><b>🔊 발음:</b> 폼 약 빠이 딸랏 프로 약 쓰 폰라마이 (phǒm yàak pai talàat phró yàak súe phǒnlamáai)</p>
+<p><b>🇰🇷 해석:</b> 저는 과일을 사고 싶어서 시장에 가고 싶어요.</p>
+<p><b>🇺🇸 영어:</b> I want to go to the market because I want to buy fruit.</p>
+<p><b>📝 문장 설명:</b> 「เพราะ(프로)」는 "~때문에, ~해서"라는 이유를 나타내는 접속사입니다. 「อยาก(약) + 동사」는 "~하고 싶다"라는 바람을 표현합니다. ผม(폼)은 남성 1인칭이며 여성은 ฉัน(찬)으로 바꿔 쓰면 됩니다.</p>
+<p><b>📚 단어 풀이</b></p>
+<table>
+<tr><th>태국어</th><th>발음</th><th>뜻</th></tr>
+<tr><td>ผม</td><td>폼 (phǒm)</td><td>저 (남성 1인칭)</td></tr>
+<tr><td>อยาก</td><td>약 (yàak)</td><td>~하고 싶다</td></tr>
+<tr><td>ไป</td><td>빠이 (pai)</td><td>가다</td></tr>
+<tr><td>ตลาด</td><td>딸랏 (talàat)</td><td>시장</td></tr>
+<tr><td>เพราะ</td><td>프로 (phró)</td><td>~때문에, ~해서</td></tr>
+<tr><td>ซื้อ</td><td>쓰 (súe)</td><td>사다</td></tr>
+<tr><td>ผลไม้</td><td>폰라마이 (phǒnlamáai)</td><td>과일</td></tr>
+</table>
+<hr>
+<h2>🔴 고급</h2>
+<blockquote># <b>ขอโทษที่รบกวนนะคะ ไม่ทราบว่าพอจะช่วยแนะนำร้านอาหารอร่อยๆ แถวนี้ได้ไหมคะ</b></blockquote>
+<p><b>🔊 발음:</b> 커톳 티 롭꾸안 나카, 마이 쌉 와 퍼짜 추아이 내남 란아한 아로이아로이 태우니 다이 마이 카</p>
+<p><b>🇰🇷 해석:</b> 실례지만, 혹시 이 근처에 맛있는 식당을 추천해 주실 수 있을까요?</p>
+<p><b>🇺🇸 영어:</b> Sorry to bother you, but I wonder if you could recommend a good restaurant around here?</p>
+<p><b>📝 문장 설명:</b> 「ขอโทษที่รบกวน(커톳 티 롭꾸안)」은 "방해해서 죄송합니다"라는 정중한 도입부입니다. 「ไม่ทราบว่า...ได้ไหม(마이 쌉 와...다이 마이)」는 직역하면 "~할 수 있을지 모르겠습니다만"으로, 부탁을 부드럽게 돌려 말하는 정중한 완곡어법입니다. อร่อยๆ처럼 형용사를 반복하면 "꽤 맛있는" 같은 강조의 뉘앙스가 됩니다.</p>
+<p><b>📚 단어 풀이</b></p>
+<table>
+<tr><th>태국어</th><th>발음</th><th>뜻</th></tr>
+<tr><td>ขอโทษ</td><td>커톳 (khǎaw-thôot)</td><td>죄송합니다</td></tr>
+<tr><td>รบกวน</td><td>롭꾸안 (róp-kuan)</td><td>방해하다, 폐를 끼치다</td></tr>
+<tr><td>ไม่ทราบว่า</td><td>마이 쌉 와</td><td>~인지 모르겠습니다만</td></tr>
+<tr><td>พอจะ</td><td>퍼짜 (phaaw cà)</td><td>혹시 ~할 수 있을 정도로</td></tr>
+<tr><td>ช่วย</td><td>추아이 (chûai)</td><td>도와주다</td></tr>
+<tr><td>แนะนำ</td><td>내남 (náe-nam)</td><td>추천하다, 소개하다</td></tr>
+<tr><td>ร้านอาหาร</td><td>란아한 (ráan-aahǎan)</td><td>식당</td></tr>
+<tr><td>อร่อย</td><td>아로이 (aròi)</td><td>맛있다</td></tr>
+<tr><td>แถวนี้</td><td>태우니 (thǎew níi)</td><td>이 근처</td></tr>
+</table>
+<hr>
+<p>💡 <b>오늘의 팁:</b> 태국어 부탁·질문은 「동사 + ได้ไหม(다이 마이)」가 기본 뼈대입니다. 초급에선 이것만으로 충분하고, 정중하게 만들려면 앞에 ขอโทษที่รบกวน(죄송하지만)·ไม่ทราบว่า(혹시 ~할지)를 덧붙이면 됩니다. 끝의 ครับ(크랍, 남성)/ค่ะ·คะ(카, 여성)는 절대 빼먹지 마세요 — 같은 말도 훨씬 공손해집니다.</p>
+    </div>
+  </div>
+</div>
+<div class="accordion-item">
+  <button class="accordion-btn" onclick="toggle(this)">
+    <span class="acc-icon">📖</span>
+    <span class="acc-label">오늘의 단편소설</span>
+    <span class="acc-arrow">▽</span>
+  </button>
+  <div class="accordion-body">
+    <div class="accordion-inner">
+<h2>📖 오늘의 단편소설 — 2026-06-30 (화)</h2>
+<blockquote># <b>「아홉 켤레의 구두로 남은 사내」</b> — 윤흥길 (1977)</blockquote>
+<p><b>권역/분류:</b> 한국 · 현대(1950~2000) · 사회/현실 비판</p>
+<p><b>원제/수록:</b> 아홉 켤레의 구두로 남은 사내, 1977년 《창작과비평》 발표 / 동명 단편집 수록 / 영문판 제목: <i>The Man Who Was Left as Nine Pairs of Shoes</i> (아시아 출판사, 2012)</p>
+<blockquote>※ 아래 줄거리에는 <b>결말(스포일러)</b>이 포함되어 있습니다.</blockquote>
+<hr>
+<h2>✍️ 작가와 작품</h2>
+<p>윤흥길은 1942년 전라북도 정읍에서 태어나 원광대학교 국문과를 졸업한 뒤, 1968년 《한국일보》 신춘문예에 단편 「회색 면류관의 계절」이 당선되면서 문단에 등단했다. 절제된 문체와 강렬한 사회의식으로 1970~80년대 한국 리얼리즘 소설의 중심에 서 있던 작가로, 《장마》, 《완장》, 《묵시의 바다》 등의 대표작을 남겼다. 「아홉 켤레의 구두로 남은 사내」는 1971년에 실제로 발생한 '광주대단지사건'(현 성남시 일대의 철거민 집단 시위)을 배경으로 하여, 급속한 산업화·도시화 과정에서 사회 주변부로 밀려난 지식인 소시민의 비극을 날카롭게 포착한 작품이다. 이 작품은 「직선과 곡선」, 「날개 또는 수갑」, 「창백한 중년」과 함께 연작을 이루며, 한국 현대소설사에서 70년대 노동 현실과 소외를 다룬 수작으로 꼽힌다.</p>
+<hr>
+<h2>📜 줄거리 (결말 포함)</h2>
+<p>이야기는 경기도 성남의 고등학교 교사인 '나'(오 선생)의 시점으로 진행된다. '나'는 오랜 절약 끝에 성남 주택가에 작은 집 한 채를 마련한다. 월급만으로는 살림이 빠듯한지라 방 하나를 세놓기로 하고, 그 방에 권 씨 일가가 들어온다. 권 씨 가족은 아내와 두 아이, 그리고 곧 태어날 셋째까지 모두 네 식구로, 좁은 셋방에 옹기종기 살아간다.</p>
+<p>권 씨는 대학을 졸업하고 한때 출판사에서 번역 일을 하던 교양 있는 사람이다. 그러나 그는 '광주대단지사건'에 주동자로 몰려 감옥살이를 한 뒤로 전과자 낙인이 찍혀, 이제는 변변한 직장 하나 구하지 못하고 일용직과 가끔 들어오는 싸구려 번역 일로 겨우 연명하고 있다. 권 씨에게는 이상한 버릇이 하나 있었으니, 아홉 켤레나 되는 구두를 마치 보물처럼 아끼면서 언제나 공들여 반짝반짝 닦아 신는 것이다. 그리고 입버릇처럼 이렇게 말하곤 했다. "이래봬도 나 대학 나온 사람이오." 그것은 바닥까지 추락한 삶 속에서 그나마 남은 자존심의 마지막 방어선이었다.</p>
+<p>어느 날, 권 씨의 아내가 출산 과정에서 합병증이 생겨 수술이 필요하게 된다. 수술비를 구하지 못한 권 씨는 '나'를 찾아와 돈을 빌려달라고 간청한다. 그러나 '나'는 선뜻 응하지 않는다. 끼니조차 제대로 해결하지 못하는 권 씨가 언제 빚을 갚을 수 있겠냐는 현실적 계산이 앞섰고, "책임이 따르는 동정은 피하는 게 상책"이라는 쌀쌀한 자기합리화가 그를 지배했다. '나'는 권 씨에게 냉정하게 거절의 뜻을 전한다.</p>
+<p>그러나 거절하고 나서 '나'의 마음은 불편해지기 시작한다. 옆방에서 들려오는 아이들 소리, 아내의 신음, 권 씨의 발소리가 '나'의 양심을 두드렸다. 결국 '나'는 자신의 처신을 뉘우치고 조용히 병원에 연락해 권 씨 아내의 수술비를 대신 치러준다. 이렇게 하면서도 '나'는 권 씨에게 직접 알리지 않는다. 체면의 문제이기도 했고, 복잡한 감정을 솔직하게 드러내기 어색했기 때문이다.</p>
+<p>그런데 수술비 문제를 해결하러 뛰어다니던 권 씨는 이 사실을 알지 못한다. 사방으로 돈을 구하러 다녔으나 실패하고 돌아온 권 씨는 절박감과 굴욕감이 뒤섞인 상태에서 결단을 내린다. 그날 밤, 권 씨는 칼을 들고 '나'의 방에 강도처럼 침입한다. 그러나 그는 처음부터 서투르기 짝이 없었다. 무기를 방치하는가 하면 행동 하나하나가 어색하고 떨렸다. '나'는 어둠 속에서도 침입자의 목소리와 몸짓이 낯익음을 느끼고, 이내 그 강도가 바로 권 씨임을 알아챈다.</p>
+<p>두 남자는 잠시 기묘한 대치 상태에 놓인다. '나'는 권 씨임을 알면서도 모르는 척 달래어 내보내려 한다. 하지만 자신의 정체가 드러났음을 직감한 권 씨는 더 이상 버티지 못한다. 수술비는 이미 누군가 냈다는 사실도, 자신이 강도짓을 하다 들켰다는 사실도 한꺼번에 무너져 내린다. 권 씨는 칼을 내던지며 울부짖듯 말한다. "그 따위 이웃은 없다는 걸 난 똑똑히 봤어! 난 이제 아무도 안 믿어!" 그리고 그렇게 밖으로 사라진다.</p>
+<p>다음 날 아침, '나'는 권 씨의 셋방 앞에서 그가 그토록 소중히 닦고 또 닦던 아홉 켤레의 구두가 나란히 놓여 있는 것을 발견한다. 권 씨의 가족도, 권 씨 자신도 이미 떠나고 없다. 구두만이 남겨진 것이다. 권 씨가 자신의 유일한 자존심이자 정체성의 상징이었던 구두들을 놓고 사라졌다는 것은, 그가 마지막 체면과도 결별했음을, 혹은 그 체면이 처음부터 존재하지 않았음을 스스로 선언한 것이나 다름없다. '나'는 그 구두들 앞에서 할 말을 잃는다.</p>
+<hr>
+<h2>💡 감상 포인트</h2>
+<p>이 작품의 핵심 상징은 단연 '구두'다. 반짝이게 닦인 아홉 켤레의 구두는 권 씨가 잃지 않으려 발버둥 친 자존심과 대학 출신이라는 정체성을 가시화한 물건이며, 그것을 두고 떠났다는 것은 그 자존심 자체의 붕괴를 의미한다. '광주대단지사건'이라는 실제 역사를 배경으로 하여, 국가 주도의 도시 개발이 소시민의 삶을 어떻게 무너뜨리는지를 한 인물의 하강 궤적으로 생생히 보여준다. 특히 '나'의 자기반성 구조는 독자로 하여금 방관자의 죄책감을 함께 체험하게 만들며, 윤흥길 문학 특유의 윤리적 성찰을 잘 드러낸다. 군더더기 없이 절제된 문장 속에 1970년대 한국 사회의 구조적 모순을 오롯이 새겨 넣은 수작이다.</p>
+    </div>
+  </div>
+</div>
+</div>
+
 <script>
-const D={"portfolio":"📊 포트폴리오 일일 브리핑 — 2026-06-30\n\n🔑 오늘의 핵심\n6/29 코스피 910포인트 급락. 삼성전자(-5.23%)·SK하이닉스(-1.35%) 약세, 방산(현대로템 +6.81%)·KO·O 견조.\n\n📈 국내 주식\n・ SK하이닉스: 2,637,000원 ▼1.35%\n・ 삼성전자: 321,750원 ▼5.23%\n・ 현대차: 약 500,000원 ▲4.06%\n・ 현대로템: 227,500원 ▲6.81%\n・ 한미반도체: 261,000원 ▲1.36%\n\n🌏 해외 주식/ETF\n・ 엔비디아(NVDA): $192.71 ▲0.09%\n・ SMH: $626.42 ▲2.42%\n・ 코카콜라(KO): $82.63 ▲2.75%\n・ 리얼티인컴(O): $63.04 ▲1.61%\n\n🎯 오늘의 액션\n🔴 삼성전자/SK하이닉스: 추격 매도 자제\n🔴 나이키(NKE): 실적 발표 전 포지션 점검\n🟡 현대로템: 차익 실현 검토\n🟢 KO·O: 배당·방어 비중 유지","stock":"📈 주식 참고 뉴스 — 2026-06-30\n\n1. SpaceX IPO — 주가 +50%, 시총 $2.8조\n2. 연준 금리 동결, 추가 인상 가능성 (3.5~3.75%)\n3. Micron Q3 매출 $41.5B(YoY +346%), HBM4 완판\n4. OpenAI·Anthropic IPO 기밀 신청\n5. 이재명 정부 1000조 첨단산업 투자 발표\n6. OpenAI 자체 칩 할라페뇨 — 삼성·SK 메모리 탑재\n7. 미중 관세 협상 기한 도달, 합의 미도달\n8. 삼성전자 HBM4 양산·AMD 주공급사 지정\n9. TSMC 7나노 이하 가격 5~10% 인상\n10. WTI $69대·코스피 8,800선·기준금리 2.5% 동결","fortune":"🔮 오늘의 일진 — 2026-06-30 (화) 을해(乙亥)일\n\n총운 ★★★★\n\n천간 을목(乙木) = 비견(比肩) — 동료·자립\n지지 해수(亥水) = 정인(正印) — 배움·후원\n인해합목으로 힘이 한 방향으로 모이는 날.\n\n💰 재물: 정보·신뢰·관계가 씨앗. 배움에 투자.\n💼 직장: 협업·멘토링에 강함. 동료와 나누면 풀림.\n❤️ 관계: 오래 연락 못 한 사람에게 안부.\n🏃 건강: 하체 따뜻하게, 가벼운 스트레칭.\n\n🍀 손 내밀면 받쳐줄 사람이 옵니다.\n행운: 오전 9~11시 | 청록·검정 | 동쪽·북쪽","history":"📜 오늘의 역사 — 2026-06-30\n\n유로코뮤니즘의 균열 — 동베를린 유럽 공산당 대회 (1976)\n\n1976년 6월 29~30일, 동베를린에서 유럽 29개 공산·노동자당이 모였다. 이탈리아·프랑스·스페인 공산당은 소련 노선을 거부하고 자율적 노선 결정 권리를 선언.\n\n💡 획일적 지시보다 다양성을 수용하는 구조가 오래 살아남는다.\n\n---\n💡 오늘의 지식: 사법심사(Judicial Review)\n1803년 Marbury v. Madison 판결로 확립. 선거로 뽑힌 의회도 헌법 앞에서 패소할 수 있다.","goodtext":"✨ 오늘의 글귀 — 용기\n\n진정한 용사는 참담한 인생을 똑바로 마주할 용기가 있고,\n뚝뚝 떨어지는 선혈을 똑바로 바라볼 용기가 있다.\n\n— 루쉰(魯迅, 1881~1936)\n\n真的猛士，敢于直面惨淡的人生，敢于正视淋漓的鲜血。\n\n💭 용기는 두려움이 없는 것이 아니라, 외면하고 싶은 것을 똑바로 바라보는 힘입니다.","thai":"🇹🇭 오늘의 태국어 — 2026-06-30\n\n🟢 초급: ลดราคาได้ไหมคะ\n발음: 롯 라카 다이 마이 카\n뜻: 가격 좀 깎아 주실 수 있나요?\n\n🟡 중급: ผมอยากไปตลาดเพราะอยากซื้อผลไม้\n발음: 폼 약 빠이 딸랏 프로 약 쓰 폰라마이\n뜻: 저는 과일을 사고 싶어서 시장에 가고 싶어요.\n\n🔴 고급: ขอโทษที่รบกวนนะคะ ไม่ทราบว่าพอจะช่วยแนะนำร้านอาหารอร่อยๆ แถวนี้ได้ไหมคะ\n발음: 커톳 티 롭꾸안 나카 마이 쌉 와 퍼짜 추아이 내남 란아한 아로이아로이 태우니 다이 마이 카\n뜻: 실례지만, 이 근처 맛있는 식당 추천해 주실 수 있을까요?\n\n💡 끝의 ครับ(남성)/คะ(여성) 절대 빠뜨리지 마세요!","story":"📖 오늘의 단편소설\n\n표류(A la deriva) — 오라시오 키로가 (1912)\n\n✍️ 라틴아메리카 단편소설의 선구자.\n\n📜 줄거리 (스포일러)\n파울리노가 밀림에서 독사에 물린다. 홀로 카누를 타고 파라나 강에서 도움을 찾는다. 강변 친구에게 절규하지만 침묵만 돌아온다. 해질 무렵 통증이 사라지며 살 것 같은 느낌이 든다.\n\n목요일이었지……\n\n그리고 숨이 멈춘다. 그 쾌감은 죽음 직전 신체가 보내는 마지막 거짓 신호였다.\n\n💡 죽음 직전 거짓 회복감이 핵심 아이러니."};
-const TODAY='2026-06-30';
-const TODAY_UPD='06/30 00:06';
-let cur=TODAY;
-const META=[
-  {k:'portfolio',i:'📋',t:'포트폴리오 브리핑'},
-  {k:'stock',i:'📊',t:'주식 뉴스 브리핑'},
-  {k:'fortune',i:'🔮',t:'오늘의 운세'},
-  {k:'history',i:'📅',t:'오늘의 역사'},
-  {k:'goodtext',i:'✨',t:'오늘의 글귀'},
-  {k:'thai',i:'🇹🇭',t:'오늘의 태국어'},
-  {k:'story',i:'📖',t:'오늘의 단편소설'},
-];
-function fmt(d){return d.slice(5).replace('-','/')}
-function colorize(t){
-  t=t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-  t=t.replace(/(▲\s*\+?[\d,.]+%?)/g,'<span class="up">$1</span>');
-  t=t.replace(/(▼\s*-?[\d,.]+%?)/g,'<span class="dn">$1</span>');
-  t=t.replace(/(?<![▲▼])(\+[\d,.]+%)/g,'<span class="up">$1</span>');
-  t=t.replace(/(?<![▲▼✨])(-[\d,.]+%)/g,'<span class="dn">$1</span>');
-  return t;
-}
-function render(data,upd){
-  const c=document.getElementById('cards');c.innerHTML='';
-  document.getElementById('uptime').textContent=upd?'업데이트: '+upd:'';
-  META.forEach((m,i)=>{
-    const v=(data[m.k]||'데이터 없음');
-    const el=document.createElement('div');el.className='card';
-    el.innerHTML='<div class="card-header" onclick="tog(this)"><span class="card-icon">'+m.i+'</span><span class="card-title">'+m.t+'</span><span class="toggle">▼</span></div><div class="card-body '+(i===0?'open':'')+'"><div class="card-inner"><p>'+colorize(v)+'</p></div></div>';
-    c.appendChild(el);
+function toggle(btn) {
+  const body = btn.nextElementSibling;
+  const isOpen = btn.classList.contains('open');
+  // Close all
+  document.querySelectorAll('.accordion-btn.open').forEach(b => {
+    b.classList.remove('open');
+    b.nextElementSibling.classList.remove('open');
   });
+  if (!isOpen) {
+    btn.classList.add('open');
+    body.classList.add('open');
+    setTimeout(() => btn.scrollIntoView({behavior:'smooth', block:'start'}), 50);
+  }
 }
-async function load(date){
-  cur=date;
-  document.getElementById('dateLabel').textContent=fmt(date);
-  document.getElementById('nextBtn').disabled=date>=TODAY;
-  if(date===TODAY){render(D,TODAY_UPD);updateNavBtns();return;}
-  document.getElementById('cards').innerHTML='<div class="msg">불러오는 중...</div>';
-  try{
-    const r=await fetch('./data/'+date+'.json');
-    if(r.ok){const d=await r.json();render(d.tasks,d.updated_at||'');}
-    else document.getElementById('cards').innerHTML='<div class="msg">'+fmt(date)+' 데이터 없음</div>';
-  }catch{document.getElementById('cards').innerHTML='<div class="msg">불러오기 실패</div>';}
-  updateNavBtns();
-}
-function updateNavBtns(){
-  document.getElementById('nextBtn').disabled=cur>=TODAY;
-}
-function changeDate(n){const d=new Date(cur);d.setDate(d.getDate()+n);load(d.toISOString().split('T')[0]);}
-function tog(h){const b=h.nextElementSibling,t=h.querySelector('.toggle');b.classList.toggle('open');t.style.transform=b.classList.contains('open')?'rotate(180deg)':'';}
-load(TODAY);
+
+// Date display
+const d = new Date();
+const days = ['일','월','화','수','목','금','토'];
+document.getElementById('hdr-date').textContent =
+  String(d.getMonth()+1).padStart(2,'0') + '/' +
+  String(d.getDate()).padStart(2,'0');
+
+// Arrow buttons (no-op for now, just visual)
+document.getElementById('btn-prev').addEventListener('click', () => {});
+document.getElementById('btn-next').addEventListener('click', () => {});
 </script>
 </body>
 </html>
