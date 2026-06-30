@@ -1,199 +1,63 @@
-<!DOCTYPE html>
-<html lang="ko">
-<head>
+<!DOCTYPE html><html lang="ko"><head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>Daily Dashboard</title>
-<style>
-:root {
-  --bg: #1a1a2e;
-  --item-bg: #16213e;
-  --item-bg2: #1a1a2e;
-  --border: rgba(255,255,255,0.08);
-  --text: #e0e0e0;
-  --muted: #888;
-  --accent: #a78bfa;
-  --accent2: #f87171;
-  --safe-t: env(safe-area-inset-top, 0px);
-  --safe-b: env(safe-area-inset-bottom, 0px);
-}
-* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Noto Sans KR', sans-serif;
-  background: var(--bg);
-  color: var(--text);
-  font-size: 18px;
-  line-height: 1.75;
-  padding-top: var(--safe-t);
-  padding-bottom: var(--safe-b);
-}
-
-/* ── Gradient header ── */
-.header {
-  background: linear-gradient(135deg, #4c1d95 0%, #5b21b6 30%, #7c3aed 60%, #8b5cf6 80%, #a78bfa 100%);
-  padding: 18px 16px 16px;
-  text-align: center;
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  box-shadow: 0 2px 20px rgba(0,0,0,0.4);
-}
-.header-title {
-  font-size: 17px;
-  font-weight: 700;
-  color: #fff;
-  letter-spacing: 0.3px;
-  margin-bottom: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 7px;
-}
-.header-nav {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 16px;
-  margin-bottom: 4px;
-}
-.nav-arrow {
-  background: rgba(255,255,255,0.2);
-  border: none;
-  color: #fff;
-  width: 28px; height: 28px;
-  border-radius: 50%;
-  font-size: 14px;
-  cursor: pointer;
-  display: flex; align-items: center; justify-content: center;
-  transition: background 0.15s;
-}
-.nav-arrow:active { background: rgba(255,255,255,0.35); }
-.header-date {
-  font-size: 16px;
-  font-weight: 600;
-  color: #fff;
-  min-width: 60px;
-  text-align: center;
-}
-.header-updated {
-  font-size: 11px;
-  color: rgba(255,255,255,0.65);
-  margin-top: 2px;
-}
-
-/* ── Accordion list ── */
-.list {
-  padding: 0;
-}
-.accordion-item {
-  border-bottom: 1px solid var(--border);
-}
-.accordion-btn {
-  width: 100%;
-  background: var(--item-bg);
-  border: none;
-  color: var(--text);
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 18px 16px;
-  cursor: pointer;
-  text-align: left;
-  transition: background 0.15s;
-  -webkit-tap-highlight-color: transparent;
-}
-.accordion-btn:active { background: #1f2a4a; }
-.acc-icon { font-size: 22px; flex: 0 0 auto; }
-.acc-label { flex: 1; font-size: 18px; font-weight: 500; }
-.acc-arrow {
-  font-size: 14px;
-  color: var(--muted);
-  transition: transform 0.25s;
-  flex: 0 0 auto;
-}
-.accordion-btn.open .acc-arrow { transform: rotate(180deg); }
-
-/* ── Accordion body ── */
-.accordion-body {
-  max-height: 0;
-  overflow: hidden;
-  transition: max-height 0.35s ease;
-}
-.accordion-body.open { max-height: 4000px; }
-.accordion-inner {
-  padding: 16px 16px 20px;
-  background: var(--item-bg2);
-  border-top: 1px solid var(--border);
-}
-
-/* ── Content styles ── */
-.accordion-inner h1 { font-size: 20px; color: #fff; margin: 12px 0 8px; }
-.accordion-inner h2 {
-  font-size: 17px; color: var(--accent);
-  margin: 18px 0 7px;
-  padding-left: 10px;
-  border-left: 3px solid var(--accent);
-}
-.accordion-inner h3 { font-size: 16px; color: #ccc; margin: 14px 0 5px; }
-.accordion-inner h4 { font-size: 15px; color: var(--muted); margin: 10px 0 4px; }
-.accordion-inner p { margin-bottom: 7px; font-size: 17px; }
-.accordion-inner blockquote {
-  border-left: 3px solid var(--accent2);
-  padding: 10px 14px;
-  margin: 12px 0;
-  background: rgba(248,113,113,0.07);
-  border-radius: 0 8px 8px 0;
-  font-style: italic;
-  font-size: 17px;
-}
-.accordion-inner table {
-  width: 100%; border-collapse: collapse;
-  font-size: 15px; margin: 12px 0;
-  display: block; overflow-x: auto;
-  white-space: nowrap;
-}
-.accordion-inner th, .accordion-inner td {
-  border: 1px solid var(--border);
-  padding: 8px 10px;
-}
-.accordion-inner th { background: #1e2a50; color: var(--accent); }
-.accordion-inner tr:nth-child(even) td { background: rgba(255,255,255,0.03); }
-.accordion-inner code {
-  background: rgba(255,255,255,0.08);
-  padding: 2px 6px; border-radius: 4px;
-  font-size: 15px; font-family: monospace;
-}
-.accordion-inner hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
-.accordion-inner ul { padding-left: 20px; margin-bottom: 8px; }
-.accordion-inner li { margin-bottom: 5px; font-size: 17px; }
-.accordion-inner a { color: var(--accent); }
-.up { color: #ff4d4d; font-weight: 600; }
-.dn { color: #4d9eff; font-weight: 600; }
-</style>
-</head>
-<body>
-
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0">
+<title>Daily Dashboard</title><style>
+:root{--bg:#1a1a2e;--item-bg:#16213e;--item-bg2:#1a1a2e;--border:rgba(255,255,255,0.08);--text:#e0e0e0;--muted:#888;--accent:#a78bfa;--accent2:#f87171;--hdr-h:72px;--safe-t:env(safe-area-inset-top,0px);--safe-b:env(safe-area-inset-bottom,0px)}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:-apple-system,BlinkMacSystemFont,"Noto Sans KR",sans-serif;background:var(--bg);color:var(--text);font-size:17px;line-height:1.75;padding-top:var(--safe-t);padding-bottom:var(--safe-b)}
+.header{background:linear-gradient(135deg,#4c1d95 0%,#5b21b6 30%,#7c3aed 60%,#8b5cf6 80%,#a78bfa 100%);padding:18px 16px 16px;text-align:center;position:sticky;top:0;z-index:100;box-shadow:0 2px 20px rgba(0,0,0,.4)}
+.header-title{font-size:17px;font-weight:700;color:#fff;letter-spacing:.3px;margin-bottom:8px;display:flex;align-items:center;justify-content:center;gap:7px}
+.header-nav{display:flex;align-items:center;justify-content:center;gap:16px;margin-bottom:4px}
+.nav-arrow{background:rgba(255,255,255,.2);border:none;color:#fff;width:28px;height:28px;border-radius:50%;font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .15s}
+.nav-arrow:active{background:rgba(255,255,255,.35)}
+.header-date{font-size:16px;font-weight:600;color:#fff;min-width:60px;text-align:center}
+.header-updated{font-size:11px;color:rgba(255,255,255,.65);margin-top:2px}
+.list{padding:0}
+.accordion-item{border-bottom:1px solid var(--border)}
+.accordion-btn{width:100%;background:var(--item-bg);border:none;color:var(--text);display:flex;align-items:center;gap:12px;padding:16px;cursor:pointer;text-align:left;transition:background .15s;-webkit-tap-highlight-color:transparent}
+.accordion-btn:active{background:#1f2a4a}
+.accordion-btn.open{position:sticky;top:var(--hdr-h);z-index:50;box-shadow:0 2px 8px rgba(0,0,0,.5)}
+.acc-icon{font-size:21px;flex:0 0 auto}
+.acc-label{flex:1;font-size:17px;font-weight:500}
+.acc-arrow{font-size:13px;color:var(--muted);transition:transform .25s;flex:0 0 auto}
+.accordion-btn.open .acc-arrow{transform:rotate(180deg)}
+.accordion-body{max-height:0;overflow:hidden;transition:max-height .35s ease}
+.accordion-body.open{max-height:9000px}
+.accordion-inner{padding:16px 16px 20px;background:var(--item-bg2);border-top:1px solid var(--border)}
+.accordion-inner h1{font-size:19px;color:#fff;margin:12px 0 8px}
+.accordion-inner h2{font-size:16px;color:var(--accent);margin:18px 0 7px;padding-left:10px;border-left:3px solid var(--accent)}
+.accordion-inner h3{font-size:15px;color:#ccc;margin:14px 0 5px}
+.accordion-inner h4{font-size:14px;color:var(--muted);margin:10px 0 4px}
+.accordion-inner p{margin-bottom:7px;font-size:16px}
+.accordion-inner blockquote{border-left:3px solid var(--accent2);padding:10px 14px;margin:12px 0;background:rgba(248,113,113,.07);border-radius:0 8px 8px 0;font-style:italic;font-size:16px}
+.accordion-inner table{width:100%;border-collapse:collapse;font-size:14px;margin:12px 0;display:block;overflow-x:auto;white-space:nowrap}
+.accordion-inner th,.accordion-inner td{border:1px solid var(--border);padding:7px 9px}
+.accordion-inner th{background:#1e2a50;color:var(--accent)}
+.accordion-inner tr:nth-child(even) td{background:rgba(255,255,255,.03)}
+.accordion-inner code{background:rgba(255,255,255,.08);padding:2px 6px;border-radius:4px;font-size:14px;font-family:monospace}
+.accordion-inner hr{border:none;border-top:1px solid var(--border);margin:16px 0}
+.accordion-inner ul{padding-left:20px;margin-bottom:8px}
+.accordion-inner li{margin-bottom:5px;font-size:16px}
+.accordion-inner a{color:var(--accent)}
+.up{color:#ff4d4d;font-weight:600}.dn{color:#4d9eff;font-weight:600}
+[data-key="portfolio"] .accordion-inner table{display:table;overflow-x:visible;white-space:normal;font-size:12px;table-layout:fixed;width:100%}
+[data-key="portfolio"] .accordion-inner td,[data-key="portfolio"] .accordion-inner th{padding:5px 6px;word-break:break-word;vertical-align:middle}
+[data-key="portfolio"] .accordion-inner th:first-child,[data-key="portfolio"] .accordion-inner td:first-child{width:52%}
+[data-key="portfolio"] .accordion-inner th:nth-child(2),[data-key="portfolio"] .accordion-inner td:nth-child(2){width:28%;text-align:right}
+[data-key="portfolio"] .accordion-inner th:nth-child(3),[data-key="portfolio"] .accordion-inner td:nth-child(3){width:20%;text-align:right}
+[data-key="stock"] .accordion-inner p{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;margin-bottom:4px}
+</style></head><body>
 <div class="header">
-  <div class="header-title">🗓️ Daily Dashboard</div>
-  <div class="header-nav">
-    <button class="nav-arrow" id="btn-prev">◀</button>
-    <div class="header-date" id="hdr-date"></div>
-    <button class="nav-arrow" id="btn-next">▶</button>
-  </div>
-  <div class="header-updated">업데이트: 06/30 08:00</div>
+<div class="header-title">&#128197; Daily Dashboard</div>
+<div class="header-nav">
+<button class="nav-arrow" id="btn-prev">&#9664;</button>
+<div class="header-date" id="hdr-date"></div>
+<button class="nav-arrow" id="btn-next">&#9654;</button>
 </div>
-
+<div class="header-updated">업데이트: 06/30 08:00</div>
+</div>
 <div class="list">
-
-<div class="accordion-item">
-  <button class="accordion-btn" onclick="toggle(this)">
-    <span class="acc-icon">📋</span>
-    <span class="acc-label">포트폴리오 브리핑</span>
-    <span class="acc-arrow">▽</span>
-  </button>
-  <div class="accordion-body">
-    <div class="accordion-inner">
-<h1>📊 포트폴리오 일일 브리핑</h1>
+<div class="accordion-item" data-key="portfolio"><button class="accordion-btn" onclick="toggle(this)"><span class="acc-icon">📋</span><span class="acc-label">포트폴리오 브리핑</span><span class="acc-arrow">&#9661;</span></button><div class="accordion-body"><div class="accordion-inner"><h1>📊 포트폴리오 일일 브리핑</h1>
 <p><b>2026년 6월 30일 (화)</b> | 기준: 최근 거래일(6/29) 종가 — Chrome 미연결로 WebSearch 수집</p>
 <h2>🔑 오늘의 핵심 한 줄</h2>
 <blockquote><b>6/29 코스피가 하루 910포인트 급락하며 삼성전자(<span class="dn">-5.23%</span>)·SK하이닉스(<span class="dn">-1.35%</span>) 등 반도체 대형주가 동반 약세를 보인 반면, 방산(현대로템 <span class="up">+6.81%</span>)과 미국 배당·소비주(KO·O)는 견조했습니다.</b></blockquote>
@@ -262,19 +126,8 @@ body {
 <tr><td>🟢</td><td>코카콜라·리얼티인컴 (KO·O)</td><td>배당·방어 비중 유지</td><td>시장 변동성 속 상대적 견조, 인컴 안정판</td></tr>
 </table>
 <hr>
-<blockquote>⚠️ Chrome+Google Finance 미연결로 WebSearch 수집. 일부 종목 기준일이 당일이 아닐 수 있으므로 정확도 확인이 필요합니다.</blockquote>
-    </div>
-  </div>
-</div>
-<div class="accordion-item">
-  <button class="accordion-btn" onclick="toggle(this)">
-    <span class="acc-icon">📊</span>
-    <span class="acc-label">주식 뉴스 브리핑</span>
-    <span class="acc-arrow">▽</span>
-  </button>
-  <div class="accordion-body">
-    <div class="accordion-inner">
-<h2>📈 주식 참고 뉴스 — 2026-06-30 (화요일)</h2>
+<blockquote>⚠️ Chrome+Google Finance 미연결로 WebSearch 수집. 일부 종목 기준일이 당일이 아닐 수 있으므로 정확도 확인이 필요합니다.</blockquote></div></div></div>
+<div class="accordion-item" data-key="stock"><button class="accordion-btn" onclick="toggle(this)"><span class="acc-icon">📊</span><span class="acc-label">주식 뉴스 브리핑</span><span class="acc-arrow">&#9661;</span></button><div class="accordion-body"><div class="accordion-inner"><h2>📈 주식 참고 뉴스 — 2026-06-30 (화요일)</h2>
 <hr>
 <h3>1. SpaceX, 역사적 IPO 성공 — 나스닥 상장 후 주가 <span class="up">+50%</span>, 시총 $2.8조</h3>
 <p><b>분야:</b> 산업·기업 · <b>지역:</b> 해외 · <b>출처:</b> CNBC, Bloomberg</p>
@@ -336,19 +189,8 @@ body {
 <p><b>분야:</b> 거시·정책 · <b>지역:</b> 국내·해외 · <b>출처:</b> Investing.com, 한국은행</p>
 <p>WTI 원유는 6월 26일 $69.23(<span class="dn">-3.74%</span>)로 하락세를 이어가고 있다. 코스피는 반도체 슈퍼사이클 랠리에 힘입어 6월 말 약 8,800선이 전망되며, 한국은행 기준금리는 2.5% 동결 유지. 차기 통화정책 결정회의는 7월 16일 예정.</p>
 <hr>
-<p><i>이슈/파급력 순 참고용 정보. 특정 종목 매수·매도 권유 아님. 투자 판단·책임은 본인.</i></p>
-    </div>
-  </div>
-</div>
-<div class="accordion-item">
-  <button class="accordion-btn" onclick="toggle(this)">
-    <span class="acc-icon">🔮</span>
-    <span class="acc-label">오늘의 운세</span>
-    <span class="acc-arrow">▽</span>
-  </button>
-  <div class="accordion-body">
-    <div class="accordion-inner">
-<h2>🔮 오늘의 일진</h2>
+<p><i>이슈/파급력 순 참고용 정보. 특정 종목 매수·매도 권유 아님. 투자 판단·책임은 본인.</i></p></div></div></div>
+<div class="accordion-item" data-key="fortune"><button class="accordion-btn" onclick="toggle(this)"><span class="acc-icon">🔮</span><span class="acc-label">오늘의 운세</span><span class="acc-arrow">&#9661;</span></button><div class="accordion-body"><div class="accordion-inner"><h2>🔮 오늘의 일진</h2>
 <blockquote># <b>병오(丙午)년 갑오(甲午)월 을해(乙亥)일</b> — 2026-06-30 (화)</blockquote>
 <p>오늘은 <b>을해(乙亥)일</b>입니다. 일진의 천간 을목(乙木)은 일간과 같은 <b>비견(比肩)</b> — 나와 어깨를 나란히 하는 동료·자립의 기운이고, 지지 해수(亥水) 속 임수는 <b>정인(正印)</b> — 배움과 후원, 누군가의 보살핌을 상징합니다. 게다가 해수는 당신 원국의 월지 인목(寅)과 <b>인해합목(寅亥合木)</b>을 이루어, 흩어졌던 힘이 한 방향으로 모이는 날입니다. 한마디로 "내 편이 늘고, 뒤를 받쳐주는 기운이 들어오는" 든든한 하루입니다.</p>
 <h2>🌟 총운 ★★★★</h2>
@@ -365,19 +207,8 @@ body {
 <blockquote><b>"혼자 다 짊어지지 마세요 — 손 내밀면 받쳐줄 사람이 옵니다."</b></blockquote>
 <blockquote>행운 시간대: 오전 9~11시(사시) | 행운 색: 청록·검정 | 방향: 동쪽·북쪽</blockquote>
 <hr>
-<p><i>명리학적 관점의 참고용 해석입니다. 중요한 결정은 언제나 당신의 판단이 우선입니다.</i></p>
-    </div>
-  </div>
-</div>
-<div class="accordion-item">
-  <button class="accordion-btn" onclick="toggle(this)">
-    <span class="acc-icon">📅</span>
-    <span class="acc-label">오늘의 역사</span>
-    <span class="acc-arrow">▽</span>
-  </button>
-  <div class="accordion-body">
-    <div class="accordion-inner">
-<h2>📜 오늘의 역사 한 조각 — 2026-06-30 (화)</h2>
+<p><i>명리학적 관점의 참고용 해석입니다. 중요한 결정은 언제나 당신의 판단이 우선입니다.</i></p></div></div></div>
+<div class="accordion-item" data-key="history"><button class="accordion-btn" onclick="toggle(this)"><span class="acc-icon">📅</span><span class="acc-label">오늘의 역사</span><span class="acc-arrow">&#9661;</span></button><div class="accordion-body"><div class="accordion-inner"><h2>📜 오늘의 역사 한 조각 — 2026-06-30 (화)</h2>
 <blockquote># <b>유로코뮤니즘의 균열 — 동베를린 유럽 공산당 대회</b> (1976)</blockquote>
 <h2>🕰️ 무슨 일이 있었나</h2>
 <p>1976년 6월 29~30일, 동베를린에서 유럽 29개 공산·노동자당 대표들이 모인 역사적 회의가 열렸다. 소련 공산당(CPSU)은 이 회의를 통해 '프롤레타리아 국제주의' 원칙 아래 서유럽 공산당들을 다시 결집시키려 했다. 그러나 이탈리아·프랑스·스페인 공산당은 모스크바의 노선을 공개적으로 거부하고, 각 당이 민족적 조건에 따라 자율적으로 사회주의 노선을 결정할 권리를 선언했다. 소련이 원하던 결속 문서는 끝내 채택되지 않았다.</p>
@@ -394,37 +225,15 @@ body {
 <h2>🔍 조금 더 깊이</h2>
 <p>당시 대법원장 존 마셜은 "헌법에 반하는 법률은 법률이 아니다"라는 논리로 사법부의 위헌심사권을 정당화했다. 흥미롭게도 이 판결의 결론 자체는 행정부에 불리한 내용이 아니었기 때문에 제퍼슨 행정부도 거부하기 어려웠고, 판례로 굳어졌다. 한국의 헌법재판소는 1988년 설립되었으며, 독립된 헌법재판기관으로 위헌법률심판·헌법소원 등을 담당하는 독일 모델을 따랐다.</p>
 <h2>🧠 이렇게 써먹자</h2>
-<p>뉴스에서 "헌법재판소가 위헌 결정을 내렸다"는 보도를 볼 때, 이 제도가 단순한 법적 절차가 아니라 '다수결 민주주의가 소수의 권리를 침해하지 못하도록 하는 마지막 안전장치'임을 기억하면 좋다. 선거로 뽑힌 의회도 헌법이라는 상위 규범 앞에서는 패소할 수 있다는 사실이 법치주의의 핵심이다.</p>
-    </div>
-  </div>
-</div>
-<div class="accordion-item">
-  <button class="accordion-btn" onclick="toggle(this)">
-    <span class="acc-icon">✨</span>
-    <span class="acc-label">오늘의 글귀</span>
-    <span class="acc-arrow">▽</span>
-  </button>
-  <div class="accordion-body">
-    <div class="accordion-inner">
-<h2>🌅 오늘의 글귀 — 명언</h2>
+<p>뉴스에서 "헌법재판소가 위헌 결정을 내렸다"는 보도를 볼 때, 이 제도가 단순한 법적 절차가 아니라 '다수결 민주주의가 소수의 권리를 침해하지 못하도록 하는 마지막 안전장치'임을 기억하면 좋다. 선거로 뽑힌 의회도 헌법이라는 상위 규범 앞에서는 패소할 수 있다는 사실이 법치주의의 핵심이다.</p></div></div></div>
+<div class="accordion-item" data-key="goodtext"><button class="accordion-btn" onclick="toggle(this)"><span class="acc-icon">✨</span><span class="acc-label">오늘의 글귀</span><span class="acc-arrow">&#9661;</span></button><div class="accordion-body"><div class="accordion-inner"><h2>🌅 오늘의 글귀 — 명언</h2>
 <blockquote># <b>"산은 정복하는 것이 아니다. 산이 잠시 그 정상을 빌려주는 것일 뿐이다. 그래서 정상에 오르는 것보다, 무사히 잘 내려오는 것이 더 중요하다."</b></blockquote>
 <h2>✍️ 누가 한 말?</h2>
 <p><b>엄홍길</b> (嚴弘吉, 1960~ )</p>
 <p>대한민국의 산악인으로, 세계 최초로 히말라야 8,000m급 16좌(14좌 + 위성봉 2좌)를 완등한 인물입니다. 수많은 동료를 산에서 잃으며 죽음의 경계를 넘나든 그는, 산을 '정복의 대상'으로 보는 시선을 평생 거부했습니다. 이 말은 그가 여러 인터뷰와 강연에서 일관되게 전해 온 산악 철학으로, "잘 내려와야 진정한 성공"이라는 그의 통찰을 압축한 것입니다.</p>
 <h2>💭 오늘에 적용하면</h2>
-<p>우리는 흔히 '정상'에 닿는 순간만을 성공이라 부르지만, 엄홍길의 말은 그 반대를 일깨웁니다. 오늘 어떤 목표를 향해 오르고 있다면, 정점에 도달하는 것만큼이나 그 이후를 잘 마무리하는 것을 챙겨 보세요. 큰 프로젝트를 끝낸 뒤의 정리, 격한 감정이 지나간 뒤의 회복, 성취 뒤의 겸손 — 이 '내려오는 길'이 사실 더 어렵고 더 중요합니다. 또한 무엇이든 '정복'하려 애쓰기보다, 잠시 빌려 쓰는 마음으로 대하면 오늘 하루가 한결 가벼워질 것입니다.</p>
-    </div>
-  </div>
-</div>
-<div class="accordion-item">
-  <button class="accordion-btn" onclick="toggle(this)">
-    <span class="acc-icon">🇹🇭</span>
-    <span class="acc-label">오늘의 태국어</span>
-    <span class="acc-arrow">▽</span>
-  </button>
-  <div class="accordion-body">
-    <div class="accordion-inner">
-<h1>🇹🇭 태국어 한 문장 2026-06-30</h1>
+<p>우리는 흔히 '정상'에 닿는 순간만을 성공이라 부르지만, 엄홍길의 말은 그 반대를 일깨웁니다. 오늘 어떤 목표를 향해 오르고 있다면, 정점에 도달하는 것만큼이나 그 이후를 잘 마무리하는 것을 챙겨 보세요. 큰 프로젝트를 끝낸 뒤의 정리, 격한 감정이 지나간 뒤의 회복, 성취 뒤의 겸손 — 이 '내려오는 길'이 사실 더 어렵고 더 중요합니다. 또한 무엇이든 '정복'하려 애쓰기보다, 잠시 빌려 쓰는 마음으로 대하면 오늘 하루가 한결 가벼워질 것입니다.</p></div></div></div>
+<div class="accordion-item" data-key="thai"><button class="accordion-btn" onclick="toggle(this)"><span class="acc-icon">🇹🇭</span><span class="acc-label">오늘의 태국어</span><span class="acc-arrow">&#9661;</span></button><div class="accordion-body"><div class="accordion-inner"><h1>🇹🇭 태국어 한 문장 2026-06-30</h1>
 <h2>🟢 초급</h2>
 <blockquote># <b>ลดราคาได้ไหมคะ</b></blockquote>
 <p><b>🔊 발음:</b> 롯 라카 다이 마이 카 (lót raakhaa dâi mǎi khá)</p>
@@ -479,19 +288,8 @@ body {
 <tr><td>แถวนี้</td><td>태우니 (thǎew níi)</td><td>이 근처</td></tr>
 </table>
 <hr>
-<p>💡 <b>오늘의 팁:</b> 태국어 부탁·질문은 「동사 + ได้ไหม(다이 마이)」가 기본 뼈대입니다. 초급에선 이것만으로 충분하고, 정중하게 만들려면 앞에 ขอโทษที่รบกวน(죄송하지만)·ไม่ทราบว่า(혹시 ~할지)를 덧붙이면 됩니다. 끝의 ครับ(크랍, 남성)/ค่ะ·คะ(카, 여성)는 절대 빼먹지 마세요 — 같은 말도 훨씬 공손해집니다.</p>
-    </div>
-  </div>
-</div>
-<div class="accordion-item">
-  <button class="accordion-btn" onclick="toggle(this)">
-    <span class="acc-icon">📖</span>
-    <span class="acc-label">오늘의 단편소설</span>
-    <span class="acc-arrow">▽</span>
-  </button>
-  <div class="accordion-body">
-    <div class="accordion-inner">
-<h2>📖 오늘의 단편소설 — 2026-06-30 (화)</h2>
+<p>💡 <b>오늘의 팁:</b> 태국어 부탁·질문은 「동사 + ได้ไหม(다이 마이)」가 기본 뼈대입니다. 초급에선 이것만으로 충분하고, 정중하게 만들려면 앞에 ขอโทษที่รบกวน(죄송하지만)·ไม่ทราบว่า(혹시 ~할지)를 덧붙이면 됩니다. 끝의 ครับ(크랍, 남성)/ค่ะ·คะ(카, 여성)는 절대 빼먹지 마세요 — 같은 말도 훨씬 공손해집니다.</p></div></div></div>
+<div class="accordion-item" data-key="story"><button class="accordion-btn" onclick="toggle(this)"><span class="acc-icon">📖</span><span class="acc-label">오늘의 단편소설</span><span class="acc-arrow">&#9661;</span></button><div class="accordion-body"><div class="accordion-inner"><h2>📖 오늘의 단편소설 — 2026-06-30 (화)</h2>
 <blockquote># <b>「아홉 켤레의 구두로 남은 사내」</b> — 윤흥길 (1977)</blockquote>
 <p><b>권역/분류:</b> 한국 · 현대(1950~2000) · 사회/현실 비판</p>
 <p><b>원제/수록:</b> 아홉 켤레의 구두로 남은 사내, 1977년 《창작과비평》 발표 / 동명 단편집 수록 / 영문판 제목: <i>The Man Who Was Left as Nine Pairs of Shoes</i> (아시아 출판사, 2012)</p>
@@ -510,38 +308,26 @@ body {
 <p>다음 날 아침, '나'는 권 씨의 셋방 앞에서 그가 그토록 소중히 닦고 또 닦던 아홉 켤레의 구두가 나란히 놓여 있는 것을 발견한다. 권 씨의 가족도, 권 씨 자신도 이미 떠나고 없다. 구두만이 남겨진 것이다. 권 씨가 자신의 유일한 자존심이자 정체성의 상징이었던 구두들을 놓고 사라졌다는 것은, 그가 마지막 체면과도 결별했음을, 혹은 그 체면이 처음부터 존재하지 않았음을 스스로 선언한 것이나 다름없다. '나'는 그 구두들 앞에서 할 말을 잃는다.</p>
 <hr>
 <h2>💡 감상 포인트</h2>
-<p>이 작품의 핵심 상징은 단연 '구두'다. 반짝이게 닦인 아홉 켤레의 구두는 권 씨가 잃지 않으려 발버둥 친 자존심과 대학 출신이라는 정체성을 가시화한 물건이며, 그것을 두고 떠났다는 것은 그 자존심 자체의 붕괴를 의미한다. '광주대단지사건'이라는 실제 역사를 배경으로 하여, 국가 주도의 도시 개발이 소시민의 삶을 어떻게 무너뜨리는지를 한 인물의 하강 궤적으로 생생히 보여준다. 특히 '나'의 자기반성 구조는 독자로 하여금 방관자의 죄책감을 함께 체험하게 만들며, 윤흥길 문학 특유의 윤리적 성찰을 잘 드러낸다. 군더더기 없이 절제된 문장 속에 1970년대 한국 사회의 구조적 모순을 오롯이 새겨 넣은 수작이다.</p>
-    </div>
-  </div>
+<p>이 작품의 핵심 상징은 단연 '구두'다. 반짝이게 닦인 아홉 켤레의 구두는 권 씨가 잃지 않으려 발버둥 친 자존심과 대학 출신이라는 정체성을 가시화한 물건이며, 그것을 두고 떠났다는 것은 그 자존심 자체의 붕괴를 의미한다. '광주대단지사건'이라는 실제 역사를 배경으로 하여, 국가 주도의 도시 개발이 소시민의 삶을 어떻게 무너뜨리는지를 한 인물의 하강 궤적으로 생생히 보여준다. 특히 '나'의 자기반성 구조는 독자로 하여금 방관자의 죄책감을 함께 체험하게 만들며, 윤흥길 문학 특유의 윤리적 성찰을 잘 드러낸다. 군더더기 없이 절제된 문장 속에 1970년대 한국 사회의 구조적 모순을 오롯이 새겨 넣은 수작이다.</p></div></div></div>
 </div>
-</div>
-
 <script>
-function toggle(btn) {
-  const body = btn.nextElementSibling;
-  const isOpen = btn.classList.contains('open');
-  // Close all
-  document.querySelectorAll('.accordion-btn.open').forEach(b => {
-    b.classList.remove('open');
-    b.nextElementSibling.classList.remove('open');
-  });
-  if (!isOpen) {
-    btn.classList.add('open');
-    body.classList.add('open');
-    setTimeout(() => btn.scrollIntoView({behavior:'smooth', block:'start'}), 50);
-  }
+function setHdrH(){var h=document.querySelector(".header").offsetHeight;document.documentElement.style.setProperty("--hdr-h",h+"px")}
+setHdrH();window.addEventListener("resize",setHdrH);
+function toggle(btn){var body=btn.nextElementSibling,isOpen=btn.classList.contains("open");
+document.querySelectorAll(".accordion-btn.open").forEach(function(b){b.classList.remove("open");b.nextElementSibling.classList.remove("open");});
+if(!isOpen){btn.classList.add("open");body.classList.add("open");
+setTimeout(function(){var hh=parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--hdr-h"))||72;
+window.scrollTo({top:btn.getBoundingClientRect().top+window.scrollY-hh,behavior:"smooth"});},30);}
 }
-
-// Date display
-const d = new Date();
-const days = ['일','월','화','수','목','금','토'];
-document.getElementById('hdr-date').textContent =
-  String(d.getMonth()+1).padStart(2,'0') + '/' +
-  String(d.getDate()).padStart(2,'0');
-
-// Arrow buttons (no-op for now, just visual)
-document.getElementById('btn-prev').addEventListener('click', () => {});
-document.getElementById('btn-next').addEventListener('click', () => {});
-</script>
-</body>
-</html>
+var d=new Date();
+document.getElementById("hdr-date").textContent=String(d.getMonth()+1).padStart(2,"0")+"/"+String(d.getDate()).padStart(2,"0");
+(function(){var dates=[],curIdx=-1;
+fetch("./data/index.json").then(function(r){if(r.ok)return r.json();}).then(function(a){if(a)dates=a;ua();}).catch(function(){ua();});
+function ua(){document.getElementById("btn-prev").disabled=curIdx>=dates.length-1;document.getElementById("btn-next").disabled=curIdx<=-1;}
+function ld(ds){fetch("./data/"+ds+".json").then(function(r){if(!r.ok)return;return r.json();}).then(function(d){if(!d)return;
+document.getElementById("hdr-date").textContent=ds.slice(5).replace("-","/");
+document.querySelector(".header-updated").textContent="업데이트: "+(d.updated_at||ds);}).catch(function(){});}
+document.getElementById("btn-prev").addEventListener("click",function(){curIdx++;if(curIdx<dates.length)ld(dates[curIdx]);else curIdx=dates.length-1;ua();});
+document.getElementById("btn-next").addEventListener("click",function(){curIdx--;if(curIdx>=0)ld(dates[curIdx]);else{curIdx=-1;location.reload();}ua();});
+})();
+</script></body></html>
