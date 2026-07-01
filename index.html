@@ -8,8 +8,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Noto Sans KR",sans-serif;back
 .header{background:linear-gradient(135deg,#4c1d95 0%,#5b21b6 30%,#7c3aed 60%,#8b5cf6 80%,#a78bfa 100%);padding:18px 16px 16px;text-align:center;position:sticky;top:0;z-index:100;box-shadow:0 2px 20px rgba(0,0,0,.4)}
 .header-title{font-size:17px;font-weight:700;color:#fff;letter-spacing:.3px;margin-bottom:8px;display:flex;align-items:center;justify-content:center;gap:7px}
 .header-nav{display:flex;align-items:center;justify-content:center;gap:16px;margin-bottom:4px}
-.nav-arrow{background:rgba(255,255,255,.2);border:none;color:#fff;width:28px;height:28px;border-radius:50%;font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .15s}
+.nav-arrow{background:rgba(255,255,255,.2);border:none;color:#fff;width:28px;height:28px;border-radius:50%;font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .15s,opacity .15s}
 .nav-arrow:active{background:rgba(255,255,255,.35)}
+.nav-arrow:disabled{opacity:.3;cursor:default}
 .header-date{font-size:16px;font-weight:600;color:#fff;min-width:60px;text-align:center}
 .header-updated{font-size:11px;color:rgba(255,255,255,.65);margin-top:2px}
 .list{padding:0}
@@ -48,15 +49,16 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Noto Sans KR",sans-serif;back
 [data-key="stock"] .accordion-inner h3{font-size:16.5px;color:#fff;font-weight:700;line-height:1.5;margin:24px 0 9px;padding:0 0 9px 0;border-bottom:2px solid var(--accent)}
 [data-key="stock"] .accordion-inner h2 + h3{margin-top:8px}
 [data-key="stock"] .accordion-inner p{margin:0 0 18px 0;font-size:15.5px;color:#d4d4d4;line-height:1.7}
+.empty-note{color:var(--muted);font-style:italic;padding:8px 0}
 </style></head><body>
 <div class="header">
 <div class="header-title">&#128197; Daily Dashboard</div>
 <div class="header-nav">
-<button class="nav-arrow" id="btn-prev">&#9664;</button>
+<button class="nav-arrow" id="btn-prev" title="이전 날">&#9664;</button>
 <div class="header-date" id="hdr-date"></div>
-<button class="nav-arrow" id="btn-next">&#9654;</button>
+<button class="nav-arrow" id="btn-next" title="다음 날">&#9654;</button>
 </div>
-<div class="header-updated">업데이트: 07/01 08:14</div>
+<div class="header-updated" id="hdr-updated">업데이트: 07/01 08:14</div>
 </div>
 <div class="list">
 <div class="accordion-item" data-key="portfolio"><button class="accordion-btn" onclick="toggle(this)"><span class="acc-icon">📋</span><span class="acc-label">포트폴리오 브리핑</span><span class="acc-arrow">&#9661;</span></button><div class="accordion-body"><div class="accordion-inner"><h1>📊 포트폴리오 일일 브리핑</h1>
@@ -281,15 +283,52 @@ if(!isOpen){btn.classList.add("open");body.classList.add("open");
 setTimeout(function(){var hh=parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--hdr-h"))||72;
 window.scrollTo({top:btn.getBoundingClientRect().top+window.scrollY-hh,behavior:"smooth"});},30);}
 }
-var d=new Date();
-document.getElementById("hdr-date").textContent=String(d.getMonth()+1).padStart(2,"0")+"/"+String(d.getDate()).padStart(2,"0");
-(function(){var dates=[],curIdx=-1;
-fetch("./data/index.json").then(function(r){if(r.ok)return r.json();}).then(function(a){if(a)dates=a;ua();}).catch(function(){ua();});
-function ua(){document.getElementById("btn-prev").disabled=curIdx>=dates.length-1;document.getElementById("btn-next").disabled=curIdx<=-1;}
-function ld(ds){fetch("./data/"+ds+".json").then(function(r){if(!r.ok)return;return r.json();}).then(function(d){if(!d)return;
-document.getElementById("hdr-date").textContent=ds.slice(5).replace("-","/");
-document.querySelector(".header-updated").textContent="업데이트: "+(d.updated_at||ds);}).catch(function(){});}
-document.getElementById("btn-prev").addEventListener("click",function(){curIdx++;if(curIdx<dates.length)ld(dates[curIdx]);else curIdx=dates.length-1;ua();});
-document.getElementById("btn-next").addEventListener("click",function(){curIdx--;if(curIdx>=0)ld(dates[curIdx]);else{curIdx=-1;location.reload();}ua();});
+function mdInline(t){
+t=t.replace(/\*\*\*(.+?)\*\*\*/g,"<b><i>$1</i></b>");
+t=t.replace(/\*\*(.+?)\*\*/g,"<b>$1</b>");
+t=t.replace(/\*(.+?)\*/g,"<i>$1</i>");
+t=t.replace(/`(.+?)`/g,"<code>$1</code>");
+t=t.replace(/\[(.+?)\]\((.+?)\)/g,'<a href="$2">$1</a>');
+t=t.replace(/(\u25b2\s*\+?[\d,.]+%?)/g,'<span class="up">$1</span>');
+t=t.replace(/(\u25bc\s*-?[\d,.]+%?)/g,'<span class="dn">$1</span>');
+return t;}
+function mdToHtml(text,key){
+var lines=text.split("\n"),out=[],inTable=false,inUl=false;
+for(var i=0;i<lines.length;i++){var line=lines[i];
+if(key==="stock"&&line.replace(/^\s+/,"").indexOf("**분야:**")===0)continue;
+var s=line.trim();
+if(s.charAt(0)==="|"){var cells=s.replace(/^\|/,"").replace(/\|$/,"").split("|").map(function(c){return c.trim();});
+var sep=true;for(var j=0;j<cells.length;j++){if(cells[j]&&!/^[-: ]+$/.test(cells[j])){sep=false;break;}}if(sep)continue;
+if(!inTable){out.push('<table data-cols="'+cells.length+'">');inTable=true;}
+var tag=(out[out.length-1].indexOf("<table")===0)?"th":"td";
+out.push("<tr>"+cells.map(function(c){return "<"+tag+">"+mdInline(c)+"</"+tag+">";}).join("")+"</tr>");continue;
+}else{if(inTable){out.push("</table>");inTable=false;}}
+if(line.indexOf("#### ")===0){if(inUl){out.push("</ul>");inUl=false;}out.push("<h4>"+mdInline(line.slice(5))+"</h4>");}
+else if(line.indexOf("### ")===0){if(inUl){out.push("</ul>");inUl=false;}out.push("<h3>"+mdInline(line.slice(4))+"</h3>");}
+else if(line.indexOf("## ")===0){if(inUl){out.push("</ul>");inUl=false;}out.push("<h2>"+mdInline(line.slice(3))+"</h2>");}
+else if(line.indexOf("# ")===0){if(inUl){out.push("</ul>");inUl=false;}out.push("<h1>"+mdInline(line.slice(2))+"</h1>");}
+else if(line.indexOf("> ")===0){if(inUl){out.push("</ul>");inUl=false;}out.push("<blockquote>"+mdInline(line.slice(2))+"</blockquote>");}
+else if(line.charAt(0)===">"){if(inUl){out.push("</ul>");inUl=false;}out.push("<blockquote>"+mdInline(line.slice(1).trim())+"</blockquote>");}
+else if(s==="---"){if(inUl){out.push("</ul>");inUl=false;}out.push("<hr>");}
+else if(line.indexOf("- ")===0){if(!inUl){out.push("<ul>");inUl=true;}out.push("<li>"+mdInline(line.slice(2))+"</li>");}
+else{if(inUl){out.push("</ul>");inUl=false;}if(s)out.push("<p>"+mdInline(line)+"</p>");}}
+if(inTable)out.push("</table>");if(inUl)out.push("</ul>");return out.join("\n");}
+(function(){var dates=[],curIdx=0;
+var order=["portfolio","stock","fortune","history","goodtext","thai","story"];
+function getContent(v){return (typeof v==="string")?v:((v&&v.content)?v.content:"");}
+function render(dobj){var tasks=(dobj&&dobj.tasks)||{};
+order.forEach(function(k){var el=document.querySelector('.accordion-item[data-key="'+k+'"] .accordion-inner');if(!el)return;
+var c=getContent(tasks[k]);el.innerHTML=c?mdToHtml(c,k):'<p class="empty-note">(이 날 발행된 내용이 없습니다.)</p>';});
+document.querySelectorAll(".accordion-btn.open").forEach(function(b){b.classList.remove("open");b.nextElementSibling.classList.remove("open");});
+window.scrollTo({top:0,behavior:"smooth"});}
+function setHeader(ds,upd){document.getElementById("hdr-date").textContent=ds.slice(5).replace("-","/");
+document.getElementById("hdr-updated").textContent="업데이트: "+(upd||ds);}
+function ua(){document.getElementById("btn-prev").disabled=curIdx>=dates.length-1;document.getElementById("btn-next").disabled=curIdx<=0;}
+function load(idx){var ds=dates[idx];if(!ds)return;
+fetch("./data/"+ds+".json").then(function(r){return r.ok?r.json():null;}).then(function(d){if(!d)return;
+curIdx=idx;setHeader(ds,d.updated_at);render(d);ua();}).catch(function(){});}
+fetch("./data/index.json").then(function(r){return r.ok?r.json():null;}).then(function(a){if(a&&a.length){dates=a;curIdx=0;}ua();}).catch(function(){ua();});
+document.getElementById("btn-prev").addEventListener("click",function(){if(curIdx<dates.length-1)load(curIdx+1);});
+document.getElementById("btn-next").addEventListener("click",function(){if(curIdx>0)load(curIdx-1);});
 })();
 </script></body></html>
