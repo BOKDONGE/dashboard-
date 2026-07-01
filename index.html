@@ -1,71 +1,4 @@
-<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0"><title>Daily Dashboard</title><style>
-:root{--bg:#1a1a2e;--item-bg:#16213e;--item-bg2:#1a1a2e;--border:rgba(255,255,255,0.08);--text:#e0e0e0;--muted:#888;--accent:#a78bfa;--accent2:#f87171;--hdr-h:72px;--safe-t:env(safe-area-inset-top,0px);--safe-b:env(safe-area-inset-bottom,0px)}
-*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-body{font-family:-apple-system,BlinkMacSystemFont,"Noto Sans KR",sans-serif;background:var(--bg);color:var(--text);font-size:17px;line-height:1.75;padding-top:var(--safe-t);padding-bottom:var(--safe-b)}
-.header{background:linear-gradient(135deg,#4c1d95 0%,#5b21b6 30%,#7c3aed 60%,#8b5cf6 80%,#a78bfa 100%);padding:18px 16px 16px;text-align:center;position:sticky;top:0;z-index:100;box-shadow:0 2px 20px rgba(0,0,0,.4)}
-.header-title{font-size:17px;font-weight:700;color:#fff;letter-spacing:.3px;margin-bottom:8px;display:flex;align-items:center;justify-content:center;gap:7px}
-.header-nav{display:flex;align-items:center;justify-content:center;gap:16px;margin-bottom:4px}
-.nav-arrow{background:rgba(255,255,255,.2);border:none;color:#fff;width:28px;height:28px;border-radius:50%;font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .15s,opacity .15s}
-.nav-arrow:active{background:rgba(255,255,255,.35)}
-.nav-arrow:disabled{opacity:.3;cursor:default}
-.header-date{font-size:16px;font-weight:600;color:#fff;min-width:66px;text-align:center;cursor:pointer;user-select:none;display:inline-flex;align-items:center;justify-content:center;gap:5px;padding:2px 8px;border-radius:8px;transition:background .15s}
-.header-date:active{background:rgba(255,255,255,.18)}
-.header-date:after{content:"\25be";font-size:9px;opacity:.85}
-.header-updated{font-size:11px;color:rgba(255,255,255,.65);margin-top:2px}
-.list{padding:0}
-.accordion-item{border-bottom:1px solid var(--border)}
-.accordion-btn{width:100%;background:var(--item-bg);border:none;color:var(--text);display:flex;align-items:center;gap:12px;padding:16px;cursor:pointer;text-align:left;transition:background .15s}
-.accordion-btn:active{background:#1f2a4a}
-.accordion-btn.open{position:sticky;top:var(--hdr-h);z-index:50;box-shadow:0 2px 8px rgba(0,0,0,.5)}
-.acc-icon{font-size:21px;flex:0 0 auto}
-.acc-label{flex:1;font-size:17px;font-weight:500}
-.acc-arrow{font-size:13px;color:var(--muted);transition:transform .25s;flex:0 0 auto}
-.accordion-btn.open .acc-arrow{transform:rotate(180deg)}
-.accordion-body{max-height:0;overflow:hidden;transition:max-height .35s ease}
-.accordion-body.open{max-height:9000px}
-.accordion-inner{padding:16px 16px 20px;background:var(--item-bg2);border-top:1px solid var(--border)}
-.accordion-inner h1{font-size:19px;color:#fff;margin:12px 0 8px}
-.accordion-inner h2{font-size:16px;color:var(--accent);margin:18px 0 7px;padding-left:10px;border-left:3px solid var(--accent)}
-.accordion-inner h3{font-size:15px;color:#ccc;margin:14px 0 5px}
-.accordion-inner h4{font-size:14px;color:var(--muted);margin:10px 0 4px}
-.accordion-inner p{margin-bottom:7px;font-size:16px}
-.accordion-inner blockquote{border-left:3px solid var(--accent2);padding:10px 14px;margin:12px 0;background:rgba(248,113,113,.07);border-radius:0 8px 8px 0;font-style:italic;font-size:16px}
-.accordion-inner table{width:100%;border-collapse:collapse;font-size:14px;margin:12px 0;display:block;overflow-x:auto;white-space:nowrap}
-.accordion-inner th,.accordion-inner td{border:1px solid var(--border);padding:7px 9px}
-.accordion-inner th{background:#1e2a50;color:var(--accent)}
-.accordion-inner tr:nth-child(even) td{background:rgba(255,255,255,.03)}
-.accordion-inner code{background:rgba(255,255,255,.08);padding:2px 6px;border-radius:4px;font-size:14px;font-family:monospace}
-.accordion-inner hr{border:none;border-top:1px solid var(--border);margin:16px 0}
-.accordion-inner ul{padding-left:20px;margin-bottom:8px}
-.accordion-inner li{margin-bottom:5px;font-size:16px}
-.accordion-inner a{color:var(--accent)}
-.up{color:#ff4d4d;font-weight:600}.dn{color:#4d9eff;font-weight:600}
-[data-key="portfolio"] .accordion-inner table[data-cols="3"]{display:table;overflow-x:visible;white-space:normal;font-size:12px;table-layout:fixed;width:100%}
-[data-key="portfolio"] .accordion-inner table[data-cols="3"] th:first-child,[data-key="portfolio"] .accordion-inner table[data-cols="3"] td:first-child{width:52%}
-[data-key="portfolio"] .accordion-inner table[data-cols="3"] th:nth-child(2),[data-key="portfolio"] .accordion-inner table[data-cols="3"] td:nth-child(2){width:28%;text-align:right}
-[data-key="portfolio"] .accordion-inner table[data-cols="3"] th:nth-child(3),[data-key="portfolio"] .accordion-inner table[data-cols="3"] td:nth-child(3){width:20%;text-align:right}
-[data-key="portfolio"] .accordion-inner table:not([data-cols="3"]){font-size:11px}
-[data-key="stock"] .accordion-inner h3{font-size:16.5px;color:#fff;font-weight:700;line-height:1.5;margin:24px 0 9px;padding:0 0 9px 0;border-bottom:2px solid var(--accent)}
-[data-key="stock"] .accordion-inner h2 + h3{margin-top:8px}
-[data-key="stock"] .accordion-inner p{margin:0 0 18px 0;font-size:15.5px;color:#d4d4d4;line-height:1.7}
-.empty-note{color:var(--muted);font-style:italic;padding:8px 0}
-.cal-ov{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:200;display:none;align-items:flex-start;justify-content:center;padding-top:90px}
-.cal-ov.open{display:flex}
-.cal{background:#eef1f6;color:#1a1a2e;border-radius:16px;padding:14px 16px 18px;width:340px;max-width:92vw;box-shadow:0 14px 46px rgba(0,0,0,.55)}
-.cal-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
-.cal-title{font-size:15px;font-weight:700}
-.cal-mnav{display:flex;gap:2px}
-.cal-mnav button{background:none;border:none;font-size:12px;color:#555;cursor:pointer;padding:6px 9px;border-radius:8px}
-.cal-mnav button:active{background:#dde3ef}
-.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;text-align:center}
-.cal-dow{color:#8a8f9a;font-size:12px;font-weight:600;padding:4px 0}
-.cal-cell{aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-size:14px;border-radius:50%;color:#c2c6cd}
-.cal-cell.has{color:#1a1a2e;cursor:pointer;font-weight:500}
-.cal-cell.has:active{background:#d6def0}
-.cal-cell.sel{background:#1f6bd6;color:#fff;font-weight:700}
-.cal-cell.other{color:#d3d7de}
-.cal-hint{margin-top:12px;font-size:11px;color:#8a8f9a;text-align:center}
-</style></head><body><div class="header"><div class="header-title">&#128197; Daily Dashboard</div><div class="header-nav"><button class="nav-arrow" id="btn-prev" title="이전 날">&#9664;</button><div class="header-date" id="hdr-date" title="날짜 선택"></div><button class="nav-arrow" id="btn-next" title="다음 날">&#9654;</button></div><div class="header-updated" id="hdr-updated">업데이트: 07/01 08:14</div></div><div class="list"><div class="accordion-item" data-key="portfolio"><button class="accordion-btn" onclick="toggle(this)"><span class="acc-icon">📋</span><span class="acc-label">포트폴리오 브리핑</span><span class="acc-arrow">&#9661;</span></button><div class="accordion-body"><div class="accordion-inner"><h1>📊 포트폴리오 일일 브리핑</h1>
+<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0"><title>Daily Dashboard</title><style>:root{--bg:#1a1a2e;--item-bg:#16213e;--item-bg2:#1a1a2e;--border:rgba(255,255,255,0.08);--text:#e0e0e0;--muted:#888;--accent:#a78bfa;--accent2:#f87171;--hdr-h:72px;--safe-t:env(safe-area-inset-top,0px);--safe-b:env(safe-area-inset-bottom,0px)}*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}body{font-family:-apple-system,BlinkMacSystemFont,"Noto Sans KR",sans-serif;background:var(--bg);color:var(--text);font-size:17px;line-height:1.75;padding-top:var(--safe-t);padding-bottom:var(--safe-b)}.header{background:linear-gradient(135deg,#4c1d95 0%,#5b21b6 30%,#7c3aed 60%,#8b5cf6 80%,#a78bfa 100%);padding:18px 16px 16px;text-align:center;position:sticky;top:0;z-index:100;box-shadow:0 2px 20px rgba(0,0,0,.4)}.header-title{font-size:17px;font-weight:700;color:#fff;letter-spacing:.3px;margin-bottom:8px;display:flex;align-items:center;justify-content:center;gap:7px}.header-nav{display:flex;align-items:center;justify-content:center;gap:16px;margin-bottom:4px}.nav-arrow{background:rgba(255,255,255,.2);border:none;color:#fff;width:28px;height:28px;border-radius:50%;font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .15s,opacity .15s}.nav-arrow:active{background:rgba(255,255,255,.35)}.nav-arrow:disabled{opacity:.3;cursor:default}.header-date{font-size:16px;font-weight:600;color:#fff;min-width:60px;text-align:center}.header-updated{font-size:11px;color:rgba(255,255,255,.65);margin-top:2px}.list{padding:0}.accordion-item{border-bottom:1px solid var(--border)}.accordion-btn{width:100%;background:var(--item-bg);border:none;color:var(--text);display:flex;align-items:center;gap:12px;padding:16px;cursor:pointer;text-align:left;transition:background .15s;-webkit-tap-highlight-color:transparent}.accordion-btn:active{background:#1f2a4a}.accordion-btn.open{position:sticky;top:var(--hdr-h);z-index:50;box-shadow:0 2px 8px rgba(0,0,0,.5)}.acc-icon{font-size:21px;flex:0 0 auto}.acc-label{flex:1;font-size:17px;font-weight:500}.acc-arrow{font-size:13px;color:var(--muted);transition:transform .25s;flex:0 0 auto}.accordion-btn.open .acc-arrow{transform:rotate(180deg)}.accordion-body{max-height:0;overflow:hidden;transition:max-height .35s ease}.accordion-body.open{max-height:14000px}.accordion-inner{padding:16px 16px 20px;background:var(--item-bg2);border-top:1px solid var(--border)}.accordion-inner h1{font-size:19px;color:#fff;margin:12px 0 8px}.accordion-inner h2{font-size:16px;color:var(--accent);margin:18px 0 7px;padding-left:10px;border-left:3px solid var(--accent)}.accordion-inner h3{font-size:15px;color:#ccc;margin:14px 0 5px}.accordion-inner h4{font-size:14px;color:var(--muted);margin:10px 0 4px}.accordion-inner p{margin-bottom:7px;font-size:16px}.accordion-inner blockquote{border-left:3px solid var(--accent2);padding:10px 14px;margin:12px 0;background:rgba(248,113,113,.07);border-radius:0 8px 8px 0;font-style:italic;font-size:16px}.accordion-inner table{width:100%;border-collapse:collapse;font-size:14px;margin:12px 0;display:block;overflow-x:auto;white-space:nowrap}.accordion-inner th,.accordion-inner td{border:1px solid var(--border);padding:7px 9px}.accordion-inner th{background:#1e2a50;color:var(--accent)}.accordion-inner tr:nth-child(even) td{background:rgba(255,255,255,.03)}.accordion-inner code{background:rgba(255,255,255,.08);padding:2px 6px;border-radius:4px;font-size:14px;font-family:monospace}.accordion-inner hr{border:none;border-top:1px solid var(--border);margin:16px 0}.accordion-inner ul{padding-left:20px;margin-bottom:8px}.accordion-inner li{margin-bottom:5px;font-size:16px}.accordion-inner a{color:var(--accent)}.up{color:#ff4d4d;font-weight:600}.dn{color:#4d9eff;font-weight:600}.sub-accordion{margin-top:18px;border:1px solid var(--accent);border-radius:10px;overflow:hidden}.sub-accordion-btn{width:100%;background:rgba(167,139,250,.14);border:none;color:var(--accent);display:flex;align-items:center;gap:10px;padding:13px 14px;cursor:pointer;text-align:left;font-size:15px;font-weight:700}.sub-accordion-btn:active{background:rgba(167,139,250,.24)}.sub-icon{font-size:18px;flex:0 0 auto}.sub-label{flex:1}.sub-accordion-btn .acc-arrow{transition:transform .25s}.sub-accordion-btn.open .acc-arrow{transform:rotate(180deg)}.sub-accordion-body{max-height:0;overflow:hidden;transition:max-height .35s ease;background:var(--item-bg2)}.sub-accordion-body.open{max-height:9000px}.sub-accordion-inner{padding:14px 14px 16px}[data-key="portfolio"] .accordion-inner table[data-cols="3"]{display:table;overflow-x:visible;white-space:normal;font-size:12px;table-layout:fixed;width:100%}[data-key="portfolio"] .accordion-inner table[data-cols="3"] th:first-child,[data-key="portfolio"] .accordion-inner table[data-cols="3"] td:first-child{width:52%}[data-key="portfolio"] .accordion-inner table[data-cols="3"] th:nth-child(2),[data-key="portfolio"] .accordion-inner table[data-cols="3"] td:nth-child(2){width:28%;text-align:right}[data-key="portfolio"] .accordion-inner table[data-cols="3"] th:nth-child(3),[data-key="portfolio"] .accordion-inner table[data-cols="3"] td:nth-child(3){width:20%;text-align:right}[data-key="portfolio"] .accordion-inner table:not([data-cols="3"]){font-size:11px}[data-key="stock"] .accordion-inner h3{font-size:16.5px;color:#fff;font-weight:700;line-height:1.5;margin:24px 0 9px;padding:0 0 9px 0;border-bottom:2px solid var(--accent)}[data-key="stock"] .accordion-inner h2 + h3{margin-top:8px}[data-key="stock"] .accordion-inner p{margin:0 0 18px 0;font-size:15.5px;color:#d4d4d4;line-height:1.7}.empty-note{color:var(--muted);font-style:italic;padding:8px 0}</style></head><body><div class="header"><div class="header-title">&#128197; Daily Dashboard</div><div class="header-nav"><button class="nav-arrow" id="btn-prev" title="이전 날">&#9664;</button><div class="header-date" id="hdr-date"></div><button class="nav-arrow" id="btn-next" title="다음 날">&#9654;</button></div><div class="header-updated" id="hdr-updated">업데이트: 07/01 16:21</div></div><div class="list"><div class="accordion-item" data-key="portfolio"><button class="accordion-btn" onclick="toggle(this)"><span class="acc-icon">📋</span><span class="acc-label">포트폴리오 브리핑</span><span class="acc-arrow">&#9661;</span></button><div class="accordion-body"><div class="accordion-inner"><h1>📊 포트폴리오 일일 브리핑</h1>
 <p><b>2026년 7월 1일 (수)</b> | 기준: Google Finance 실시간 시세 (최근 거래일 종가, 대부분 6/30 마감)</p>
 <blockquote>⚠️ Chrome 미연결로 Google Finance 페이지를 직접 수집했습니다. 종목별 기준 시각을 확인했으며, 캐시가 오래된 일부 종목은 WebSearch 보완값을 사용하고 <code>(기준일)</code>을 명시했습니다.</blockquote>
 <h2>🔑 오늘의 핵심 한 줄</h2>
@@ -180,7 +113,26 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Noto Sans KR",sans-serif;back
 <blockquote><b>"많이 듣고 한 박자 늦게 말하면, 부딪침이 인연으로 바뀝니다."</b></blockquote>
 <blockquote>행운 시간대: 오전 9~11시(사시) | 행운 색: 초록·청록 | 방향: 동쪽</blockquote>
 <hr>
-<p><i>명리학적 관점의 참고용 해석입니다. 중요한 결정은 언제나 당신의 판단이 우선입니다.</i></p></div></div></div>
+<p><i>명리학적 관점의 참고용 해석입니다. 중요한 결정은 언제나 당신의 판단이 우선입니다.</i></p><div class="sub-accordion"><button class="sub-accordion-btn" onclick="toggleSub(event,this)"><span class="sub-icon">&#127769;</span><span class="sub-label">7월 운세</span><span class="acc-arrow">&#9661;</span></button><div class="sub-accordion-body"><div class="sub-accordion-inner"><h2>🌙 이달의 운세 — 2026년 7월</h2>
+<blockquote># <b>병오(丙午) 을미(乙未)월</b> — 소서(7/7)~입추, 대서를 지나는 한여름의 흐름</blockquote>
+<p>이번 달은 을목(乙木) 일간에게 천간 <b>을목=비견(比肩, 나와 같은 기운의 동료·경쟁·자립심)</b>, 지지 <b>미토=편재(偏財, 활동적으로 벌고 쓰는 재물·넓은 인맥)</b>가 겹쳐 옵니다. 스스로 밀고 나가려는 힘과 바쁘게 움직이는 재물의 기운이 함께 커지는 달입니다. 다만 병오년의 강한 불기운 속 한여름이라, 여린 을목이 자칫 메마르기 쉬우니 무리한 확장보다 물을 대듯 쉼과 관리를 병행하는 것이 이달의 핵심입니다. (참고: 7월 1~6일은 아직 갑오월 기운이 남아 있어 경쟁·소비가 활발하고, 7월 7일 소서부터 을미월로 본격 전환됩니다.)</p>
+<h2>🌟 이달의 총운 ★★★☆☆</h2>
+<p>활동량과 기회가 늘지만 변동성도 함께 커지는 달입니다. 원국의 일지 축토와 이달 미토가 부딪히는 <b>축미충(丑未沖)</b>이 걸려, 안정된 자리·건강·재물의 흐름이 한 번 흔들리며 '정리하고 다시 배치하라'는 신호를 보냅니다. 대신 시지 오화와 미토가 어울리는 <b>오미합(午未合)</b>이 있어, 표현하고 즐기고 사람들과 어울리는 쪽으로는 결이 잘 풀립니다. 벌이려 하기보다 있는 것을 다듬고 사람과의 관계에서 힘을 얻는 한 달로 삼으면 좋습니다.</p>
+<h2>💰 재물운</h2>
+<p>편재가 왕성해 돈이 들어오고 나가는 폭이 모두 커집니다. 부수입·활동성 수입의 기회가 보이지만, 비견(동료·경쟁)이 함께 있어 '나눠 갖거나 빠져나가기' 쉬운 구조입니다. 큰 지출·보증·동업 정산은 이달 하순보다 여유 있게 미루고, 새는 곳을 막는 쪽에 집중하세요. 구체적인 투자·매매 판단은 전적으로 본인의 몫으로 두시길 권합니다.</p>
+<h2>💼 일·직장운</h2>
+<p>자립심과 추진력이 올라와 스스로 일을 끌고 가기 좋은 달입니다. 협업과 인맥 확장에서 성과가 나지만, 경쟁 구도나 공(功)을 나누는 상황이 생길 수 있으니 역할과 책임을 문서로 명확히 해두면 마찰이 줄어듭니다. 벌여놓은 일을 마무리·정리하는 데 더 좋은 시기입니다.</p>
+<h2>❤️ 관계운</h2>
+<p>오미합 덕분에 즐겁게 어울리고 표현하는 관계운은 좋습니다. 다만 축미충이 일지(배우자·가까운 사람 자리)를 건드려, 가까운 사이일수록 사소한 부딪힘이 생기기 쉽습니다. 말을 앞세우기보다 한 박자 늦춰 듣는 태도가 이달의 관계를 지켜줍니다.</p>
+<h2>🏃 건강운</h2>
+<p>을목 체질은 간·담, 신경·근육, 목과 어깨가 약한 부위입니다. 한여름 강한 불기운에 을목이 마르기 쉬워 <b>수분 보충과 충분한 수면</b>이 최우선입니다. 축미충은 소화기(비위)와 관절을 자극하니 과식·찬 음식·무리한 운동을 삼가고, 심장·혈압도 여름철 관리 대상으로 두세요.</p>
+<h2>🗓️ 이달의 주의·호기 시기</h2>
+<p>7월 초(1~6일)는 갑오월 기운으로 소비·경쟁이 커지니 지출 관리에 유의하세요. <b>대서(7월 23일) 전후</b>는 불기운이 가장 강해지는 구간이라 몸과 감정의 과열, 성급한 결정을 특히 조심할 때입니다. 반대로 <b>소서 직후(7월 8~15일 무렵)</b>는 관계·표현·마무리 작업에 기운이 잘 붙는 호기이니 사람 만나고 일 정리하는 데 활용하세요.</p>
+<h2>🍀 이달의 한 마디</h2>
+<blockquote><b>"벌이기보다 다듬고, 뜨거울수록 물을 대라."</b></blockquote>
+<blockquote>행운 색: 검정·짙은 파랑(물의 기운) | 방향: 북쪽 | 키워드: 정리·절제·수분</blockquote>
+<hr>
+<p><i>명리학적 관점의 참고용 해석입니다. 중요한 결정은 언제나 당신의 판단이 우선입니다.</i></p></div></div></div></div></div></div>
 <div class="accordion-item" data-key="history"><button class="accordion-btn" onclick="toggle(this)"><span class="acc-icon">📅</span><span class="acc-label">오늘의 역사</span><span class="acc-arrow">&#9661;</span></button><div class="accordion-body"><div class="accordion-inner"><h2>📜 오늘의 역사 한 조각 — 2026-07-01 (수)</h2>
 <blockquote># <b>소니 워크맨, 세상을 '걸어 다니며 듣는 시대'로 바꾸다</b> (1979년)</blockquote>
 <h2>🕰️ 무슨 일이 있었나</h2>
@@ -276,14 +228,17 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Noto Sans KR",sans-serif;back
 <p>부부 사이의 긴장이 깊어지자 화자는 서로를 상처 입히는 두 물고기를 분리하거나 어떻게든 처리하는 문제를 꺼낸다. 그러나 뱅상은 "우리가 물고기들을 대신해 결정을 내리는 건 부당하다, 마치 우리 스스로를 가정법원으로 세우는 것 같다"며 거부한다. 이 대사는 정작 자신들의 결혼에 대해 어떤 결정도 내리지 못한 채 표류하는 두 사람의 무력함을 그대로 드러낸다. 딸 릴라가 태어난 뒤에도 화해는 오지 않고, 작은 일에도 사과가 더는 통하지 않으며 이해 자체가 불가능해진 권태와 환멸만 남는다.</p>
 <p>결국 이 결혼에 대한 최종적인 결말은 어항 안에서 벌어진 일이 드러나면서 확정된다. 좁은 물속에서 끝내 공존하지 못한 베타 한 쌍의 갈등은 한 마리의 죽음으로 끝나고, 인간 부부 역시 회복 불가능한 파국, 즉 별거와 이별로 향한다. 도입부에서 언급된 오블로모프의 죽음과 어항의 정적은, 결국 두 사람의 관계가 산소를 잃고 사그라들었음을 비추는 마지막 거울이 된다. 화자가 처음부터 모든 것을 죽은 물고기에 대한 회상으로 풀어내고 있었다는 사실이 끝에 가서 묵직하게 다가오며, 사랑이 식고 부서진 결혼의 잔해만이 텅 빈 어항처럼 남는다.</p>
 <h2>💡 감상 포인트</h2>
-<p>네텔은 베타 한 쌍이라는 단순한 메타포를 통해 결혼·임신·모성·권태라는 무거운 주제를 차분하면서도 서늘하게 풀어낸다. 임신선과 물고기의 줄무늬처럼 인간과 동물의 신체가 겹쳐지는 장치, "출구 없는 어항"으로 변해 가는 파리의 아파트라는 공간 상징이 특히 인상적이다. 화자에게는 이름을 주지 않으면서 물고기에게는 (오블로모프 등) 고유한 이름을 부여하는 구성은, 억눌린 자아가 동물이라는 분신에 투사되는 효과를 낳는다. 비평가들은 이 작품의 아이러니와 인간 행동에 대한 예리한 관찰, 일상 속에 스며든 불온함의 분위기를 높이 평가했으며, 코르타사르의 「액솔로틀」을 떠올리게 하는 환상적 결을 지적하기도 했다. 평범한 부부의 위기를 "물 밖에서 어항을 들여다보는" 거리감으로 응시하게 만든다는 점이 이 단편의 가장 큰 매력이다.</p></div></div></div></div><div class="cal-ov" id="cal-ov"><div class="cal"><div class="cal-top"><span class="cal-title" id="cal-title"></span><span class="cal-mnav"><button id="cal-prev" title="이전 달">&#9650;</button><button id="cal-next" title="다음 달">&#9660;</button></span></div><div class="cal-grid" id="cal-grid"></div><div class="cal-hint">데이터가 있는 날짜만 선택할 수 있어요</div></div></div><script>
+<p>네텔은 베타 한 쌍이라는 단순한 메타포를 통해 결혼·임신·모성·권태라는 무거운 주제를 차분하면서도 서늘하게 풀어낸다. 임신선과 물고기의 줄무늬처럼 인간과 동물의 신체가 겹쳐지는 장치, "출구 없는 어항"으로 변해 가는 파리의 아파트라는 공간 상징이 특히 인상적이다. 화자에게는 이름을 주지 않으면서 물고기에게는 (오블로모프 등) 고유한 이름을 부여하는 구성은, 억눌린 자아가 동물이라는 분신에 투사되는 효과를 낳는다. 비평가들은 이 작품의 아이러니와 인간 행동에 대한 예리한 관찰, 일상 속에 스며든 불온함의 분위기를 높이 평가했으며, 코르타사르의 「액솔로틀」을 떠올리게 하는 환상적 결을 지적하기도 했다. 평범한 부부의 위기를 "물 밖에서 어항을 들여다보는" 거리감으로 응시하게 만든다는 점이 이 단편의 가장 큰 매력이다.</p></div></div></div></div><script>
 function setHdrH(){var h=document.querySelector(".header").offsetHeight;document.documentElement.style.setProperty("--hdr-h",h+"px")}
 setHdrH();window.addEventListener("resize",setHdrH);
 function toggle(btn){var body=btn.nextElementSibling,isOpen=btn.classList.contains("open");
 document.querySelectorAll(".accordion-btn.open").forEach(function(b){b.classList.remove("open");b.nextElementSibling.classList.remove("open");});
 if(!isOpen){btn.classList.add("open");body.classList.add("open");
 setTimeout(function(){var hh=parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--hdr-h"))||72;
-window.scrollTo({top:btn.getBoundingClientRect().top+window.scrollY-hh,behavior:"smooth"});},30);}}
+window.scrollTo({top:btn.getBoundingClientRect().top+window.scrollY-hh,behavior:"smooth"});},30);}
+}
+function toggleSub(e,btn){e.stopPropagation();var body=btn.nextElementSibling,isOpen=btn.classList.contains("open");
+if(isOpen){btn.classList.remove("open");body.classList.remove("open");}else{btn.classList.add("open");body.classList.add("open");}}
 function mdInline(t){
 t=t.replace(/\*\*\*(.+?)\*\*\*/g,"<b><i>$1</i></b>");
 t=t.replace(/\*\*(.+?)\*\*/g,"<b>$1</b>");
@@ -314,39 +269,26 @@ else if(s==="---"){if(inUl){out.push("</ul>");inUl=false;}out.push("<hr>");}
 else if(line.indexOf("- ")===0){if(!inUl){out.push("<ul>");inUl=true;}out.push("<li>"+mdInline(line.slice(2))+"</li>");}
 else{if(inUl){out.push("</ul>");inUl=false;}if(s)out.push("<p>"+mdInline(line)+"</p>");}}
 if(inTable)out.push("</table>");if(inUl)out.push("</ul>");return out.join("\n");}
-(function(){var dates=[],curIdx=0,calY,calM;
+function monthLabel(t){var m=t.match(/(\d{4})\s*년\s*(\d{1,2})\s*월/);return m?(parseInt(m[2],10)+"월 운세"):"이달의 운세";}
+function buildMonthlySub(mc){if(!mc)return "";
+return '<div class="sub-accordion"><button class="sub-accordion-btn" onclick="toggleSub(event,this)"><span class="sub-icon">🌙</span><span class="sub-label">'+monthLabel(mc)+'</span><span class="acc-arrow">▽</span></button><div class="sub-accordion-body"><div class="sub-accordion-inner">'+mdToHtml(mc,"monthly")+'</div></div></div>';}
+(function(){var dates=[],curIdx=0;
 var order=["portfolio","stock","fortune","history","goodtext","thai","story"];
-function pad(n){return (n<10?"0":"")+n;}
 function getContent(v){return (typeof v==="string")?v:((v&&v.content)?v.content:"");}
 function render(dobj){var tasks=(dobj&&dobj.tasks)||{};
 order.forEach(function(k){var el=document.querySelector('.accordion-item[data-key="'+k+'"] .accordion-inner');if(!el)return;
-var c=getContent(tasks[k]);el.innerHTML=c?mdToHtml(c,k):'<p class="empty-note">(이 날 발행된 내용이 없습니다.)</p>';});
+var c=getContent(tasks[k]);var h=c?mdToHtml(c,k):'<p class="empty-note">(이 날 발행된 내용이 없습니다.)</p>';
+if(k==="fortune"){var mc=getContent(tasks["monthly"]);if(mc)h+=buildMonthlySub(mc);}
+el.innerHTML=h;});
 document.querySelectorAll(".accordion-btn.open").forEach(function(b){b.classList.remove("open");b.nextElementSibling.classList.remove("open");});
 window.scrollTo({top:0,behavior:"smooth"});}
 function setHeader(ds,upd){document.getElementById("hdr-date").textContent=ds.slice(5).replace("-","/");
-if(upd!==undefined)document.getElementById("hdr-updated").textContent="업데이트: "+(upd||ds);}
+document.getElementById("hdr-updated").textContent="업데이트: "+(upd||ds);}
 function ua(){document.getElementById("btn-prev").disabled=curIdx>=dates.length-1;document.getElementById("btn-next").disabled=curIdx<=0;}
 function load(idx){var ds=dates[idx];if(!ds)return;
 fetch("./data/"+ds+".json").then(function(r){return r.ok?r.json():null;}).then(function(d){if(!d)return;
 curIdx=idx;setHeader(ds,d.updated_at);render(d);ua();}).catch(function(){});}
-function openCal(){var ds=dates[curIdx];if(!ds){var t=new Date();ds=t.getFullYear()+"-"+pad(t.getMonth()+1)+"-"+pad(t.getDate());}
-var p=ds.split("-");calY=+p[0];calM=+p[1]-1;renderCal();document.getElementById("cal-ov").classList.add("open");}
-function closeCal(){document.getElementById("cal-ov").classList.remove("open");}
-function renderCal(){document.getElementById("cal-title").textContent=calY+"년 "+(calM+1)+"월";
-var g=document.getElementById("cal-grid");g.innerHTML="";
-["일","월","화","수","목","금","토"].forEach(function(d){var e=document.createElement("div");e.className="cal-dow";e.textContent=d;g.appendChild(e);});
-var startDow=new Date(calY,calM,1).getDay();var dim=new Date(calY,calM+1,0).getDate();var prevDim=new Date(calY,calM,0).getDate();
-var sel=dates[curIdx];var have={};dates.forEach(function(x){have[x]=1;});
-for(var i=0;i<startDow;i++){var e=document.createElement("div");e.className="cal-cell other";e.textContent=prevDim-startDow+1+i;g.appendChild(e);}
-for(var d=1;d<=dim;d++){var ds=calY+"-"+pad(calM+1)+"-"+pad(d);var e=document.createElement("div");e.className="cal-cell";e.textContent=d;
-if(have[ds]){e.className+=" has";(function(dstr){e.addEventListener("click",function(){var idx=dates.indexOf(dstr);if(idx>=0){load(idx);closeCal();}});})(ds);}
-if(ds===sel)e.className+=" sel";g.appendChild(e);}
-var total=startDow+dim;var trail=(7-(total%7))%7;for(var t=1;t<=trail;t++){var e=document.createElement("div");e.className="cal-cell other";e.textContent=t;g.appendChild(e);}}
-document.getElementById("cal-prev").addEventListener("click",function(){calM--;if(calM<0){calM=11;calY--;}renderCal();});
-document.getElementById("cal-next").addEventListener("click",function(){calM++;if(calM>11){calM=0;calY++;}renderCal();});
-document.getElementById("hdr-date").addEventListener("click",openCal);
-document.getElementById("cal-ov").addEventListener("click",function(e){if(e.target.id==="cal-ov")closeCal();});
-fetch("./data/index.json").then(function(r){return r.ok?r.json():null;}).then(function(a){if(a&&a.length){dates=a;curIdx=0;setHeader(dates[0]);}ua();}).catch(function(){ua();});
+fetch("./data/index.json").then(function(r){return r.ok?r.json():null;}).then(function(a){if(a&&a.length){dates=a;curIdx=0;}ua();}).catch(function(){ua();});
 document.getElementById("btn-prev").addEventListener("click",function(){if(curIdx<dates.length-1)load(curIdx+1);});
 document.getElementById("btn-next").addEventListener("click",function(){if(curIdx>0)load(curIdx-1);});
 })();
