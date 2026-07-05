@@ -1,8 +1,8 @@
 <!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0"><title>Daily Dashboard</title><style>
-:root{--bg:#1a1a2e;--item-bg:#16213e;--item-bg2:#1a1a2e;--border:rgba(255,255,255,0.08);--text:#e0e0e0;--muted:#888;--accent:#a78bfa;--accent2:#f87171;--hdr-h:72px;--safe-t:env(safe-area-inset-top,0px);--safe-b:env(safe-area-inset-bottom,0px)}
+:root{--bg:#0e1a22;--item-bg:#12242e;--item-bg2:#0e1a22;--border:rgba(255,255,255,0.08);--text:#e2e8ec;--muted:#8aa0a8;--accent:#2dd4bf;--accent2:#38bdf8;--hdr-h:72px;--safe-t:env(safe-area-inset-top,0px);--safe-b:env(safe-area-inset-bottom,0px)}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 body{font-family:-apple-system,BlinkMacSystemFont,"Noto Sans KR",sans-serif;background:var(--bg);color:var(--text);font-size:17px;line-height:1.75;padding-top:var(--safe-t);padding-bottom:var(--safe-b)}
-.header{background:linear-gradient(135deg,#4c1d95 0%,#5b21b6 30%,#7c3aed 60%,#8b5cf6 80%,#a78bfa 100%);padding:18px 16px 16px;text-align:center;position:sticky;top:0;z-index:100;box-shadow:0 2px 20px rgba(0,0,0,.4)}
+.header{background:linear-gradient(135deg,#075985 0%,#0e7490 30%,#0d9488 60%,#10b981 82%,#34d399 100%);padding:18px 16px 16px;text-align:center;position:sticky;top:0;z-index:100;box-shadow:0 2px 20px rgba(0,0,0,.4)}
 .header-title{font-size:17px;font-weight:700;color:#fff;letter-spacing:.3px;margin-bottom:8px;display:flex;align-items:center;justify-content:center;gap:7px}
 .header-nav{display:flex;align-items:center;justify-content:center;gap:16px;margin-bottom:4px}
 .nav-arrow{background:rgba(255,255,255,.2);border:none;color:#fff;width:28px;height:28px;border-radius:50%;font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .15s,opacity .15s}
@@ -15,7 +15,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Noto Sans KR",sans-serif;back
 .list{padding:0}
 .accordion-item{border-bottom:1px solid var(--border)}
 .accordion-btn{width:100%;background:var(--item-bg);border:none;color:var(--text);display:flex;align-items:center;gap:12px;padding:16px;cursor:pointer;text-align:left;transition:background .15s}
-.accordion-btn:active{background:#1f2a4a}
+.accordion-btn:active{background:#14323a}
 .accordion-btn.open{position:sticky;top:var(--hdr-h);z-index:50;box-shadow:0 2px 8px rgba(0,0,0,.5)}
 .acc-icon{font-size:21px;flex:0 0 auto}
 .acc-label{flex:1;font-size:17px;font-weight:500}
@@ -29,10 +29,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Noto Sans KR",sans-serif;back
 .accordion-inner h3{font-size:15px;color:#ccc;margin:14px 0 5px}
 .accordion-inner h4{font-size:14px;color:var(--muted);margin:10px 0 4px}
 .accordion-inner p{margin-bottom:7px;font-size:16px}
-.accordion-inner blockquote{border-left:3px solid var(--accent2);padding:10px 14px;margin:12px 0;background:rgba(248,113,113,.07);border-radius:0 8px 8px 0;font-style:italic;font-size:16px}
+.accordion-inner blockquote{border-left:3px solid var(--accent2);padding:10px 14px;margin:12px 0;background:rgba(56,189,248,.08);border-radius:0 8px 8px 0;font-style:italic;font-size:16px}
 .accordion-inner table{width:100%;border-collapse:collapse;font-size:14px;margin:12px 0;display:block;overflow-x:auto;white-space:nowrap}
 .accordion-inner th,.accordion-inner td{border:1px solid var(--border);padding:7px 9px}
-.accordion-inner th{background:#1e2a50;color:var(--accent)}
+.accordion-inner th{background:#14323a;color:var(--accent)}
 .accordion-inner tr:nth-child(even) td{background:rgba(255,255,255,.03)}
 .accordion-inner code{background:rgba(255,255,255,.08);padding:2px 6px;border-radius:4px;font-size:14px;font-family:monospace}
 .accordion-inner hr{border:none;border-top:1px solid var(--border);margin:16px 0}
@@ -51,7 +51,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Noto Sans KR",sans-serif;back
 .empty-note{color:var(--muted);font-style:italic;padding:8px 0}
 .cal-ov{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:200;display:none;align-items:flex-start;justify-content:center;padding-top:90px}
 .cal-ov.open{display:flex}
-.cal{background:#eef1f6;color:#1a1a2e;border-radius:16px;padding:14px 16px 18px;width:340px;max-width:92vw;box-shadow:0 14px 46px rgba(0,0,0,.55)}
+.cal{background:#eef1f6;color:#0e1a22;border-radius:16px;padding:14px 16px 18px;width:340px;max-width:92vw;box-shadow:0 14px 46px rgba(0,0,0,.55)}
 .cal-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
 .cal-title{font-size:15px;font-weight:700}
 .cal-mnav{display:flex;gap:2px}
@@ -60,9 +60,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Noto Sans KR",sans-serif;back
 .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;text-align:center}
 .cal-dow{color:#8a8f9a;font-size:12px;font-weight:600;padding:4px 0}
 .cal-cell{aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-size:14px;border-radius:50%;color:#c2c6cd}
-.cal-cell.has{color:#1a1a2e;cursor:pointer;font-weight:500}
+.cal-cell.has{color:#0e1a22;cursor:pointer;font-weight:500}
 .cal-cell.has:active{background:#d6def0}
-.cal-cell.sel{background:#1f6bd6;color:#fff;font-weight:700}
+.cal-cell.sel{background:#0d9488;color:#fff;font-weight:700}
 .cal-cell.other{color:#d3d7de}
 .cal-hint{margin-top:12px;font-size:11px;color:#8a8f9a;text-align:center}
 </style></head><body><div class="header"><div class="header-title">&#128197; Daily Dashboard</div><div class="header-nav"><button class="nav-arrow" id="btn-prev" title="이전 날">&#9664;</button><div class="header-date" id="hdr-date" title="날짜 선택"></div><button class="nav-arrow" id="btn-next" title="다음 날">&#9654;</button></div><div class="header-updated" id="hdr-updated">업데이트: 07/06 08:19</div></div><div class="list"><div class="accordion-item" data-key="portfolio"><button class="accordion-btn" onclick="toggle(this)"><span class="acc-icon">📋</span><span class="acc-label">포트폴리오 브리핑</span><span class="acc-arrow">&#9661;</span></button><div class="accordion-body"><div class="accordion-inner"><h1>📊 포트폴리오 일일 브리핑</h1>
