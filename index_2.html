@@ -1,0 +1,200 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0"><title>Daily Dashboard</title><style>
+:root{--bg:#0e1a22;--item-bg:#12242e;--item-bg2:#0e1a22;--border:rgba(255,255,255,0.08);--text:#e2e8ec;--muted:#8aa0a8;--accent:#2dd4bf;--accent2:#38bdf8;--hdr-h:72px;--safe-t:env(safe-area-inset-top,0px);--safe-b:env(safe-area-inset-bottom,0px)}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:-apple-system,BlinkMacSystemFont,"Noto Sans KR",sans-serif;background:var(--bg);color:var(--text);font-size:19px;line-height:1.75;padding-top:var(--safe-t);padding-bottom:var(--safe-b)}
+.header{background:linear-gradient(135deg,#075985 0%,#0e7490 30%,#0d9488 60%,#10b981 82%,#34d399 100%);padding:18px 16px 16px;text-align:center;position:sticky;top:0;z-index:100;box-shadow:0 2px 20px rgba(0,0,0,.4)}
+.header-title{font-size:19px;font-weight:700;color:#fff;letter-spacing:.3px;margin-bottom:8px;display:flex;align-items:center;justify-content:center;gap:7px}
+.header-nav{display:flex;align-items:center;justify-content:center;gap:16px;margin-bottom:4px}
+.nav-arrow{background:rgba(255,255,255,.2);border:none;color:#fff;width:28px;height:28px;border-radius:50%;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .15s,opacity .15s}
+.nav-arrow:active{background:rgba(255,255,255,.35)}
+.nav-arrow:disabled{opacity:.3;cursor:default}
+.header-date{font-size:18px;font-weight:600;color:#fff;min-width:66px;text-align:center;cursor:pointer;user-select:none;display:inline-flex;align-items:center;justify-content:center;gap:5px;padding:2px 8px;border-radius:8px;transition:background .15s}
+.header-date:active{background:rgba(255,255,255,.18)}
+.header-date:after{content:"\25be";font-size:11px;opacity:.85}
+.header-updated{font-size:13px;color:rgba(255,255,255,.65);margin-top:2px}
+.list{padding:0}
+.accordion-item{border-bottom:1px solid var(--border)}
+.accordion-btn{width:100%;background:var(--item-bg);border:none;color:var(--text);display:flex;align-items:center;gap:12px;padding:16px;cursor:pointer;text-align:left;transition:background .15s}
+.accordion-btn:active{background:#14323a}
+.accordion-btn.open{position:sticky;top:var(--hdr-h);z-index:50;box-shadow:0 2px 8px rgba(0,0,0,.5)}
+.acc-icon{font-size:23px;flex:0 0 auto}
+.acc-label{flex:1;font-size:19px;font-weight:500}
+.acc-arrow{font-size:15px;color:var(--muted);transition:transform .25s;flex:0 0 auto}
+.accordion-btn.open .acc-arrow{transform:rotate(180deg)}
+.accordion-body{max-height:0;overflow:hidden;transition:max-height .35s ease}
+.accordion-body.open{max-height:9000px}
+.accordion-inner{padding:16px 16px 20px;background:var(--item-bg2);border-top:1px solid var(--border)}
+.accordion-inner h1{font-size:21px;color:#fff;margin:12px 0 8px}
+.accordion-inner h2{font-size:18px;color:var(--accent);margin:18px 0 7px;padding-left:10px;border-left:3px solid var(--accent)}
+.accordion-inner h3{font-size:17px;color:#ccc;margin:14px 0 5px}
+.accordion-inner h4{font-size:16px;color:var(--muted);margin:10px 0 4px}
+.accordion-inner p{margin-bottom:7px;font-size:18px}
+.accordion-inner blockquote{border-left:3px solid var(--accent2);padding:10px 14px;margin:12px 0;background:rgba(56,189,248,.08);border-radius:0 8px 8px 0;font-style:italic;font-size:18px}
+.accordion-inner table{width:100%;border-collapse:collapse;font-size:16px;margin:12px 0;display:block;overflow-x:auto;white-space:nowrap}
+.accordion-inner th,.accordion-inner td{border:1px solid var(--border);padding:7px 9px}
+.accordion-inner th{background:#14323a;color:var(--accent)}
+.accordion-inner tr:nth-child(even) td{background:rgba(255,255,255,.03)}
+.accordion-inner code{background:rgba(255,255,255,.08);padding:2px 6px;border-radius:4px;font-size:16px;font-family:monospace}
+.accordion-inner hr{border:none;border-top:1px solid var(--border);margin:16px 0}
+.accordion-inner ul{padding-left:20px;margin-bottom:8px}
+.accordion-inner li{margin-bottom:5px;font-size:18px}
+.accordion-inner a{color:var(--accent)}
+.up{color:#ff4d4d;font-weight:600}.dn{color:#4d9eff;font-weight:600}
+[data-key="portfolio"] .accordion-inner table[data-cols="3"]{display:table;overflow-x:visible;white-space:normal;font-size:14px;table-layout:fixed;width:100%}
+[data-key="portfolio"] .accordion-inner table[data-cols="3"] th:first-child,[data-key="portfolio"] .accordion-inner table[data-cols="3"] td:first-child{width:52%}
+[data-key="portfolio"] .accordion-inner table[data-cols="3"] th:nth-child(2),[data-key="portfolio"] .accordion-inner table[data-cols="3"] td:nth-child(2){width:28%;text-align:right}
+[data-key="portfolio"] .accordion-inner table[data-cols="3"] th:nth-child(3),[data-key="portfolio"] .accordion-inner table[data-cols="3"] td:nth-child(3){width:20%;text-align:right}
+[data-key="portfolio"] .accordion-inner table:not([data-cols="3"]){font-size:13px}
+[data-key="stock"] .accordion-inner h3{font-size:18.5px;color:#fff;font-weight:700;line-height:1.5;margin:24px 0 9px;padding:0 0 9px 0;border-bottom:1px solid var(--accent)}
+[data-key="stock"] .accordion-inner h2 + h3{margin-top:8px}
+[data-key="stock"] .accordion-inner p{margin:0 0 18px 0;font-size:17.5px;color:#d4d4d4;line-height:1.7}
+.empty-note{color:var(--muted);font-style:italic;padding:8px 0}
+.cal-ov{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:200;display:none;align-items:flex-start;justify-content:center;padding-top:90px}
+.cal-ov.open{display:flex}
+.cal{background:#eef1f6;color:#0e1a22;border-radius:16px;padding:14px 16px 18px;width:340px;max-width:92vw;box-shadow:0 14px 46px rgba(0,0,0,.55)}
+.cal-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.cal-title{font-size:17px;font-weight:700}
+.cal-mnav{display:flex;gap:2px}
+.cal-mnav button{background:none;border:none;font-size:14px;color:#555;cursor:pointer;padding:6px 9px;border-radius:8px}
+.cal-mnav button:active{background:#dde3ef}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;text-align:center}
+.cal-dow{color:#8a8f9a;font-size:14px;font-weight:600;padding:4px 0}
+.cal-cell{aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-size:16px;border-radius:50%;color:#c2c6cd}
+.cal-cell.has{color:#0e1a22;cursor:pointer;font-weight:500}
+.cal-cell.has:active{background:#d6def0}
+.cal-cell.sel{background:#0d9488;color:#fff;font-weight:700}
+.cal-cell.other{color:#d3d7de}
+.cal-hint{margin-top:12px;font-size:13px;color:#8a8f9a;text-align:center}
+/*fs2*/</style></head><body><div class="header"><div class="header-title">&#128197; Daily Dashboard</div><div class="header-nav"><button class="nav-arrow" id="btn-prev" title="이전 날">&#9664;</button><div class="header-date" id="hdr-date" title="날짜 선택"></div><button class="nav-arrow" id="btn-next" title="다음 날">&#9654;</button></div><div class="header-updated" id="hdr-updated">업데이트: 11/02 08:16</div></div><div class="list"><div class="accordion-item" data-key="portfolio"><button class="accordion-btn" onclick="toggle(this)"><span class="acc-icon">📋</span><span class="acc-label">포트폴리오 브리핑</span><span class="acc-arrow">&#9661;</span></button><div class="accordion-body"><div class="accordion-inner"><p>(오늘 발행된 내용이 없습니다.)</p></div></div></div>
+<div class="accordion-item" data-key="stock"><button class="accordion-btn" onclick="toggle(this)"><span class="acc-icon">📊</span><span class="acc-label">주식 뉴스 브리핑</span><span class="acc-arrow">&#9661;</span></button><div class="accordion-body"><div class="accordion-inner"><p>(오늘 발행된 내용이 없습니다.)</p></div></div></div>
+<div class="accordion-item" data-key="fortune"><button class="accordion-btn" onclick="toggle(this)"><span class="acc-icon">🔮</span><span class="acc-label">오늘의 운세</span><span class="acc-arrow">&#9661;</span></button><div class="accordion-body"><div class="accordion-inner"><p>(오늘 발행된 내용이 없습니다.)</p></div></div></div>
+<div class="accordion-item" data-key="history"><button class="accordion-btn" onclick="toggle(this)"><span class="acc-icon">📅</span><span class="acc-label">오늘의 역사</span><span class="acc-arrow">&#9661;</span></button><div class="accordion-body"><div class="accordion-inner"><p>(오늘 발행된 내용이 없습니다.)</p></div></div></div>
+<div class="accordion-item" data-key="goodtext"><button class="accordion-btn" onclick="toggle(this)"><span class="acc-icon">✨</span><span class="acc-label">오늘의 글귀</span><span class="acc-arrow">&#9661;</span></button><div class="accordion-body"><div class="accordion-inner"><p>(오늘 발행된 내용이 없습니다.)</p></div></div></div>
+<div class="accordion-item" data-key="thai"><button class="accordion-btn" onclick="toggle(this)"><span class="acc-icon">🇹🇭</span><span class="acc-label">오늘의 태국어</span><span class="acc-arrow">&#9661;</span></button><div class="accordion-body"><div class="accordion-inner"><h2>🟢 초급</h2>
+<blockquote># <b>ไปสนามบินเท่าไหร่ครับ</b></blockquote>
+<p><b>🔊 발음:</b> 빠이 사남빈 타오라이 크랍 (bpai sà-nǎam-bin tâo-rài kráp)</p>
+<p><b>🇰🇷 해석:</b> 공항까지 얼마예요?</p>
+<p><b>🇺🇸 영어:</b> How much is it to go to the airport?</p>
+<p><b>📝 문장 설명:</b> 택시·그랩을 탈 때 가장 많이 쓰는 기본 흥정/확인 표현입니다. 「목적지 + เท่าไหร่(얼마)」 구조만 익히면 어디든 응용할 수 있어요. 남성은 끝에 ครับ, 여성은 ค่ะ를 붙여 공손하게 만듭니다.</p>
+<p><b>📚 단어 풀이</b></p>
+<table data-cols="3">
+<tr><th>태국어</th><th>발음</th><th>뜻</th></tr>
+<tr><td>ไป</td><td>빠이</td><td>가다</td></tr>
+<tr><td>สนามบิน</td><td>사남빈</td><td>공항</td></tr>
+<tr><td>เท่าไหร่</td><td>타오라이</td><td>얼마</td></tr>
+<tr><td>ครับ</td><td>크랍</td><td>(남성) 공손 어미</td></tr>
+</table>
+<hr>
+<h2>🟡 중급</h2>
+<blockquote># <b>ขอเมนูที่ไม่เผ็ดได้ไหมคะ</b></blockquote>
+<p><b>🔊 발음:</b> 커 메누 티 마이 펫 다이 마이 카 (kǎw menu tîi mâi pèt dâi mǎi ká)</p>
+<p><b>🇰🇷 해석:</b> 안 매운 메뉴(음식)로 주실 수 있을까요?</p>
+<p><b>🇺🇸 영어:</b> Could I have something that isn't spicy?</p>
+<p><b>📝 문장 설명:</b> 요청의 ขอ와 관계대명사 ที่(~한 것)가 결합된 중급 구조입니다. ที่ไม่เผ็ด는 "맵지 않은 (것)"이라는 수식절로, 「ที่ + 형용사」로 조건을 붙이는 패턴이 핵심입니다. ได้ไหม로 정중한 가능 여부를 묻습니다.</p>
+<p><b>📚 단어 풀이</b></p>
+<table data-cols="3">
+<tr><th>태국어</th><th>발음</th><th>뜻</th></tr>
+<tr><td>ขอ</td><td>커</td><td>~을 주세요(요청)</td></tr>
+<tr><td>เมนู</td><td>메누</td><td>메뉴, 음식</td></tr>
+<tr><td>ที่</td><td>티</td><td>~하는 (관계사)</td></tr>
+<tr><td>ไม่</td><td>마이</td><td>~아니다/않다</td></tr>
+<tr><td>เผ็ด</td><td>펫</td><td>맵다</td></tr>
+<tr><td>ได้ไหม</td><td>다이 마이</td><td>~할 수 있나요?</td></tr>
+<tr><td>คะ</td><td>카</td><td>(여성) 공손 어미</td></tr>
+</table>
+<hr>
+<h2>🔴 고급</h2>
+<blockquote># <b>รบกวนช่วยถ่ายรูปให้หน่อยได้ไหมคะ ถ้าไม่เป็นการรบกวนเกินไป</b></blockquote>
+<p><b>🔊 발음:</b> 롭꾸언 추어이 타이룹 하이 너이 다이 마이 카, 타 마이 뺀 깐 롭꾸언 끄언빠이 (róp-guan chûai tàai-rûup hâi nàwy dâi mǎi ká, tâa mâi bpen gaan-róp-guan gəən-bpai)</p>
+<p><b>🇰🇷 해석:</b> 너무 폐가 되지 않는다면, 사진 좀 찍어 주실 수 있을까요?</p>
+<p><b>🇺🇸 영어:</b> Would you mind helping me take a photo, if it's not too much of a bother?</p>
+<p><b>📝 문장 설명:</b> 앞머리 รบกวน("실례지만/폐를 끼치다")과 뒷절 ถ้าไม่เป็นการรบกวนเกินไป("너무 폐가 되지 않는다면")가 같은 어근 รบกวน을 수미상관으로 감싸는 매우 정중한 완곡 부탁 표현입니다. ถ้า(만약)로 조건절을 연결하고, การ-를 붙여 동사 รบกวน을 명사화(การรบกวน=폐 끼치는 일)한 점이 고급 포인트입니다.</p>
+<p><b>📚 단어 풀이</b></p>
+<table data-cols="3">
+<tr><th>태국어</th><th>발음</th><th>뜻</th></tr>
+<tr><td>รบกวน</td><td>롭꾸언</td><td>폐를 끼치다, 실례하다</td></tr>
+<tr><td>ช่วย</td><td>추어이</td><td>돕다, ~해 주다</td></tr>
+<tr><td>ถ่ายรูป</td><td>타이룹</td><td>사진을 찍다</td></tr>
+<tr><td>ให้</td><td>하이</td><td>~에게/~해 주다</td></tr>
+<tr><td>หน่อย</td><td>너이</td><td>좀, 조금 (부탁 완화)</td></tr>
+<tr><td>ได้ไหม</td><td>다이 마이</td><td>~해 주실 수 있나요?</td></tr>
+<tr><td>ถ้า</td><td>타</td><td>만약 ~라면</td></tr>
+<tr><td>ไม่เป็น</td><td>마이 뺀</td><td>~이 아니다</td></tr>
+<tr><td>การรบกวน</td><td>깐 롭꾸언</td><td>폐 끼치는 일(명사)</td></tr>
+<tr><td>เกินไป</td><td>끄언빠이</td><td>너무 지나치게</td></tr>
+</table>
+<hr>
+<p>💡 <b>오늘의 팁:</b> 오늘 세 문장의 공통 열쇠는 <b>ได้ไหม(다이 마이, ~할 수 있나요?)</b>입니다. 문장 끝에 이 한마디만 붙이면 어떤 요청이든 정중한 질문으로 바뀝니다. 여기에 <b>หน่อย(너이, 좀)</b>를 더하면 부드러움이 커지고, <b>รบกวน(롭꾸언, 실례지만)</b>으로 시작하면 격식이 올라갑니다. 즉 "직접 요청 → ได้ไหม → หน่อย → รบกวน" 순서로 공손함이 한 단계씩 높아진다고 기억하세요.</p></div></div></div>
+<div class="accordion-item" data-key="story"><button class="accordion-btn" onclick="toggle(this)"><span class="acc-icon">📖</span><span class="acc-label">오늘의 단편소설</span><span class="acc-arrow">&#9661;</span></button><div class="accordion-body"><div class="accordion-inner"><p>(오늘 발행된 내용이 없습니다.)</p></div></div></div></div><div class="cal-ov" id="cal-ov"><div class="cal"><div class="cal-top"><span class="cal-title" id="cal-title"></span><span class="cal-mnav"><button id="cal-prev" title="이전 달">&#9650;</button><button id="cal-next" title="다음 달">&#9660;</button></span></div><div class="cal-grid" id="cal-grid"></div><div class="cal-hint">데이터가 있는 날짜만 선택할 수 있어요</div></div></div><script>
+function setHdrH(){var h=document.querySelector(".header").offsetHeight;document.documentElement.style.setProperty("--hdr-h",h+"px")}
+setHdrH();window.addEventListener("resize",setHdrH);
+function toggle(btn){var body=btn.nextElementSibling,isOpen=btn.classList.contains("open");
+document.querySelectorAll(".accordion-btn.open").forEach(function(b){b.classList.remove("open");b.nextElementSibling.classList.remove("open");});
+if(!isOpen){btn.classList.add("open");body.classList.add("open");
+setTimeout(function(){var hh=parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--hdr-h"))||72;
+window.scrollTo({top:btn.getBoundingClientRect().top+window.scrollY-hh,behavior:"smooth"});},30);}}
+function mdInline(t){
+t=t.replace(/\*\*\*(.+?)\*\*\*/g,"<b><i>$1</i></b>");
+t=t.replace(/\*\*(.+?)\*\*/g,"<b>$1</b>");
+t=t.replace(/\*(.+?)\*/g,"<i>$1</i>");
+t=t.replace(/`(.+?)`/g,"<code>$1</code>");
+t=t.replace(/\[(.+?)\]\((.+?)\)/g,'<a href="$2">$1</a>');
+t=t.replace(/(▲\s*\+?[\d,.]+%?)/g,'<span class="up">$1</span>');
+t=t.replace(/(▼\s*-?[\d,.]+%?)/g,'<span class="dn">$1</span>');
+return t;}
+function mdToHtml(text,key){
+var lines=text.split("\n"),out=[],inTable=false,inUl=false;
+for(var i=0;i<lines.length;i++){var line=lines[i];
+if(key==="stock"&&line.replace(/^\s+/,"").indexOf("**분야:**")===0)continue;
+var s=line.trim();
+if(s.charAt(0)==="|"){var cells=s.replace(/^\|/,"").replace(/\|$/,"").split("|").map(function(c){return c.trim();});
+var sep=true;for(var j=0;j<cells.length;j++){if(cells[j]&&!/^[-: ]+$/.test(cells[j])){sep=false;break;}}if(sep)continue;
+if(!inTable){out.push('<table data-cols="'+cells.length+'">');inTable=true;}
+var tag=(out[out.length-1].indexOf("<table")===0)?"th":"td";
+out.push("<tr>"+cells.map(function(c){return "<"+tag+">"+mdInline(c)+"</"+tag+">";}).join("")+"</tr>");continue;
+}else{if(inTable){out.push("</table>");inTable=false;}}
+if(line.indexOf("#### ")===0){if(inUl){out.push("</ul>");inUl=false;}out.push("<h4>"+mdInline(line.slice(5))+"</h4>");}
+else if(line.indexOf("### ")===0){if(inUl){out.push("</ul>");inUl=false;}out.push("<h3>"+mdInline(line.slice(4))+"</h3>");}
+else if(line.indexOf("## ")===0){if(inUl){out.push("</ul>");inUl=false;}out.push("<h2>"+mdInline(line.slice(3))+"</h2>");}
+else if(line.indexOf("# ")===0){if(inUl){out.push("</ul>");inUl=false;}out.push("<h1>"+mdInline(line.slice(2))+"</h1>");}
+else if(line.indexOf("> ")===0){if(inUl){out.push("</ul>");inUl=false;}out.push("<blockquote>"+mdInline(line.slice(2))+"</blockquote>");}
+else if(line.charAt(0)===">"){if(inUl){out.push("</ul>");inUl=false;}out.push("<blockquote>"+mdInline(line.slice(1).trim())+"</blockquote>");}
+else if(s==="---"){if(inUl){out.push("</ul>");inUl=false;}out.push("<hr>");}
+else if(line.indexOf("- ")===0){if(!inUl){out.push("<ul>");inUl=true;}out.push("<li>"+mdInline(line.slice(2))+"</li>");}
+else{if(inUl){out.push("</ul>");inUl=false;}if(s)out.push("<p>"+mdInline(line)+"</p>");}}
+if(inTable)out.push("</table>");if(inUl)out.push("</ul>");return out.join("\n");}
+(function(){var dates=[],curIdx=0,calY,calM;
+var order=["portfolio","stock","fortune","history","goodtext","thai","story"];
+function pad(n){return (n<10?"0":"")+n;}
+function getContent(v){return (typeof v==="string")?v:((v&&v.content)?v.content:"");}
+function render(dobj){var tasks=(dobj&&dobj.tasks)||{};
+order.forEach(function(k){var el=document.querySelector('.accordion-item[data-key="'+k+'"] .accordion-inner');if(!el)return;
+var c=getContent(tasks[k]);el.innerHTML=c?mdToHtml(c,k):'<p class="empty-note">(이 날 발행된 내용이 없습니다.)</p>';});}
+function setHeader(ds,upd){document.getElementById("hdr-date").textContent=ds.slice(5).replace("-","/");
+if(upd!==undefined)document.getElementById("hdr-updated").textContent="업데이트: "+(upd||ds);}
+function ua(){document.getElementById("btn-prev").disabled=curIdx>=dates.length-1;document.getElementById("btn-next").disabled=curIdx<=0;}
+function load(idx){var ds=dates[idx];if(!ds)return;
+fetch("./data/"+ds+".json?t="+Date.now()).then(function(r){return r.ok?r.json():null;}).then(function(d){if(!d)return;
+curIdx=idx;setHeader(ds,d.updated_at);render(d);ua();}).catch(function(){});}
+function openCal(){var ds=dates[curIdx];if(!ds){var t=new Date();ds=t.getFullYear()+"-"+pad(t.getMonth()+1)+"-"+pad(t.getDate());}
+var p=ds.split("-");calY=+p[0];calM=+p[1]-1;renderCal();document.getElementById("cal-ov").classList.add("open");}
+function closeCal(){document.getElementById("cal-ov").classList.remove("open");}
+function renderCal(){document.getElementById("cal-title").textContent=calY+"년 "+(calM+1)+"월";
+var g=document.getElementById("cal-grid");g.innerHTML="";
+["일","월","화","수","목","금","토"].forEach(function(d){var e=document.createElement("div");e.className="cal-dow";e.textContent=d;g.appendChild(e);});
+var startDow=new Date(calY,calM,1).getDay();var dim=new Date(calY,calM+1,0).getDate();var prevDim=new Date(calY,calM,0).getDate();
+var sel=dates[curIdx];var have={};dates.forEach(function(x){have[x]=1;});
+for(var i=0;i<startDow;i++){var e=document.createElement("div");e.className="cal-cell other";e.textContent=prevDim-startDow+1+i;g.appendChild(e);}
+for(var d=1;d<=dim;d++){var ds=calY+"-"+pad(calM+1)+"-"+pad(d);var e=document.createElement("div");e.className="cal-cell";e.textContent=d;
+if(have[ds]){e.className+=" has";(function(dstr){e.addEventListener("click",function(){var idx=dates.indexOf(dstr);if(idx>=0){load(idx);closeCal();}});})(ds);}
+if(ds===sel)e.className+=" sel";g.appendChild(e);}
+var total=startDow+dim;var trail=(7-(total%7))%7;for(var t=1;t<=trail;t++){var e=document.createElement("div");e.className="cal-cell other";e.textContent=t;g.appendChild(e);}}
+document.getElementById("cal-prev").addEventListener("click",function(){calM--;if(calM<0){calM=11;calY--;}renderCal();});
+document.getElementById("cal-next").addEventListener("click",function(){calM++;if(calM>11){calM=0;calY++;}renderCal();});
+document.getElementById("hdr-date").addEventListener("click",openCal);
+document.getElementById("cal-ov").addEventListener("click",function(e){if(e.target.id==="cal-ov")closeCal();});
+fetch("./data/index.json?t="+Date.now()).then(function(r){return r.ok?r.json():null;}).then(function(a){if(a&&a.length){dates=a;curIdx=0;setHeader(dates[0]);load(0);}ua();}).catch(function(){ua();});
+document.getElementById("btn-prev").addEventListener("click",function(){if(curIdx<dates.length-1)load(curIdx+1);});
+document.getElementById("btn-next").addEventListener("click",function(){if(curIdx>0)load(curIdx-1);});
+})();
+</script></body></html>
