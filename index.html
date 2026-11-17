@@ -47,6 +47,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Noto Sans KR",sans-serif;back
 [data-key="portfolio"] .accordion-inner table:not([data-cols="3"]){font-size:12px}
 [data-key="stock"] .accordion-inner h3{font-size:17.5px;color:#fff;font-weight:700;line-height:1.5;margin:24px 0 9px;padding:0 0 9px 0;border-bottom:1px solid var(--accent)}
 [data-key="stock"] .accordion-inner h2 + h3{margin-top:8px}
+[data-key="portfolio"] .accordion-inner h3{font-size:17.5px;color:#fff;font-weight:700;line-height:1.5;margin:24px 0 9px;padding:0 0 9px 0;border-bottom:1px solid var(--accent)}
+[data-key="portfolio"] .accordion-inner h2 + h3{margin-top:8px}
+[data-key="portfolio"] .accordion-inner p{margin:0 0 14px 0;font-size:17px;color:#d4d4d4;line-height:1.7}
+[data-key="portfolio"] .accordion-inner a{color:var(--accent);font-size:14px;text-decoration:none}
 [data-key="stock"] .accordion-inner p{margin:0 0 18px 0;font-size:18px;color:#d4d4d4;line-height:1.7}
 .empty-note{color:var(--muted);font-style:italic;padding:8px 0}
 .cal-ov{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:200;display:none;align-items:flex-start;justify-content:center;padding-top:90px}
@@ -65,7 +69,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Noto Sans KR",sans-serif;back
 .cal-cell.sel{background:#0d9488;color:#fff;font-weight:700}
 .cal-cell.other{color:#d3d7de}
 .cal-hint{margin-top:12px;font-size:12px;color:#8a8f9a;text-align:center}
-</style></head><body><div class="header"><div class="header-title">&#128197; Daily Dashboard</div><div class="header-nav"><button class="nav-arrow" id="btn-prev" title="이전 날">&#9664;</button><div class="header-date" id="hdr-date" title="날짜 선택"></div><button class="nav-arrow" id="btn-next" title="다음 날">&#9654;</button></div><div class="header-updated" id="hdr-updated">업데이트: 11/02 08:16</div></div><div class="list"><div class="accordion-item" data-key="portfolio"><button class="accordion-btn" onclick="toggle(this)"><span class="acc-icon">📋</span><span class="acc-label">포트폴리오 브리핑</span><span class="acc-arrow">&#9661;</span></button><div class="accordion-body"><div class="accordion-inner"><p>(오늘 발행된 내용이 없습니다.)</p></div></div></div>
+</style></head><body><div class="header"><div class="header-title">&#128197; Daily Dashboard</div><div class="header-nav"><button class="nav-arrow" id="btn-prev" title="이전 날">&#9664;</button><div class="header-date" id="hdr-date" title="날짜 선택"></div><button class="nav-arrow" id="btn-next" title="다음 날">&#9654;</button></div><div class="header-updated" id="hdr-updated">업데이트: 11/02 08:16</div></div><div class="list"><div class="accordion-item" data-key="portfolio"><button class="accordion-btn" onclick="toggle(this)"><span class="acc-icon">🌐</span><span class="acc-label">세상 이야기</span><span class="acc-arrow">&#9661;</span></button><div class="accordion-body"><div class="accordion-inner"><p>(오늘 발행된 내용이 없습니다.)</p></div></div></div>
 <div class="accordion-item" data-key="stock"><button class="accordion-btn" onclick="toggle(this)"><span class="acc-icon">📊</span><span class="acc-label">주식 뉴스 브리핑</span><span class="acc-arrow">&#9661;</span></button><div class="accordion-body"><div class="accordion-inner"><p>(오늘 발행된 내용이 없습니다.)</p></div></div></div>
 <div class="accordion-item" data-key="fortune"><button class="accordion-btn" onclick="toggle(this)"><span class="acc-icon">🔮</span><span class="acc-label">오늘의 운세</span><span class="acc-arrow">&#9661;</span></button><div class="accordion-body"><div class="accordion-inner"><p>(오늘 발행된 내용이 없습니다.)</p></div></div></div>
 <div class="accordion-item" data-key="history"><button class="accordion-btn" onclick="toggle(this)"><span class="acc-icon">📅</span><span class="acc-label">오늘의 역사</span><span class="acc-arrow">&#9661;</span></button><div class="accordion-body"><div class="accordion-inner"><p>(오늘 발행된 내용이 없습니다.)</p></div></div></div>
@@ -138,7 +142,7 @@ t=t.replace(/\*\*\*(.+?)\*\*\*/g,"<b><i>$1</i></b>");
 t=t.replace(/\*\*(.+?)\*\*/g,"<b>$1</b>");
 t=t.replace(/\*(.+?)\*/g,"<i>$1</i>");
 t=t.replace(/`(.+?)`/g,"<code>$1</code>");
-t=t.replace(/\[(.+?)\]\((.+?)\)/g,'<a href="$2">$1</a>');
+t=t.replace(/\[(.+?)\]\((.+?)\)/g,'<a href="$2" target="_blank" rel="noopener">$1</a>');
 t=t.replace(/(▲\s*\+?[\d,.]+%?)/g,'<span class="up">$1</span>');
 t=t.replace(/(▼\s*-?[\d,.]+%?)/g,'<span class="dn">$1</span>');
 return t;}
