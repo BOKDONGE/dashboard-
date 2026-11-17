@@ -69,12 +69,21 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Noto Sans KR",sans-serif;back
 .cal-cell.sel{background:#0d9488;color:#fff;font-weight:700}
 .cal-cell.other{color:#d3d7de}
 .cal-hint{margin-top:12px;font-size:12px;color:#8a8f9a;text-align:center}
+.sub-acc{margin:0 0 18px;border:1px solid rgba(45,212,191,.35);border-radius:10px;overflow:hidden}
+.sub-acc-btn{width:100%;background:#173a44;border:none;color:var(--text);display:flex;align-items:center;gap:10px;padding:12px 14px;cursor:pointer;text-align:left;font-size:17px;font-weight:600}
+.sub-acc-btn:active{background:#1d4652}
+.sub-acc-btn .sub-arrow{margin-left:auto;transition:transform .25s;font-size:14px;color:var(--muted)}
+.sub-acc-btn.open .sub-arrow{transform:rotate(180deg)}
+.sub-acc-body{max-height:0;overflow:hidden;transition:max-height .35s ease}
+.sub-acc-body.open{max-height:20000px}
+.sub-acc-inner{padding:10px 14px 14px;border-top:1px solid var(--border);background:rgba(255,255,255,.02)}
+[data-key="fortune"] .accordion-body.open{max-height:40000px}
 </style></head><body><div class="header"><div class="header-title">&#128197; Daily Dashboard</div><div class="header-nav"><button class="nav-arrow" id="btn-prev" title="이전 날">&#9664;</button><div class="header-date" id="hdr-date" title="날짜 선택"></div><button class="nav-arrow" id="btn-next" title="다음 날">&#9654;</button></div><div class="header-updated" id="hdr-updated">업데이트: 11/02 08:16</div></div><div class="list"><div class="accordion-item" data-key="portfolio"><button class="accordion-btn" onclick="toggle(this)"><span class="acc-icon">🌐</span><span class="acc-label">세상 이야기</span><span class="acc-arrow">&#9661;</span></button><div class="accordion-body"><div class="accordion-inner"><p>(오늘 발행된 내용이 없습니다.)</p></div></div></div>
 <div class="accordion-item" data-key="stock"><button class="accordion-btn" onclick="toggle(this)"><span class="acc-icon">📊</span><span class="acc-label">주식 뉴스 브리핑</span><span class="acc-arrow">&#9661;</span></button><div class="accordion-body"><div class="accordion-inner"><p>(오늘 발행된 내용이 없습니다.)</p></div></div></div>
-<div class="accordion-item" data-key="fortune"><button class="accordion-btn" onclick="toggle(this)"><span class="acc-icon">🔮</span><span class="acc-label">오늘의 운세</span><span class="acc-arrow">&#9661;</span></button><div class="accordion-body"><div class="accordion-inner"><p>(오늘 발행된 내용이 없습니다.)</p></div></div></div>
+<div class="accordion-item" data-key="fortune"><button class="accordion-btn" onclick="toggle(this)"><span class="acc-icon">🔮</span><span class="acc-label">운세를 알고싶다.</span><span class="acc-arrow">&#9661;</span></button><div class="accordion-body"><div class="accordion-inner"><p>(오늘 발행된 내용이 없습니다.)</p></div></div></div>
 <div class="accordion-item" data-key="history"><button class="accordion-btn" onclick="toggle(this)"><span class="acc-icon">📅</span><span class="acc-label">오늘의 역사</span><span class="acc-arrow">&#9661;</span></button><div class="accordion-body"><div class="accordion-inner"><p>(오늘 발행된 내용이 없습니다.)</p></div></div></div>
 <div class="accordion-item" data-key="goodtext"><button class="accordion-btn" onclick="toggle(this)"><span class="acc-icon">✨</span><span class="acc-label">오늘의 글귀</span><span class="acc-arrow">&#9661;</span></button><div class="accordion-body"><div class="accordion-inner"><p>(오늘 발행된 내용이 없습니다.)</p></div></div></div>
-<div class="accordion-item" data-key="thai"><button class="accordion-btn" onclick="toggle(this)"><span class="acc-icon">🇹🇭</span><span class="acc-label">오늘의 태국어</span><span class="acc-arrow">&#9661;</span></button><div class="accordion-body"><div class="accordion-inner"><h2>🟢 초급</h2>
+<div class="accordion-item" data-key="thai"><button class="accordion-btn" onclick="toggle(this)"><span class="acc-icon">🌏</span><span class="acc-label">영태일 한 문장</span><span class="acc-arrow">&#9661;</span></button><div class="accordion-body"><div class="accordion-inner"><h2>🟢 초급</h2>
 <blockquote># <b>ไปสนามบินเท่าไหร่ครับ</b></blockquote>
 <p><b>🔊 발음:</b> 빠이 사남빈 타오라이 크랍 (bpai sà-nǎam-bin tâo-rài kráp)</p>
 <p><b>🇰🇷 해석:</b> 공항까지 얼마예요?</p>
@@ -137,6 +146,7 @@ document.querySelectorAll(".accordion-btn.open").forEach(function(b){b.classList
 if(!isOpen){btn.classList.add("open");body.classList.add("open");
 setTimeout(function(){var hh=parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--hdr-h"))||72;
 window.scrollTo({top:btn.getBoundingClientRect().top+window.scrollY-hh,behavior:"smooth"});},30);}}
+function subToggle(btn){btn.classList.toggle("open");btn.nextElementSibling.classList.toggle("open");}
 function mdInline(t){
 t=t.replace(/\*\*\*(.+?)\*\*\*/g,"<b><i>$1</i></b>");
 t=t.replace(/\*\*(.+?)\*\*/g,"<b>$1</b>");
@@ -173,7 +183,10 @@ function pad(n){return (n<10?"0":"")+n;}
 function getContent(v){return (typeof v==="string")?v:((v&&v.content)?v.content:"");}
 function render(dobj){var tasks=(dobj&&dobj.tasks)||{};
 order.forEach(function(k){var el=document.querySelector('.accordion-item[data-key="'+k+'"] .accordion-inner');if(!el)return;
-var c=getContent(tasks[k]);el.innerHTML=c?mdToHtml(c,k):'<p class="empty-note">(이 날 발행된 내용이 없습니다.)</p>';});}
+var c=getContent(tasks[k]);var h=c?mdToHtml(c,k):'<p class="empty-note">(이 날 발행된 내용이 없습니다.)</p>';
+if(k==="fortune"){var mc=getContent(tasks["fortune_month"]);if(mc){var mm=(dobj&&dobj.date)?(+dobj.date.slice(5,7))+"월 운세":"이번 달 운세";
+h='<div class="sub-acc"><button class="sub-acc-btn" onclick="subToggle(this)"><span>📅 '+mm+'</span><span class="sub-arrow">&#9661;</span></button><div class="sub-acc-body"><div class="sub-acc-inner">'+mdToHtml(mc,"fortune_month")+'</div></div></div>'+h;}}
+el.innerHTML=h;});}
 function setHeader(ds,upd){document.getElementById("hdr-date").textContent=ds.slice(5).replace("-","/");
 if(upd!==undefined)document.getElementById("hdr-updated").textContent="업데이트: "+(upd||ds);}
 function ua(){document.getElementById("btn-prev").disabled=curIdx>=dates.length-1;document.getElementById("btn-next").disabled=curIdx<=0;}
