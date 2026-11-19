@@ -178,13 +178,25 @@ else if(s==="---"){if(inUl){out.push("</ul>");inUl=false;}out.push("<hr>");}
 else if(line.indexOf("- ")===0){if(!inUl){out.push("<ul>");inUl=true;}out.push("<li>"+mdInline(line.slice(2))+"</li>");}
 else{if(inUl){out.push("</ul>");inUl=false;}if(s)out.push("<p>"+mdInline(line)+"</p>");}}
 if(inTable)out.push("</table>");if(inUl)out.push("</ul>");return out.join("\n");}
+function thaiFold(c){var L=c.split("\n"),pre=[],secs=[],cur=null;
+for(var i=0;i<L.length;i++){var t=L[i].trim();
+if(/^## (🇺🇸|🇹🇭|🇯🇵)/.test(t)){cur={title:t.slice(3),body:[]};secs.push(cur);continue;}
+if(cur&&/^(💡|🧳)/.test(t)){cur=null;pre.push("\u0000TAIL");}
+if(cur)cur.body.push(L[i]);else pre.push(L[i]);}
+if(!secs.length)return mdToHtml(c,"thai");
+var acc=secs.map(function(x){var b=x.body.slice();while(b.length&&(!b[b.length-1].trim()||b[b.length-1].trim()==="---"))b.pop();
+var sent="";for(var j=0;j<b.length;j++){var m=b[j].match(/^>\s*##\s*\*\*(.+?)\*\*/);if(m){sent=m[1];break;}}
+return '<div class="sub-acc"><button class="sub-acc-btn" onclick="subToggle(this)"><span>'+mdInline(x.title)+(sent?' <span style="font-weight:400;color:var(--muted);font-size:15px">· '+mdInline(sent)+'</span>':'')+'</span><span class="sub-arrow">&#9661;</span></button><div class="sub-acc-body"><div class="sub-acc-inner">'+mdToHtml(b.join("\n"),"thai")+'</div></div></div>';}).join("");
+var k=pre.indexOf("\u0000TAIL"),head=k<0?pre:pre.slice(0,k),tail=k<0?[]:pre.slice(k+1);
+while(head.length&&(!head[head.length-1].trim()||head[head.length-1].trim()==="---"))head.pop();
+return mdToHtml(head.join("\n"),"thai")+acc+mdToHtml(tail.join("\n"),"thai");}
 (function(){var dates=[],curIdx=0,calY,calM;
 var order=["portfolio","stock","fortune","history","goodtext","thai","story","humor"];
 function pad(n){return (n<10?"0":"")+n;}
 function getContent(v){return (typeof v==="string")?v:((v&&v.content)?v.content:"");}
 function render(dobj){var tasks=(dobj&&dobj.tasks)||{};
 order.forEach(function(k){var el=document.querySelector('.accordion-item[data-key="'+k+'"] .accordion-inner');if(!el)return;
-var c=getContent(tasks[k]);var h=c?mdToHtml(c,k):'<p class="empty-note">(이 날 발행된 내용이 없습니다.)</p>';
+var c=getContent(tasks[k]);var h=c?(k==="thai"?thaiFold(c):mdToHtml(c,k)):'<p class="empty-note">(이 날 발행된 내용이 없습니다.)</p>';
 if(k==="fortune"){var mc=getContent(tasks["fortune_month"]);if(mc){var mm=(dobj&&dobj.date)?(+dobj.date.slice(5,7))+"월 운세":"이번 달 운세";
 h='<div class="sub-acc"><button class="sub-acc-btn" onclick="subToggle(this)"><span>📅 '+mm+'</span><span class="sub-arrow">&#9661;</span></button><div class="sub-acc-body"><div class="sub-acc-inner">'+mdToHtml(mc,"fortune_month")+'</div></div></div>'+h;}}
 el.innerHTML=h;});}
